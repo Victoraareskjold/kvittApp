@@ -30,6 +30,7 @@ export default WelcomeScreen;
 
 const styles = StyleSheet.create({
     header: {
+        fontFamily: 'inter',
         fontSize: 28,
         fontWeight: 'bold',
     },
