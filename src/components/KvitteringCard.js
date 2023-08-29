@@ -16,7 +16,7 @@ const KvitteringCard = () => {
                         style={{
                             backgroundColor: colors.COLOR_LIGHT,
                             borderRadius: 15,
-                            marginVertical: 12,
+                            marginBottom: 12,
                             alignItems: 'center',
                             paddingHorizontal: 12,
                             paddingVertical: 12,
@@ -58,10 +58,11 @@ export default KvitteringCard;
 
 const styles = StyleSheet.create({
     kvitteringContainer: {
-        padding: 12,
-        backgroundColor: '#272727',
+        paddingTop: 12,
+        paddingHorizontal: 12,
+        backgroundColor: '#FBFBFB',
         borderRadius: 25,
-        marginTop: 12,
+        marginTop:12,
         marginBottom: 32,
     },
 });

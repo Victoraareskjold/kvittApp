@@ -1,15 +1,21 @@
 import { StyleSheet, Text, View, Image, TextInput } from "react-native";
+import { useState } from "react";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SearchFilter = ({  placeholder }) => {
+    const [ input, setInput ] = useState("");
+    console.log(input)
     return (
         <View style={styles.container}>
             <Image 
             source={require("../../assets/searchIcon.png")}
             style={{ width: 18, height: 18, marginRight: 4 }}
             />
-            <TextInput>{placeholder}</TextInput>
+            <TextInput 
+                value={input} onChangeText={(text) => setInput(text)} 
+                placeholder="Søk etter butikk eller produkt">
+            </TextInput>
         </View>
     );
 };
@@ -19,7 +25,6 @@ export default SearchFilter;
 const styles = StyleSheet.create ({
     container: {
         flexDirection: 'row',
-        marginHorizontal: 24,
         marginTop: 24,
         backgroundColor: '#FBFBFB',
         paddingVertical: 12,

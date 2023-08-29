@@ -1,8 +1,9 @@
 export const colors = {
     COLOR_PRIMARY: '#2984FF',
-    COLOR_LIGHT: '#FBFBFB',
+    COLOR_LIGHT: '#FFF',
+    COLOR_GREY: '#FBFBFB',
     COLOR_DARK: '#f96193',
-    COLOR_LIGHT_ALT: '#fff',
+    COLOR_LIGHT_ALT: '#FFF',
 };
 
 /* Data for categories filter */

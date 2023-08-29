@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
+import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
 import Header from '../components/Header'
 
@@ -8,90 +9,96 @@ const KvitteringDetails = ({ navigation, route }) => {
   
   console.log(item);
   return (
-    <SafeAreaView style={{ backgroundColor: '#FFF', flex: 1 }}>
-      <View style={styles.container}>
+    <SafeAreaView style={{ backgroundColor: '#FFF' }}>
 
-        {/* Header container */}
-        <View style={styles.headerContainer}>
-            <Pressable onPress={() => navigation.goBack()}>
+      <View style={styles.bgContainer}>
+
+        <View style={styles.container}>
+
+            {/* Header container */}
+            <View style={styles.headerContainer}>
+                <Pressable onPress={() => navigation.goBack()}>
+                    <Image 
+                        source={require("../../assets/backVector.png")}
+                        style={{ width: 32, height: 32 }}
+                    />
+                </Pressable>
+                
+                <Text style={styles.header}>{item.name}</Text>
+
+                <Pressable>
+                    <Image 
+                        source={require("../../assets/dots.png")}
+                        style={{ width: 32, height: 32 }}
+                    />
+                </Pressable>
+            </View>
+
+            {/* Kvittering innhold */}
+            <View style={styles.kvitteringContainer}>
+
+                {/* Butikk logo */}
                 <Image 
-                    source={require("../../assets/backVector.png")}
-                    style={{ width: 32, height: 32 }}
+                    source={item.image}
+                    style={{ width: '100%', height: 100, resizeMode: 'contain', marginBottom: 32 }}
                 />
-            </Pressable>
-            
-            <Text style={styles.header}>{item.name}</Text>
 
-            <Pressable onPress={() => navigation.goBack()}>
+                {/* Overskrift & dato */}
+                <View style={{ marginBottom: 32 }}>
+                    <Text style={styles.subHeader}>{item.name}</Text>
+                    <Text style={styles.body2}>{item.dato}</Text>
+                </View>
+
+                {/* Divider */}
                 <Image 
-                    source={require("../../assets/dots.png")}
-                    style={{ width: 32, height: 32 }}
+                    source={require("../../assets/divider.png")}
+                    style={{ width: '100%', height: 0, marginBottom: 32 }}
                 />
-            </Pressable>
-        </View>
 
-        {/* Kvittering innhold */}
-        <View style={styles.kvitteringContainer}>
+                {/* Varer */}
+                <View style={styles.alleVarerContainer}>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body2}>Vare</Text>
+                        <Text style={styles.body2}>{item.pris}</Text>
+                    </View>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body2}>Vare</Text>
+                        <Text style={styles.body2}>{item.pris}</Text>
+                    </View>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body2}>Vare</Text>
+                        <Text style={styles.body2}>{item.pris}</Text>
+                    </View>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body2}>Vare</Text>
+                        <Text style={styles.body2}>{item.pris}</Text>
+                    </View>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body2}>Vare</Text>
+                        <Text style={styles.body2}>{item.pris}</Text>
+                    </View>
+                </View>
 
-            {/* Butikk logo */}
-            <Image 
-                source={item.image}
-                style={{ width: '100%', height: 100, resizeMode: 'contain', marginBottom: 32 }}
-            />
+                {/* Total pris */}
+                <View style={styles.totPrisContainer}>
+                    <View style={styles.varerContainer}>
+                        <Text style={styles.body1}>Vare</Text>
+                        <Text style={styles.body1}>{item.pris}</Text>
+                    </View>
+                </View>
 
-            {/* Overskrift & dato */}
-            <View style={{ marginBottom: 32 }}>
-                <Text style={styles.subHeader}>{item.name}</Text>
-                <Text style={styles.body2}>{item.dato}</Text>
+                {/* Barcode */}
+                <Image 
+                    source={require("../../assets/barcode.png")}
+                    style={{ width: '100%', height: 62 }}
+                />
+
             </View>
-
-            {/* Divider */}
-            <Image 
-                source={require("../../assets/divider.png")}
-                style={{ width: '100%', height: 0, marginBottom: 32 }}
-            />
-
-            {/* Varer */}
-            <View style={styles.alleVarerContainer}>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body2}>Vare</Text>
-                    <Text style={styles.body2}>{item.pris}</Text>
-                </View>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body2}>Vare</Text>
-                    <Text style={styles.body2}>{item.pris}</Text>
-                </View>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body2}>Vare</Text>
-                    <Text style={styles.body2}>{item.pris}</Text>
-                </View>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body2}>Vare</Text>
-                    <Text style={styles.body2}>{item.pris}</Text>
-                </View>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body2}>Vare</Text>
-                    <Text style={styles.body2}>{item.pris}</Text>
-                </View>
-            </View>
-
-            {/* Total pris */}
-            <View style={styles.totPrisContainer}>
-                <View style={styles.varerContainer}>
-                    <Text style={styles.body1}>Vare</Text>
-                    <Text style={styles.body1}>{item.pris}</Text>
-                </View>
-            </View>
-
-            {/* Barcode */}
-            <Image 
-                source={require("../../assets/barcode.png")}
-                style={{ width: '100%', height: 62 }}
-            />
 
         </View>
 
       </View>
+
     </SafeAreaView>
   )
 }
@@ -102,6 +109,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFF',
         marginHorizontal: 24,
+    },
+    bgContainer: {
+        backgroundColor: '#FFF',
     },
     headerContainer: {
         marginTop: 32,
