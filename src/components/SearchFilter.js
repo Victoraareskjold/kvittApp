@@ -6,7 +6,7 @@ const SearchFilter = ({  placeholder }) => {
     return (
         <View style={styles.container}>
             <Image 
-            source={require("../../assets/icon.png")}
+            source={require("../../assets/searchIcon.png")}
             style={{ width: 18, height: 18, marginRight: 4 }}
             />
             <TextInput>{placeholder}</TextInput>

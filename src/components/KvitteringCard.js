@@ -1,16 +1,18 @@
-import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import { FlatList, StyleSheet, Text, View, Image, ScrollView, Pressable } from "react-native";
 import React from "react";
 import { kvitteringList, colors } from "../Constant";
+import { useNavigation } from "@react-navigation/native";
 
 const KvitteringCard = () => {
+    const navigation = useNavigation();
     return (
         <View style={styles.kvitteringContainer}>
             <FlatList 
                 data={kvitteringList} 
                 renderItem={({ item }) => (
                     
-                        /* Kvittering boks */
-                        <View 
+                        /* Kvittering */
+                        <Pressable onPress={()=>navigation.navigate('KvitteringDetails', {item: item})}
                         style={{
                             backgroundColor: colors.COLOR_LIGHT,
                             borderRadius: 15,
@@ -31,7 +33,7 @@ const KvitteringCard = () => {
                             {/* Ikon, kategori og dato */}
                             <View style={{ flexDirection: 'row', alignItems: 'center', height: 36 }}>
                                 <Image 
-                                    source={require("../../assets/icon.png")}
+                                    source={item.image}
                                     style={{ width: 24, height: 24, marginRight: 12 }}
                                 />
                                 <View>
@@ -45,7 +47,7 @@ const KvitteringCard = () => {
                                 <Text>{item.pris}</Text>
                             </View>
                         </View>
-                        </View>
+                        </Pressable>
                 )}
             />
         </View>
@@ -61,5 +63,5 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         marginTop: 12,
         marginBottom: 32,
-    }
+    },
 });

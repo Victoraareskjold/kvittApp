@@ -16,11 +16,6 @@ const CategoriesFilter = () => {
                         paddingVertical: 6, 
                         paddingHorizontal: 12,
                         marginVertical: 20,
-
-                        shadowcolor: '#',
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: 0,
-                        shadowradius: 0,
                          }}>
                         <Text style={{ color: index === 0 && colors.COLOR_LIGHT_ALT, fontSize: 14 }}>{category.category}</Text>
                     </View>

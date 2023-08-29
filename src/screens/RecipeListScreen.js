@@ -8,10 +8,14 @@ import KvitteringCard from "../components/KvitteringCard";
 
 const RecipeListScreen = () => {
     return (
-        <SafeAreaView styles={{ flex: 1 }}>
-            
-            {/* Render header */}
-            <Header headerText={"Alle kvitteringer"}/>
+        <SafeAreaView styles={styles.container}>
+
+            {/* Header container */}
+            <View style={styles.headerContainer}>
+                <Text style={styles.header}>Alle kvitteringer</Text>
+            </View>
+
+            {/* Søkefelt */}
             <SearchFilter placeholder={'Søk etter butikk eller produkt'}/>
 
             {/* Categories filter */}
@@ -34,6 +38,17 @@ export default RecipeListScreen;
 const styles = StyleSheet.create ({
     container: {
         marginHorizontal: 24,
+    },
+    headerContainer: {
+        marginTop: 32,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        marginHorizontal: 24,
+    },
+    header: {
+        fontSize: 28,
+        fontWeight: 'bold',
     },
     filterContainer: {
         marginLeft: 24,

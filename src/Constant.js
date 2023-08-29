@@ -32,6 +32,10 @@ export const categories = [
         id: '06',
         category: 'Helse'
     },
+    {
+        id: '07',
+        category: 'Reise',
+    },
 ];
 
 export const kvitteringList = [
@@ -41,6 +45,7 @@ export const kvitteringList = [
         category: 'Mat',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/mat.png'),
     },
     {
         id: '02',
@@ -48,6 +53,7 @@ export const kvitteringList = [
         category: 'Trening',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/sport.png'),
     },
     {
         id: '03',
@@ -55,6 +61,7 @@ export const kvitteringList = [
         category: 'Klær',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/klær.png'),
     },
     {
         id: '04',
@@ -62,6 +69,7 @@ export const kvitteringList = [
         category: 'Underholdning',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/underholdning.png'),
     },
     {
         id: '05',
@@ -69,6 +77,7 @@ export const kvitteringList = [
         category: 'Elektronikk',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/elektronikk.png'),
     },
     {
         id: '06',
@@ -76,5 +85,14 @@ export const kvitteringList = [
         category: 'Helse',
         dato: '01.01.2023',
         pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/helse.png'),
+    },
+    {
+        id: '07',
+        name: 'Reise',
+        category: 'Reise',
+        dato: '01.01.2023',
+        pris: '0 ,-',
+        image: require('../assets/kvitteringIkoner/reise.png'),
     },
 ];
