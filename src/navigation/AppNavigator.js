@@ -6,8 +6,9 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 import AlleKvitteringerScreen from "../screens/AlleKvitteringerScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SettingsScreen from "../screens/SettingsScreen";
+import KvitteringDetails from "../screens/KvitteringDetails";
 
-/* import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,15 +16,12 @@ const AppNavigator = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
-                <Stack.Screen name="Welcome" component={WelcomeScreen}/>
-                <Stack.Screen name="AlleKvitteringer" component={AlleKvitteringerScreen}/>
                 <Stack.Screen name="KvitteringDetails" component={KvitteringDetails}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
 
-export default AppNavigator; */
 
 const Tab = createBottomTabNavigator();
 

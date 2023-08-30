@@ -10,6 +10,7 @@ import { categories } from "../Constant";
 
 const AlleKvitteringerScreen = () => {
   return (
+    
     <SafeAreaView style={{ backgroundColor: "#FFF", flex: 1 }}>
       <ScrollView  showsVerticalScrollIndicator={false}>
         {/* Header container */}
