@@ -32,6 +32,7 @@ const styles = StyleSheet.create ({
         borderRadius: 15,
         paddingHorizontal: 12,
         alignItems: 'center',
+        marginHorizontal: 24,
 
         shadowcolor: '#',
         shadowOffset: { width: 0, height: 4 },

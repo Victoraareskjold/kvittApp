@@ -9,7 +9,7 @@ const KvitteringDetails = ({ navigation, route }) => {
   
   console.log(item);
   return (
-    <SafeAreaView style={{ backgroundColor: '#FFF' }}>
+    <SafeAreaView style={{ backgroundColor: '#FFF', flex: 1 }}>
 
       <View style={styles.bgContainer}>
 
