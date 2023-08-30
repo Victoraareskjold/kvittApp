@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+/* Screens */
 import HomeScreen from "../screens/HomeScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import AlleKvitteringerScreen from "../screens/AlleKvitteringerScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
 
@@ -16,6 +18,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name="AlleKvitteringerScreen" component={AlleKvitteringerScreen}/>
                 <Stack.Screen name="KvitteringDetails" component={KvitteringDetails}/>
             </Stack.Navigator>
         </NavigationContainer>
@@ -34,19 +37,9 @@ const App = () => {
                     tabBarShowLabel: false,
                     tabBarStyle: {
                         position: 'absolute',
-                        bottom: 24,
-                        right: 24,
-                        left: 24,
                         paddingTop: 4,
-                        paddingBottom: 4,
-                        borderRadius: 100,
-                        height: 56,
-
-                        shadowColor: '#959da5',
-                        shadowOffset: { width: 0, height: 8 },
-                        shadowOpacity: 0.25, 
-                        shadowRadius: 8, 
-                        elevation: 2,
+                        paddingBottom: 24,
+                        height: 56+24,
                     }
                 }}
             >
