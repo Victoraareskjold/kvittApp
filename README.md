@@ -1,3 +1,5 @@
 # kvittApp
 
-Food recipe app ui - 34:01
+- Fiks søkefunksjon
+- Legg til login skjerm
+- lag hjemmeside
