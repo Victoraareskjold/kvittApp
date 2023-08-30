@@ -10,17 +10,17 @@ const WelcomeScreen = ({ navigation }) => {
             />
 
             <Text style={{ color: "#2984FF", fontSize: 22, fontWeight: "bold" }}>
-                til den søteste
+                Si nei til kassalappen
             </Text>
 
             <Text style={{ color: "#3c444c", fontSize: 42, fontWeight: "bold", marginTop: 48, marginBottom: 40 }}>
-                Boo' thang
+                Kvitt
             </Text>
 
             <TouchableOpacity 
-            onPress={()=>navigation.navigate("RecipeList")}
+            onPress={()=>navigation.navigate('AlleKvitteringer')}
             style={{ backgroundColor:"#2984FF", borderRadius: 18, paddingVertical: 18, width: "80%", alignItems: "center" }}>
-                <Text style={{ fontSize: 18, color: "#fff", fontWeight: "700" }}>ferdy</Text>
+                <Text style={{ fontSize: 18, color: "#fff", fontWeight: "700" }}>Start</Text>
             </TouchableOpacity>
         </View>
     );

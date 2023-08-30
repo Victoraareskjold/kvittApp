@@ -12,7 +12,7 @@ const AppNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name="Welcome" component={WelcomeScreen}/>
-                <Stack.Screen name="RecipeList" component={AlleKvitteringerScreen}/>
+                <Stack.Screen name="AlleKvitteringer" component={AlleKvitteringerScreen}/>
                 <Stack.Screen name="KvitteringDetails" component={KvitteringDetails}/>
             </Stack.Navigator>
         </NavigationContainer>
