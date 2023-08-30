@@ -43,6 +43,12 @@ const App = () => {
                         paddingBottom: 4,
                         borderRadius: 100,
                         height: 56,
+
+                        shadowColor: '#959da5',
+                        shadowOffset: { width: 0, height: 8 },
+                        shadowOpacity: 0.25, 
+                        shadowRadius: 8, 
+                        elevation: 2,
                     }
                 }}
             >

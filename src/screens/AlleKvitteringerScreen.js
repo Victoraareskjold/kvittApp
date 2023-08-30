@@ -45,12 +45,6 @@ const AlleKvitteringerScreen = () => {
           {/* Kvitteringer */}
           <KvitteringCard />
         </View>
-
-        <View style={styles.kvitteringContainer}>
-          <Text style={styles.subHeader}>I går</Text>
-          {/* Kvitteringer */}
-          <KvitteringCard />
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
