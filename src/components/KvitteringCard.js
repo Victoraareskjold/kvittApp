@@ -8,6 +8,7 @@ const KvitteringCard = () => {
     return (
         <View style={styles.kvitteringContainer}>
             <FlatList 
+            scrollEnabled={false}
                 data={kvitteringList} 
                 renderItem={({ item }) => (
                     

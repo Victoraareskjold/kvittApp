@@ -60,7 +60,7 @@ const WelcomeScreen = ({ navigation }) => {
             {/* Registrer deg */}
             <View style={{alignItems: 'center', marginBottom: 80}}>
                 <TouchableOpacity style={{flexDirection: 'row'}}>
-                    <Text style={styles.body2} style={{marginRight: 4}}>Har du ikke bruker?</Text>
+                    <Text style={styles.body2} style={{marginRight: 14}}>Har du ikke bruker?</Text>
                     <Text style={styles.fatBody}>Registrer deg</Text>
                     </TouchableOpacity>
             </View>
