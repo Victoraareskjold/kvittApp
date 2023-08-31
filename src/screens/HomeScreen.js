@@ -3,7 +3,7 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import KvitteringCard from "../components/KvitteringCard";
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
@@ -21,7 +21,10 @@ const HomeScreen = () => {
 
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
                 <Text style={styles.subHeader}>Nylige kvitteringer</Text>
-                <TouchableOpacity >
+
+                <TouchableOpacity 
+                onPress={() => navigation.navigate('AlleKvitteringerScreen')}
+                >
                     <Text style={styles.linkBtn}>Se alle</Text>
                 </TouchableOpacity>
             </View>

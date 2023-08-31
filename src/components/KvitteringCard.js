@@ -40,7 +40,7 @@ const KvitteringCard = () => {
                                 />
                                 <View>
                                     <Text style={{ fontSize: 16 }}>{item.name}</Text>
-                                    <Text>{item.dato}</Text>
+                                    <Text style={{ opacity: 0.6 }}>{item.dato}</Text>
                                 </View>
                             </View>
 

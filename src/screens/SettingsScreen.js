@@ -3,13 +3,12 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import KvitteringCard from "../components/KvitteringCard";
 
-const HomeScreen = () => {
+const SettingsScreen = ({navigation}) => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
       <ScrollView  
       showsVerticalScrollIndicator={false}
-      style={{marginTop:12}}
       >
 
         {/* Header container */}
@@ -48,7 +47,10 @@ const HomeScreen = () => {
           </TouchableOpacity>
           
           {/* Logg ut */}
-          <TouchableOpacity style={styles.innstillingerContainer}>
+          <TouchableOpacity 
+          onPress={() => navigation.navigate('WelcomeScreen')}
+          style={styles.innstillingerContainer}
+          >
             <Image 
             source={require('../../assets/innstillinger/loggut.png')}
             style={{height: 24, width: 24, resizeMode: 'contain', marginRight: 12}}
@@ -63,7 +65,7 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default SettingsScreen;
 
 const styles = StyleSheet.create ({
     container: {
