@@ -1,9 +1,21 @@
 import { StyleSheet, Text, View, Image, placeholder, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import KvitteringCard from "../components/KvitteringCard";
+import { auth } from "../../firebase";
+import { useNavigation } from "@react-navigation/native";
 
-const SettingsScreen = ({navigation}) => {
+const SettingsScreen = () => {
+  const navigation = useNavigation()
+
+  const handleSignOut = () => {
+    auth
+    .signOut()
+    .then(() => {
+      navigation.replace('WelcomeScreen')
+    })
+    .catch(error => alert(error.message))
+  }
+
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
@@ -48,7 +60,7 @@ const SettingsScreen = ({navigation}) => {
           
           {/* Logg ut */}
           <TouchableOpacity 
-          onPress={() => navigation.navigate('WelcomeScreen')}
+          onPress={handleSignOut}
           style={styles.innstillingerContainer}
           >
             <Image 
@@ -79,7 +91,7 @@ const styles = StyleSheet.create ({
         justifyContent: 'space-between',
         flexDirection: 'row',
         marginHorizontal: 24,
-        marginBottom: 48,
+        marginBottom: 32,
     },
     kvitteringContainer: {
         marginHorizontal: 24,

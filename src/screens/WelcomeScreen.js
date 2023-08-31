@@ -1,7 +1,43 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { auth } from '../../firebase'
+import { useNavigation } from "@react-navigation/native";
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                navigation.replace('HomeScreen')
+            }
+        })
+
+        return unsubscribe
+    }, [])
+
+    const handleSignUp = () => {
+        auth
+            .createUserWithEmailAndPassword(email, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+            })
+            .catch(error => alert(error.message))
+    }
+
+    const handleLogIn = () => {
+        auth
+        .signInWithEmailAndPassword(email, password)
+        .then(userCredentials => {
+            const user = userCredentials.user;
+        })
+        .catch(error => alert(error.message))
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', paddingHorizontal: 24 }}>
 
@@ -27,15 +63,20 @@ const WelcomeScreen = ({ navigation }) => {
                 <TextInput 
                 style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
                 placeholder='Email'
+                
+                value={email}
+                onChangeText={text => setEmail(text)}
             ></TextInput>
 
             {/* Password */}
             <Text style={styles.body}>Passord</Text>
             <TextInput 
                 secureTextEntry={true}
-                input
                 style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 24}}
                 placeholder='Passord'
+
+                value={password}
+                onChangeText={text => setPassword(text)}
             ></TextInput>
 
             {/* Glemt passord? */}
@@ -47,7 +88,7 @@ const WelcomeScreen = ({ navigation }) => {
 
             {/* Logg inn */}
             <TouchableOpacity
-                onPress={() => navigation.navigate("MainScreen")}
+                onPress={handleLogIn}
                 style={{
                     backgroundColor: "#2984FF",
                     borderRadius: 50,
@@ -63,7 +104,7 @@ const WelcomeScreen = ({ navigation }) => {
 
 
             {/* Logg inn med Google */}
-                <TouchableOpacity 
+                {/* <TouchableOpacity 
                     onPress={() => navigation.navigate("MainScreen")}
                     style={{ backgroundColor:"#F8F8F8", borderRadius: 50, height: 54, width: "100%", alignItems: "center", justifyContent: 'center', flexDirection: 'row', marginBottom:24 }}>
                         <Image 
@@ -71,11 +112,14 @@ const WelcomeScreen = ({ navigation }) => {
                             style={{height: 24, width: 24, marginRight: 12}}
                         />
                         <Text style={{ fontSize: 14, color: "#272727", fontWeight: "500" }}>Logg inn med google</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             {/* Registrer deg */}
             <View style={{alignItems: 'center', marginBottom: 80}}>
-                <TouchableOpacity style={{flexDirection: 'row'}}>
+                <TouchableOpacity 
+                onPress={handleSignUp}
+                style={{flexDirection: 'row'}}
+                >
                     <Text style={{marginRight: 4, fontSize: 14, color: '#272727', opacity: 0.5,}}>Har du ikke bruker?</Text>
                     <Text style={styles.fatBody}>Registrer deg</Text>
                     </TouchableOpacity>

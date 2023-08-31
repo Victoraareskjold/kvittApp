@@ -11,7 +11,7 @@ import AlleKvitteringerScreen from "../screens/AlleKvitteringerScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
 
-/* Stack */
+/* Login Stack */
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +27,7 @@ function KvitteringStackGroup() {
   );
 }
 
-/* HomeStack */
+/* HomeStack kvitteringer */
 const HomeStack = createNativeStackNavigator();
 
 function HomeStackGroup() {
@@ -78,7 +78,7 @@ export default function Navigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="WelcomeScreen" screenOptions={{headerShown: false}}>
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-        <Stack.Screen name="MainScreen" component={TabGroup} />
+        <Stack.Screen name="HomeScreen" component={TabGroup} />
       </Stack.Navigator>
     </NavigationContainer>
   );
