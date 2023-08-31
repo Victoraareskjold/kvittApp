@@ -18,7 +18,7 @@ const AppNavigator = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
-                <Stack.Screen name="AlleKvitteringerScreen" component={AlleKvitteringerScreen}/>
+                <Stack.Screen name="AlleKvitteringer" component={AlleKvitteringerScreen}/>
                 <Stack.Screen name="KvitteringDetails" component={KvitteringDetails}/>
             </Stack.Navigator>
         </NavigationContainer>

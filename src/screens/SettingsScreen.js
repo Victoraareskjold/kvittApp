@@ -5,7 +5,8 @@ import KvitteringCard from "../components/KvitteringCard";
 
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={{ backgroundColor: "#FFF", flex: 1 }}>
+    <View style={{backgroundColor: '#FFF', flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: "#FFF" }}/>
       <ScrollView  showsVerticalScrollIndicator={false}>
 
         {/* Header container */}
@@ -55,7 +56,7 @@ const HomeScreen = () => {
         </View>
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -69,7 +70,6 @@ const styles = StyleSheet.create ({
         backgroundColor: '#FFF',
     },
     headerContainer: {
-        marginTop: 32,
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',

@@ -7,12 +7,18 @@ const WelcomeScreen = ({ navigation }) => {
 
             {/* Header & subheader */}
             <View style={{alignItems: "center"}}>
-                <Text style={{ color: "#272727", fontSize: 32, fontWeight: "bold" }}>
-                    Kvitt
-                </Text>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {/* <Image 
+                        source={require('../../assets/kvittLogo.png')}
+                        style={{height: 32, width: 32, marginRight: 12}}
+                    /> */}
+                    <Text style={{ color: "#272727", fontSize: 38, fontWeight: "bold" }}>
+                        Kvitt
+                    </Text>
+                </View>
 
-                <Text style={{ color: "#272727", opacity: 0.76, fontSize: 14, fontWeight: "500", marginTop: 6, marginBottom: 80, letterSpacing: 1 }}>
-                    Si nei til kassalappen
+                <Text style={{ color: "#272727", opacity: 0.76, fontSize: 14, fontWeight: "500", marginTop: 12, marginBottom: 80, letterSpacing: 1, marginHorizontal: 32, textAlign: 'center' }}>
+                    Si nei til kassalappen lorem ipsum dolor sit amet dolor amet!
                 </Text>
             </View>
 
@@ -60,7 +66,7 @@ const WelcomeScreen = ({ navigation }) => {
             {/* Registrer deg */}
             <View style={{alignItems: 'center', marginBottom: 80}}>
                 <TouchableOpacity style={{flexDirection: 'row'}}>
-                    <Text style={styles.body2} style={{marginRight: 14}}>Har du ikke bruker?</Text>
+                    <Text style={{marginRight: 4, fontSize: 14, color: '#272727', opacity: 0.5,}}>Har du ikke bruker?</Text>
                     <Text style={styles.fatBody}>Registrer deg</Text>
                     </TouchableOpacity>
             </View>

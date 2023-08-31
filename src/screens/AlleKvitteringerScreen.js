@@ -10,8 +10,8 @@ import { categories } from "../Constant";
 
 const AlleKvitteringerScreen = () => {
   return (
-    
-    <SafeAreaView style={{ backgroundColor: "#FFF", flex: 1 }}>
+    <View style={{backgroundColor: '#FFF', flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: "#FFF" }}></SafeAreaView>
       <ScrollView  showsVerticalScrollIndicator={false}>
         {/* Header container */}
         <View style={styles.headerContainer}>
@@ -26,9 +26,7 @@ const AlleKvitteringerScreen = () => {
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>
-              Legg til
-            </Text>
+            <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Legg til</Text>
           </TouchableOpacity>
         </View>
 
@@ -47,7 +45,7 @@ const AlleKvitteringerScreen = () => {
           <KvitteringCard />
         </View>
       </ScrollView>
-    </SafeAreaView>
+      </View>
   );
 };
 
@@ -61,7 +59,6 @@ const styles = StyleSheet.create ({
         backgroundColor: '#FFF',
     },
     headerContainer: {
-        marginTop: 32,
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',

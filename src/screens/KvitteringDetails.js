@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
-import Header from '../components/Header'
 
 const KvitteringDetails = ({ navigation, route }) => {
 
@@ -9,9 +8,10 @@ const KvitteringDetails = ({ navigation, route }) => {
   
   console.log(item);
   return (
-    <SafeAreaView style={{ backgroundColor: '#FFF', flex: 1 }}>
+    <View style={{backgroundColor: '#FFF', flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: '#FFF' }}/>
 
-      <View style={styles.bgContainer}>
+      <ScrollView style={styles.bgContainer}>
 
         <View style={styles.container}>
 
@@ -77,6 +77,7 @@ const KvitteringDetails = ({ navigation, route }) => {
                         <Text style={styles.body2}>Vare</Text>
                         <Text style={styles.body2}>{item.pris}</Text>
                     </View>
+                    
                 </View>
 
                 {/* Total pris */}
@@ -97,9 +98,9 @@ const KvitteringDetails = ({ navigation, route }) => {
 
         </View>
 
-      </View>
+      </ScrollView>
 
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -114,7 +115,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     headerContainer: {
-        marginTop: 32,
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',

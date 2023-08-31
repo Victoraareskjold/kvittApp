@@ -4,7 +4,7 @@ import { kvitteringList, colors } from "../Constant";
 import { useNavigation } from "@react-navigation/native";
 
 const KvitteringCard = () => {
-    const navigation = useNavigation();
+    const { navigate } = useNavigation();
     return (
         <View style={styles.kvitteringContainer}>
             <FlatList 
@@ -13,19 +13,20 @@ const KvitteringCard = () => {
                 renderItem={({ item }) => (
                     
                         /* Kvittering */
-                        <Pressable onPress={()=>navigation.navigate('KvitteringDetails', {item: item})}
-                        style={{
-                            backgroundColor: colors.COLOR_LIGHT,
-                            borderRadius: 15,
-                            marginBottom: 12,
-                            alignItems: 'center',
-                            paddingHorizontal: 12,
-                            paddingVertical: 12,
+                        <Pressable 
+                            onPress={() => navigate('KvitteringDetails', {item: item})}
+                            style={{
+                                backgroundColor: colors.COLOR_LIGHT,
+                                borderRadius: 15,
+                                marginBottom: 12,
+                                alignItems: 'center',
+                                paddingHorizontal: 12,
+                                paddingVertical: 12,
 
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 0 },
-                            shadowOpacity: 0, 
-                            shadowRadius: 0, 
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 0, 
+                                shadowRadius: 0, 
                         }}
                     >
                         {/* Kvittering innhold */}
