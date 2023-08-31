@@ -46,15 +46,25 @@ const WelcomeScreen = ({ navigation }) => {
             </View>
 
             {/* Logg inn */}
-            <TouchableOpacity 
-                onPress={()=>navigation.navigate('HomeScreen')}
-                style={{ backgroundColor:"#2984FF", borderRadius: 50, height: 54, width: "100%", alignItems: "center", justifyContent: 'center', marginBottom: 12 }}>
-                    <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Logg inn</Text>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("MainScreen")}
+                style={{
+                    backgroundColor: "#2984FF",
+                    borderRadius: 50,
+                    height: 54,
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 12,
+                }}
+            >
+                <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Logg inn</Text>
             </TouchableOpacity>
+
 
             {/* Logg inn med Google */}
                 <TouchableOpacity 
-                    onPress={()=>navigation.navigate('HomeScreen')}
+                    onPress={() => navigation.navigate("MainScreen")}
                     style={{ backgroundColor:"#F8F8F8", borderRadius: 50, height: 54, width: "100%", alignItems: "center", justifyContent: 'center', flexDirection: 'row', marginBottom:24 }}>
                         <Image 
                             source={require('../../assets/googleLogo.png')}

@@ -9,9 +9,11 @@ const KvitteringDetails = ({ navigation, route }) => {
   console.log(item);
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView style={{ backgroundColor: '#FFF' }}/>
+    <SafeAreaView style={{ backgroundColor: '#FFF'}}/>
 
-      <ScrollView style={styles.bgContainer}>
+      <ScrollView 
+      showsVerticalScrollIndicator={false}
+      >
 
         <View style={styles.container}>
 

@@ -6,8 +6,11 @@ import KvitteringCard from "../components/KvitteringCard";
 const HomeScreen = () => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView style={{ backgroundColor: "#FFF" }}/>
-      <ScrollView  showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
+      <ScrollView  
+      showsVerticalScrollIndicator={false}
+      style={{marginTop:12}}
+      >
 
         {/* Header container */}
         <View style={styles.headerContainer}>

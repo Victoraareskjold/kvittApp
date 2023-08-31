@@ -7,7 +7,9 @@ const HomeScreen = () => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
-      <ScrollView  showsVerticalScrollIndicator={false}>
+      <ScrollView  
+      showsVerticalScrollIndicator={false}
+      >
 
         {/* Header container */}
         <View style={styles.headerContainer}>

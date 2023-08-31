@@ -12,7 +12,9 @@ const AlleKvitteringerScreen = () => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: "#FFF" }}></SafeAreaView>
-      <ScrollView  showsVerticalScrollIndicator={false}>
+      <ScrollView  
+      showsVerticalScrollIndicator={false}
+      >
         {/* Header container */}
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Alle kvitteringer</Text>
