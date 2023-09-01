@@ -1,12 +1,9 @@
-import { StyleSheet, Text, View, Image, placeholder, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
-import { useState } from "react";
-import Header from "../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchFilter from "../components/SearchFilter";
 import CategoriesFilter from "../components/CategoriesFilter";
 import KvitteringCard from "../components/KvitteringCard";
-import { categories } from "../Constant";
 
 const AlleKvitteringerScreen = () => {
   return (

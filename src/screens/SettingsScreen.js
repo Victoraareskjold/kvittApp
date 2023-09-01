@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, placeholder, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../../firebase";

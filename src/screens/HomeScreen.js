@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, placeholder, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import KvitteringCard from "../components/KvitteringCard";
@@ -6,10 +6,8 @@ import KvitteringCard from "../components/KvitteringCard";
 const HomeScreen = ({navigation}) => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
-      <ScrollView  
-      showsVerticalScrollIndicator={false}
-      >
+    <SafeAreaView/>
+      <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* Header container */}
         <View style={styles.headerContainer}>

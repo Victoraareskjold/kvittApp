@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 /* Screens */
 import HomeScreen from "../screens/HomeScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
+import LoginScreen from "../screens/LoginScreen";
 import AlleKvitteringerScreen from "../screens/AlleKvitteringerScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
@@ -76,8 +76,8 @@ function TabGroup() {
 export default function Navigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="WelcomeScreen" screenOptions={{headerShown: false}}>
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{headerShown: false}}>
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="HomeScreen" component={TabGroup} />
       </Stack.Navigator>
     </NavigationContainer>

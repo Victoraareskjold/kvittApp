@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { auth } from '../../firebase'
@@ -10,6 +10,7 @@ const WelcomeScreen = () => {
 
     const navigation = useNavigation()
 
+    /* When signed in, navigate to HomeScreen */
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
@@ -20,6 +21,7 @@ const WelcomeScreen = () => {
         return unsubscribe
     }, [])
 
+    /* SignUp function */
     const handleSignUp = () => {
         auth
             .createUserWithEmailAndPassword(email, password)
@@ -29,6 +31,7 @@ const WelcomeScreen = () => {
             .catch(error => alert(error.message))
     }
 
+    /* LogIn function */
     const handleLogIn = () => {
         auth
         .signInWithEmailAndPassword(email, password)
