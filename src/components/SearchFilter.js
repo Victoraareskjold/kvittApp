@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Image, TextInput } from "react-native";
+import { StyleSheet, View, Image, TextInput } from "react-native";
 import { useState } from "react";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const SearchFilter = ({  placeholder }) => {
     const [ input, setInput ] = useState("");

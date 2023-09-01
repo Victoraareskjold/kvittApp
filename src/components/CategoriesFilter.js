@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Image, placeholder, ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
-import { categories, colors } from "../Constant";
+import { categories, colors } from "../Categories";
 
 const CategoriesFilter = () => {
     return (

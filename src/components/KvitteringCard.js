@@ -1,6 +1,6 @@
-import { FlatList, StyleSheet, Text, View, Image, ScrollView, Pressable } from "react-native";
+import { FlatList, StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
-import { kvitteringList, colors } from "../Constant";
+import { kvitteringList, colors } from "../Categories";
 import { useNavigation } from "@react-navigation/native";
 
 const KvitteringCard = () => {

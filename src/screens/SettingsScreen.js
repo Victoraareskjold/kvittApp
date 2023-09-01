@@ -11,7 +11,7 @@ const SettingsScreen = () => {
     auth
     .signOut()
     .then(() => {
-      navigation.replace('WelcomeScreen')
+      navigation.replace('LoginScreen')
     })
     .catch(error => alert(error.message))
   }
