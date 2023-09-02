@@ -2,9 +2,33 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingVi
 import React from "react";
 import { useState } from "react";
 
+import { auth, currentUser } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 export default function LoginScreen({ navigation }) {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+
+    if (currentUser) {
+        navigation.navigate('HomeScreen');
+    }
+
+    let [errorMessage, setErrorMessage] = useState('')
+    let [email, setEmail] = useState('')
+    let [password, setPassword] = useState('')
+
+    let login = () => {
+        if (email !== '' && password !== '') {
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    /* Signed in */
+                    navigation.navigate('HomeScreen', {user: userCredential.user});
+                })
+                .catch((error) => {
+                    setErrorMessage(error.message)
+                });
+        } else {
+            setErrorMessage('Vennligst skriv inn email og passord')
+        }
+    }
 
     return (
         <KeyboardAvoidingView 
@@ -59,9 +83,14 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
             </View>
 
+            {/* Error message */}
+            <View style={styles.errorMessageContainer}>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            </View>
+
             {/* Log inn */}
             <TouchableOpacity
-                onPress={() => navigation.navigate('HomeScreen')}
+                onPress={login}
                 style={{
                     backgroundColor: "#2984FF",
                     borderRadius: 50,
@@ -91,6 +120,13 @@ export default function LoginScreen({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+
+    /* Container */
+    errorMessageContainer: {
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
     fatBody: {
         fontSize: 14,
         color: '#272727',
@@ -106,5 +142,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#272727',
         opacity: 0.5,
+    },
+    errorMessage: {
+        color: 'red',
     },
 });

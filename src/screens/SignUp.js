@@ -2,6 +2,9 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingVi
 import React from "react";
 import { useState } from "react";
 
+import { auth } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -11,12 +14,25 @@ export default function LoginScreen({ navigation }) {
 
     let validateAndSet = (value, valueToCompare, setValue) => {
         if (value !== valueToCompare) {
-            setValidationMessage('Passordene matcher ikke');
+            setValidationMessage('Passordene er ikke like');
         } else {
             setValidationMessage('');
         }
         setValue(value);
     };
+
+    let signUp = () => {
+        if (password === confirmPassword) {
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                /* Signed in */
+                navigation.navigate('HomeScreen', {user: userCredential.user});
+            })
+            .catch((error) => {
+                setValidationMessage(error.message);
+            });
+        }
+    }
 
     return (
         <KeyboardAvoidingView 
@@ -80,7 +96,7 @@ export default function LoginScreen({ navigation }) {
 
             {/* Register */}
             <TouchableOpacity
-                onPress={() => navigation.navigate('HomeScreen')}
+                onPress={signUp}
                 style={{
                     backgroundColor: "#2984FF",
                     borderRadius: 50,

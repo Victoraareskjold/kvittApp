@@ -2,9 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingVi
 import React from "react";
 import { useState } from "react";
 
+import { auth } from "firebase/auth";
+
 export default function ResetPassword({ navigation }) {
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
 
     return (
         <KeyboardAvoidingView 
