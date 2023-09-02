@@ -5,11 +5,23 @@ import { useState } from "react";
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+
+    let [validationMessage, setValidationMessage] = useState('')
+
+    let validateAndSet = (value, valueToCompare, setValue) => {
+        if (value !== valueToCompare) {
+            setValidationMessage('Passordene matcher ikke');
+        } else {
+            setValidationMessage('');
+        }
+        setValue(value);
+    };
 
     return (
         <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', paddingHorizontal: 24 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', paddingHorizontal: 24 }}
         >
 
             {/* Header & subheader */}
@@ -43,21 +55,30 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.body}>Passord</Text>
             <TextInput 
                 secureTextEntry={true}
-                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 24}}
+                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
                 placeholder='Passord'
 
                 value={password}
-                onChangeText={text => setPassword(text)}
+                onChangeText={(value) => validateAndSet(value, confirmPassword, setPassword)}
             ></TextInput>
 
-            {/* Glemt passord? */}
-            <View style={{alignItems: 'flex-end', marginBottom: 80}}>
-                <TouchableOpacity>
-                    <Text style={styles.fatBody}>Glemt passord?</Text>
-                    </TouchableOpacity>
+            {/* Bekreft password */}
+            <Text style={styles.body}>Bekreft passord</Text>
+            <TextInput 
+                secureTextEntry={true}
+                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
+                placeholder='Bekreft passord'
+
+                value={confirmPassword}
+                onChangeText={(value) => validateAndSet(value, password, setConfirmPassword)}
+            ></TextInput>
+
+            {/* Validation message */}
+            <View style={styles.validationMessageContainer}>
+                <Text style={styles.validationMessage}>{validationMessage}</Text>
             </View>
 
-            {/* Logg inn */}
+            {/* Registrer deg */}
             <TouchableOpacity
                 onPress={() => navigation.navigate('HomeScreen')}
                 style={{
@@ -70,17 +91,17 @@ export default function LoginScreen({ navigation }) {
                     marginBottom: 12,
                 }}
             >
-                <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Logg inn</Text>
+                <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Kom i gang</Text>
             </TouchableOpacity>
 
-            {/* Registrer deg */}
+            {/* Har du allerede bruker? */}
             <View style={{alignItems: 'center', marginBottom: 80}}>
                 <TouchableOpacity 
-                onPress={() => navigation.navigate('SignUp')}
+                onPress={() => navigation.pop()}
                 style={{flexDirection: 'row'}}
                 >
-                    <Text style={{marginRight: 4, fontSize: 14, color: '#272727', opacity: 0.5,}}>Har du ikke bruker?</Text>
-                    <Text style={styles.fatBody}>Registrer deg</Text>
+                    <Text style={{marginRight: 4, fontSize: 14, color: '#272727', opacity: 0.5,}}>Har du allere en bruker?</Text>
+                    <Text style={styles.fatBody}>Logg inn</Text>
                     </TouchableOpacity>
             </View>
             
@@ -89,6 +110,13 @@ export default function LoginScreen({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+
+    /* Containers */
+    validationMessageContainer: {
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
     fatBody: {
         fontSize: 14,
         color: '#272727',
@@ -104,5 +132,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#272727',
         opacity: 0.5,
+    },
+    validationMessage: {
+        color: 'red',
     },
 });

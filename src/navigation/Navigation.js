@@ -11,6 +11,7 @@ import ReceiptsScreen from "../screens/ReceiptsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
 import AddReceipt from "../screens/AddReceipt";
+import SignUp from '../screens/SignUp'
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -80,6 +81,7 @@ export default function Navigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{headerShown: false}}>
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="HomeScreen" component={TabGroup} />
       </Stack.Navigator>
     </NavigationContainer>
