@@ -6,7 +6,7 @@ import KvitteringCard from "../components/KvitteringCard";
 const HomeScreen = ({navigation}) => {
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView/>
+    <SafeAreaView />
       <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* Header container */}
@@ -14,12 +14,13 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.header}>Hjem</Text>
         </View>
 
-        {/* Kvittering list filter */}
+        {/* Recent receipts */}
         <View style={styles.kvitteringContainer}>
 
-            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
+            <View style={styles.subHeaderContainer}>
                 <Text style={styles.subHeader}>Nylige kvitteringer</Text>
 
+                {/* Se alle btn */}
                 <TouchableOpacity 
                 onPress={() => navigation.navigate('AlleKvitteringerScreen')}
                 >
@@ -39,28 +40,29 @@ const HomeScreen = ({navigation}) => {
 export default HomeScreen;
 
 const styles = StyleSheet.create ({
-    container: {
-        marginHorizontal: 24,
-    },
-    bgContainer: {
-        backgroundColor: '#FFF',
-    },
+
+    /* Containers */
     headerContainer: {
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        marginHorizontal: 24,
+        paddingHorizontal: 24,
         marginBottom: 48,
     },
     kvitteringContainer: {
-        marginHorizontal: 24,
+        paddingHorizontal: 24,
     },
+    subHeaderContainer: {
+        flex: 1, 
+        flexDirection: 'row', 
+        alignItems: 'baseline', 
+        justifyContent: 'space-between',
+    },
+
+    /* Text */
     header: {
         fontSize: 28,
         fontWeight: 'bold',
-    },
-    filterContainer: {
-        marginLeft: 24,
     },
     subHeader: {
         fontSize: 24,

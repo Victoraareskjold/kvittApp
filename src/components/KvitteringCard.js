@@ -61,10 +61,10 @@ export default KvitteringCard;
 const styles = StyleSheet.create({
     kvitteringContainer: {
         paddingTop: 12,
-        paddingHorizontal: 12,
         backgroundColor: '#FBFBFB',
-        borderRadius: 25,
         marginTop:12,
         marginBottom: 32,
+        paddingHorizontal: 12,
+        borderRadius: 15,
     },
 });

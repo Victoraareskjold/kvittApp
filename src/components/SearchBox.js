@@ -2,27 +2,29 @@ import { StyleSheet, View, Image, TextInput } from "react-native";
 import { useState } from "react";
 import React from "react";
 
-const SearchFilter = ({  placeholder }) => {
+const SearchBox = ({  placeholder }) => {
     const [ input, setInput ] = useState("");
     console.log(input)
     return (
-        <View style={styles.container}>
+        <View style={styles.searchContainer}>
             <Image 
             source={require("../../assets/searchIcon.png")}
             style={{ width: 18, height: 18, marginRight: 4 }}
             />
             <TextInput 
                 value={input} onChangeText={(text) => setInput(text)} 
-                placeholder="Søk etter butikk eller produkt">
+                placeholder="Søk etter butikk eller produkt"
+                style={{width: '100%'}}
+            >
             </TextInput>
         </View>
     );
 };
 
-export default SearchFilter;
+export default SearchBox;
 
 const styles = StyleSheet.create ({
-    container: {
+    searchContainer: {
         flexDirection: 'row',
         marginTop: 24,
         backgroundColor: '#FBFBFB',
@@ -31,7 +33,6 @@ const styles = StyleSheet.create ({
         borderRadius: 15,
         paddingHorizontal: 12,
         alignItems: 'center',
-        marginHorizontal: 24,
 
         shadowcolor: '#',
         shadowOffset: { width: 0, height: 4 },

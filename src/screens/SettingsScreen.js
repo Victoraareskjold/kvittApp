@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 const SettingsScreen = () => {
   const navigation = useNavigation()
 
+  /* Logg ut btn */
   const handleSignOut = () => {
     auth
     .signOut()
@@ -18,10 +19,8 @@ const SettingsScreen = () => {
 
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView style={{ backgroundColor: "#FFF"}}/>
-      <ScrollView  
-      showsVerticalScrollIndicator={false}
-      >
+    <SafeAreaView />
+      <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* Header container */}
         <View style={styles.headerContainer}>
@@ -29,31 +28,31 @@ const SettingsScreen = () => {
         </View>
 
         {/* Innstillinger */}
-        <View style={styles.container}>
+        <View style={styles.settingsContainer}>
 
           {/* Min bruker */}
-          <TouchableOpacity style={styles.innstillingerContainer}>
+          <TouchableOpacity style={styles.settingsBtnContainer}>
             <Image 
             source={require('../../assets/innstillinger/bruker.png')}
-            style={{height: 24, width: 24, resizeMode: 'contain', marginRight: 12}}
+            style={styles.settingsIcon}
             />
             <Text>Min bruker</Text>
           </TouchableOpacity>
 
           {/* Mine kort */}
-          <TouchableOpacity style={styles.innstillingerContainer}>
+          <TouchableOpacity style={styles.settingsBtnContainer}>
             <Image 
             source={require('../../assets/innstillinger/bankkort.png')}
-            style={{height: 24, width: 24, resizeMode: 'contain', marginRight: 12}}
+            style={styles.settingsIcon}
             />
             <Text>Mine kort</Text>
           </TouchableOpacity>
           
           {/* Hjelp & kundestøtte */}
-          <TouchableOpacity style={styles.innstillingerContainer}>
+          <TouchableOpacity style={styles.settingsBtnContainer}>
             <Image 
             source={require('../../assets/innstillinger/_.png')}
-            style={{height: 24, width: 24, resizeMode: 'contain', marginRight: 12}}
+            style={styles.settingsIcon}
             />
             <Text>Hjelp & kundestøtte</Text>
           </TouchableOpacity>
@@ -61,11 +60,11 @@ const SettingsScreen = () => {
           {/* Logg ut */}
           <TouchableOpacity 
           onPress={handleSignOut}
-          style={styles.innstillingerContainer}
+          style={styles.settingsBtnContainer}
           >
             <Image 
             source={require('../../assets/innstillinger/loggut.png')}
-            style={{height: 24, width: 24, resizeMode: 'contain', marginRight: 12}}
+            style={styles.settingsIcon}
             />
             <Text>Logg ut</Text>
           </TouchableOpacity>
@@ -80,34 +79,28 @@ const SettingsScreen = () => {
 export default SettingsScreen;
 
 const styles = StyleSheet.create ({
-    container: {
-        marginHorizontal: 24,
-    },
-    bgContainer: {
-        backgroundColor: '#FFF',
-    },
+
+  /* Containers */
     headerContainer: {
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        marginHorizontal: 24,
-        marginBottom: 32,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      paddingHorizontal: 24,
+      marginBottom: 32,
     },
-    kvitteringContainer: {
-        marginHorizontal: 24,
+    settingsContainer: {
+        paddingHorizontal: 24,
     },
-    innstillingerContainer: {
+    settingsBtnContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 12,
     },
 
+    /* Text */
     header: {
         fontSize: 28,
         fontWeight: 'bold',
-    },
-    filterContainer: {
-        marginLeft: 24,
     },
     subHeader: {
         fontSize: 24,
@@ -116,5 +109,13 @@ const styles = StyleSheet.create ({
         fontSize: 16,
         fontWeight: '600',
         color: '#2984FF',
+    },
+
+    /* Icons */
+    settingsIcon: {
+      height: 24, 
+      width: 24, 
+      resizeMode: 'contain', 
+      marginRight: 12,
     },
 });

@@ -7,27 +7,12 @@ import { Ionicons } from "@expo/vector-icons";
 /* Screens */
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
-import AlleKvitteringerScreen from "../screens/AlleKvitteringerScreen";
+import ReceiptsScreen from "../screens/ReceiptsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
+import AddReceipt from "../screens/AddReceipt";
 
-/* Login Stack */
-
-const Stack = createNativeStackNavigator();
-
-/* KvitteringStack */
-const KvitteringStack = createNativeStackNavigator();
-
-function KvitteringStackGroup() {
-  return (
-    <KvitteringStack.Navigator screenOptions={{ headerShown: false }}>
-      <KvitteringStack.Screen name="AlleKvitteringer" component={AlleKvitteringerScreen} />
-      <KvitteringStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
-    </KvitteringStack.Navigator>
-  );
-}
-
-/* HomeStack kvitteringer */
+/* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
 
 function HomeStackGroup() {
@@ -36,6 +21,19 @@ function HomeStackGroup() {
       <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
       <HomeStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
     </HomeStack.Navigator>
+  );
+}
+
+/* ReceiptScreen view and add receipt */
+const KvitteringStack = createNativeStackNavigator();
+
+function KvitteringStackGroup() {
+  return (
+    <KvitteringStack.Navigator screenOptions={{ headerShown: false }}>
+      <KvitteringStack.Screen name="AlleKvitteringer" component={ReceiptsScreen} />
+      <KvitteringStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
+      <KvitteringStack.Screen name="AddReceipt" component={AddReceipt} />
+    </KvitteringStack.Navigator>
   );
 }
 
@@ -67,11 +65,15 @@ function TabGroup() {
     >
       <Tab.Screen name="HomeStackGroup" component={HomeStackGroup} options={{ tabBarLabel: "Hjem" }} />
       <Tab.Screen name="KvitteringStackGroup" component={KvitteringStackGroup} options={{ tabBarLabel: "Kvitteringer" }} />
-      <Tab.Screen name="Fordeler" component={AlleKvitteringerScreen} listeners={{ tabPress: (e) => { e.preventDefault(); } }} />
+      <Tab.Screen name="Fordeler" component={ReceiptsScreen} listeners={{ tabPress: (e) => { e.preventDefault(); } }} />
       <Tab.Screen name="Innstillinger" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
+
+/* Login Stack */
+
+const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   return (
