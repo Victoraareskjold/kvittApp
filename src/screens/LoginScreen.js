@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingVi
 import React from "react";
 import { useState } from "react";
 
-import { auth, currentUser } from "firebase/auth";
+import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginScreen({ navigation }) {
 
-    if (currentUser) {
+    if (auth.currentUser) {
         navigation.navigate('HomeScreen');
     }
 
