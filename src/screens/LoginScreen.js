@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
                 </View>
 
                 <Text style={{ color: "#272727", opacity: 0.76, fontSize: 14, fontWeight: "500", marginTop: 12, marginBottom: 80, letterSpacing: 1, marginHorizontal: 32, textAlign: 'center' }}>
-                    Si nei til kassalappen lorem ipsum dolor sit amet dolor amet!
+                    Logg inn
                 </Text>
             </View>
 
@@ -50,14 +50,16 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={text => setPassword(text)}
             ></TextInput>
 
-            {/* Glemt passord? */}
+            {/* Forgot password? */}
             <View style={{alignItems: 'flex-end', marginBottom: 80}}>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('ResetPassword')}
+                >
                     <Text style={styles.fatBody}>Glemt passord?</Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
             </View>
 
-            {/* Logg inn */}
+            {/* Log inn */}
             <TouchableOpacity
                 onPress={() => navigation.navigate('HomeScreen')}
                 style={{
@@ -73,7 +75,7 @@ export default function LoginScreen({ navigation }) {
                 <Text style={{ fontSize: 14, color: "#fff", fontWeight: "500" }}>Logg inn</Text>
             </TouchableOpacity>
 
-            {/* Registrer deg */}
+            {/* Register */}
             <View style={{alignItems: 'center', marginBottom: 80}}>
                 <TouchableOpacity 
                 onPress={() => navigation.navigate('SignUp')}
