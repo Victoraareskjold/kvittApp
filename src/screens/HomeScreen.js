@@ -3,7 +3,11 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import KvitteringCard from "../components/KvitteringCard";
 
+import { auth } from "../../firebase";
+import { sendEmailVerification } from "@firebase/auth";
+
 const HomeScreen = ({navigation}) => {
+
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView />

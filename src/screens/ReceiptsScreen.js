@@ -1,13 +1,16 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal } from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
 import CategoriesFilter from "../components/CategoriesFilter";
 import KvitteringCard from "../components/KvitteringCard";
 import { useNavigation } from "@react-navigation/native";
+import AddReceiptModal from "./AddReceiptModal";
 
 const ReceiptsScreen = () => {
-  const { navigate } = useNavigation()
+
+  let [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView />
@@ -20,7 +23,7 @@ const ReceiptsScreen = () => {
           {/* Legg til btn */}
           <TouchableOpacity
             style={styles.leggTilBtnContainer}
-            onPress={() => navigate('AddReceipt')}
+            onPress={() => setModalVisible(true)}
           >
 
             <Text style={styles.leggTilBtn}>Legg til</Text>
@@ -42,8 +45,19 @@ const ReceiptsScreen = () => {
           <Text style={styles.subHeader}>I dag</Text>
 
           {/* Receipt component */}
-          <KvitteringCard />
+          {/* {<KvitteringCard />} */}
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <AddReceiptModal 
+            onClose={() => setModalVisible(false)}
+            addReceipt={(receipt) => console.log(receipt)}
+          />
+        </Modal>
       </ScrollView>
       </View>
   );

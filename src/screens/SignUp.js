@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 
 import { auth } from "../../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState('')
@@ -25,13 +25,14 @@ export default function LoginScreen({ navigation }) {
         if (password === confirmPassword) {
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                /* Signed in */
+                /* Signed in & email sent */
+                sendEmailVerification(auth.currentUser);
                 navigation.navigate('HomeScreen', {user: userCredential.user});
             })
             .catch((error) => {
                 setValidationMessage(error.message);
             });
-        }
+        } 
     }
 
     return (

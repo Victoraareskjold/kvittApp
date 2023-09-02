@@ -10,7 +10,7 @@ import LoginScreen from "../screens/LoginScreen";
 import ReceiptsScreen from "../screens/ReceiptsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
-import AddReceipt from "../screens/AddReceipt";
+import AddReceiptModal from "../screens/AddReceiptModal";
 import SignUp from '../screens/SignUp'
 import ResetPassword from "../screens/ResetPassword";
 
@@ -34,7 +34,7 @@ function KvitteringStackGroup() {
     <KvitteringStack.Navigator screenOptions={{ headerShown: false }}>
       <KvitteringStack.Screen name="AlleKvitteringer" component={ReceiptsScreen} />
       <KvitteringStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
-      <KvitteringStack.Screen name="AddReceipt" component={AddReceipt} />
+      <KvitteringStack.Screen name="AddReceiptModal" component={AddReceiptModal} />
     </KvitteringStack.Navigator>
   );
 }

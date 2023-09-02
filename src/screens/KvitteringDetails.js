@@ -20,10 +20,10 @@ const KvitteringDetails = ({ navigation, route }) => {
             {/* Header container */}
             <View style={styles.headerContainer}>
                 <Pressable onPress={() => navigation.goBack()}>
-                    <Image 
+                    {/* <Image 
                         source={require("../../assets/backVector.png")}
                         style={{ width: 32, height: 32 }}
-                    />
+                    /> */}
                 </Pressable>
                 
                 <Text style={styles.header}>{item.name}</Text>

@@ -3,9 +3,24 @@ import React from "react";
 import { useState } from "react";
 
 import { auth } from "../../firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
+
 
 export default function ResetPassword({ navigation }) {
-    const [email, setEmail] = useState('')
+
+    let [email, setEmail] = useState('');
+    let [errorMessage, setErrorMessage] = useState('');
+
+    let resetPassword = () => {
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            /* Password reset email sent! */
+            navigation.popToTop();
+        })
+        .catch((error) => {
+            setErrorMessage(error.message);
+        });
+    }
 
     return (
         <KeyboardAvoidingView 
@@ -40,9 +55,14 @@ export default function ResetPassword({ navigation }) {
                 onChangeText={text => setEmail(text)}
             ></TextInput>
 
+            {/* Error message */}
+            <View style={styles.errorMessageContainer}>
+                <Text style={styles.errorMessage}>{errorMessage}</Text>
+            </View>
+
             {/* Reset password */}
             <TouchableOpacity
-                onPress={() => navigation.navigate('HomeScreen')}
+                onPress={resetPassword}
                 style={{
                     backgroundColor: "#2984FF",
                     borderRadius: 50,
@@ -72,6 +92,13 @@ export default function ResetPassword({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+
+    /* Container */
+    errorMessageContainer: {
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
     fatBody: {
         fontSize: 14,
         color: '#272727',
@@ -87,5 +114,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#272727',
         opacity: 0.5,
+    },
+    errorMessage: {
+        color: 'red',
     },
 });
