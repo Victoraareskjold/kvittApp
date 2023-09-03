@@ -6,11 +6,12 @@ import { Modal } from 'react-native';
 export default function AddReceiptModal(props) {
 
     let [receipt, setReceipt] = useState('');
+    let [store, setStore] = useState('');
 
     return (
         <View style={{backgroundColor: '#FFF', flex: 1}}>
             <SafeAreaView />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <View>
 
                 {/* Header container */}
                 {/* <View style={styles.headerContainer}>
@@ -35,10 +36,23 @@ export default function AddReceiptModal(props) {
                         style={styles.receiptPlaceholder}
                     />
 
+                    {/* Store name */}
+                    {/* <TextInput
+                        value={store}
+                        onChangeText={setStore}
+
+                        placeholder='Butikk' 
+                        style={styles.receiptPlaceholder}
+                    /> */}
+
                     {/* Add receipt */}
                     <Button title='OK' onPress={() => {
                             props.addReceipt(receipt);
                             setReceipt('');
+
+                            /* props.addStore(store);
+                            setStore(''); */
+
                             props.onClose();
                         }}
                     >
@@ -56,7 +70,7 @@ export default function AddReceiptModal(props) {
 
                 </View>
 
-            </ScrollView>
+            </View>
       </View>
     );
 }

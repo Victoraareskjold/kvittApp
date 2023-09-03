@@ -3,12 +3,18 @@ import React from "react";
 import { useState } from "react";
 
 import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 export default function LoginScreen({ navigation }) {
 
     if (auth.currentUser) {
         navigation.navigate('HomeScreen');
+    }   else {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigation.navigate('HomeScreen');
+            } 
+        });
     }
 
     let [errorMessage, setErrorMessage] = useState('')

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, ActivityIndicator, FlatList, PanResponder } from "react-native";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
 import CategoriesFilter from "../components/CategoriesFilter";
@@ -7,13 +7,64 @@ import KvitteringCard from "../components/KvitteringCard";
 import { useNavigation } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
 
+import { auth, db } from "../../firebase";
+import { collection, addDoc, query, where, getDocs } from "@firebase/firestore";
+
 const ReceiptsScreen = () => {
 
   let [modalVisible, setModalVisible] = useState(false);
+  let [isLoading, setIsLoading] = useState(true);
+  let [isRefreshing, setIsRefreshing] = useState(false);
+  let [receipts, setReceipts] = useState([]);
+
+  let loadReceiptList = async () => {
+    const q = query(collection(db, 'receipts'), where ('userId', '==', auth.currentUser.uid));
+
+    const querySnapshot = await getDocs(q);
+    let receipts = [];
+    querySnapshot.forEach((doc) => {
+      let receipt = doc.data();
+      receipt.id = doc.id;
+      receipts.push(receipt);
+    });
+
+    setReceipts(receipts);
+    setIsLoading(false);
+    setIsRefreshing(false);
+  };
+
+  if (isLoading) {
+    loadReceiptList();
+  }  
+
+  let renderReceiptItem = ({item}) => {
+    return (
+      <View>
+        <Text>{item.text}</Text>
+      </View>
+    );
+  }
+
+  let addReceipt = async (receipt) => {
+    let receiptSave = {
+      text: receipt,
+      completed: false,
+      userId: auth.currentUser.uid
+    }
+    const docRef = await addDoc(collection(db, 'receipts'), receiptSave);
+
+    receiptSave.id = docRef.id;
+
+    let updatedReceipts = [...receipts];
+    updatedReceipts.push(receiptSave);
+
+    setReceipts(updatedReceipts);
+  };
 
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView />
+
       <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* Header container */}
@@ -44,6 +95,23 @@ const ReceiptsScreen = () => {
         <View style={styles.kvitteringContainer}>
           <Text style={styles.subHeader}>I dag</Text>
 
+            {isLoading ? (
+            <ActivityIndicator size='small' />
+            ) : (
+              <FlatList
+                style={{ height: 500, backgroundColor: 'red' }}
+
+                data={receipts}
+                refreshing={isRefreshing}
+                onRefresh={() => {
+                  loadReceiptList();
+                  setIsRefreshing(true);
+                }}
+                renderItem={renderReceiptItem}
+                keyExtractor={item => item.id}
+              />
+            )}
+
           {/* Receipt component */}
           {/* {<KvitteringCard />} */}
         </View>
@@ -55,7 +123,8 @@ const ReceiptsScreen = () => {
         >
           <AddReceiptModal 
             onClose={() => setModalVisible(false)}
-            addReceipt={(receipt) => console.log(receipt)}
+            addReceipt={addReceipt}
+/*             addStore={(store) => console.log(store)} */
           />
         </Modal>
       </ScrollView>
