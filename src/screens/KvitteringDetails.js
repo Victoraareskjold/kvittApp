@@ -6,7 +6,6 @@ const KvitteringDetails = ({ navigation, route }) => {
 
   const { item }= route.params;
   
-  console.log(item);
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: '#FFF'}}/>
@@ -20,10 +19,10 @@ const KvitteringDetails = ({ navigation, route }) => {
             {/* Header container */}
             <View style={styles.headerContainer}>
                 <Pressable onPress={() => navigation.goBack()}>
-                    {/* <Image 
+                    <Image 
                         source={require("../../assets/backVector.png")}
                         style={{ width: 32, height: 32 }}
-                    /> */}
+                    />
                 </Pressable>
                 
                 <Text style={styles.header}>{item.name}</Text>
@@ -47,8 +46,8 @@ const KvitteringDetails = ({ navigation, route }) => {
 
                 {/* Overskrift & dato */}
                 <View style={{ marginBottom: 32 }}>
-                    <Text style={styles.subHeader}>{item.name}</Text>
-                    <Text style={styles.body2}>{item.dato}</Text>
+                    <Text style={styles.subHeader}>{item.Store}</Text>
+                    <Text style={styles.body2}>{item.Category}</Text>
                 </View>
 
                 {/* Divider */}
@@ -58,7 +57,7 @@ const KvitteringDetails = ({ navigation, route }) => {
                 />
 
                 {/* Varer */}
-                <View style={styles.alleVarerContainer}>
+                {/* <View style={styles.alleVarerContainer}>
                     <View style={styles.varerContainer}>
                         <Text style={styles.body2}>Vare</Text>
                         <Text style={styles.body2}>{item.pris}</Text>
@@ -80,21 +79,21 @@ const KvitteringDetails = ({ navigation, route }) => {
                         <Text style={styles.body2}>{item.pris}</Text>
                     </View>
                     
-                </View>
+                </View> */}
 
                 {/* Total pris */}
-                <View style={styles.totPrisContainer}>
+                {/* <View style={styles.totPrisContainer}>
                     <View style={styles.varerContainer}>
                         <Text style={styles.body1}>Vare</Text>
                         <Text style={styles.body1}>{item.pris}</Text>
                     </View>
-                </View>
+                </View> */}
 
                 {/* Barcode */}
-                <Image 
+                {/* <Image 
                     source={require("../../assets/barcode.png")}
                     style={{ width: '100%', height: 62 }}
-                />
+                /> */}
 
             </View>
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, ActivityIndicator, FlatList, PanResponder } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Modal, ActivityIndicator, FlatList, PanResponder, Pressable, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
@@ -11,6 +11,8 @@ import { auth, db } from "../../firebase";
 import { collection, addDoc, query, where, getDocs } from "@firebase/firestore";
 
 const ReceiptsScreen = () => {
+
+  const { navigate } = useNavigation();
 
   let [modalVisible, setModalVisible] = useState(false);
   let [isLoading, setIsLoading] = useState(true);
@@ -40,15 +42,52 @@ const ReceiptsScreen = () => {
   let renderReceiptItem = ({item}) => {
     return (
       <View>
-        <Text>{item.text}</Text>
+        <Pressable 
+          onPress={() => navigate('KvitteringDetails', {item: item})}
+          style={{
+              backgroundColor: '#FFF',
+              borderRadius: 15,
+              marginBottom: 12,
+              alignItems: 'center',
+              paddingHorizontal: 12,
+              paddingVertical: 12,
+
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0, 
+              shadowRadius: 0, 
+            }}
+        >
+
+          {/* Kvittering innhold */}
+          <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            
+                            {/* Ikon, kategori og dato */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', height: 36 }}>
+                                <Image 
+                                    source={item.image}
+                                    style={{ width: 24, height: 24, marginRight: 12 }}
+                                />
+                                <View>
+                                    <Text style={{ fontSize: 16 }}>{item.Store}</Text>
+                                    <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
+                                </View>
+                            </View>
+
+                            {/* Pris */}
+                            <View>
+                                <Text>{item.pris}</Text>
+                            </View>
+          </View>
+        </Pressable>
       </View>
     );
   }
 
-  let addReceipt = async (receipt) => {
+  let addReceipt = async ({ store, receipt }) => {
     let receiptSave = {
-      text: receipt,
-      completed: false,
+      Store: store,
+      Category: receipt,
       userId: auth.currentUser.uid
     }
     const docRef = await addDoc(collection(db, 'receipts'), receiptSave);
@@ -99,7 +138,7 @@ const ReceiptsScreen = () => {
             <ActivityIndicator size='small' />
             ) : (
               <FlatList
-                style={{ height: 500, backgroundColor: 'red' }}
+                style={{ padding: 12, backgroundColor: '#FBFBFB', borderRadius: 15 }}
 
                 data={receipts}
                 refreshing={isRefreshing}
@@ -107,8 +146,8 @@ const ReceiptsScreen = () => {
                   loadReceiptList();
                   setIsRefreshing(true);
                 }}
-                renderItem={renderReceiptItem}
                 keyExtractor={item => item.id}
+                renderItem={renderReceiptItem}
               />
             )}
 
@@ -124,7 +163,6 @@ const ReceiptsScreen = () => {
           <AddReceiptModal 
             onClose={() => setModalVisible(false)}
             addReceipt={addReceipt}
-/*             addStore={(store) => console.log(store)} */
           />
         </Modal>
       </ScrollView>
@@ -181,6 +219,7 @@ const styles = StyleSheet.create ({
   },
   subHeader: {
     fontSize: 24,
+    marginBottom: 12,
   },
   linkBtn: {
     fontSize: 16,
