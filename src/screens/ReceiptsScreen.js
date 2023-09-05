@@ -75,8 +75,11 @@ const ReceiptsScreen = () => {
                             </View>
 
                             {/* Pris */}
-                            <View>
-                                <Text>{item.pris}</Text>
+                            <View style={styles.priceContainer}>
+                              <View style={{flexDirection: 'row'}}>
+                                  <Text style={{ color: '#2984FF', fontWeight: '600'}}>{item.Price}</Text>
+                                  <Text style={{ color: '#2984FF', fontWeight: '600'}}> ,-</Text>
+                              </View>
                             </View>
           </View>
         </Pressable>
@@ -84,10 +87,11 @@ const ReceiptsScreen = () => {
     );
   }
 
-  let addReceipt = async ({ store, receipt }) => {
+  let addReceipt = async ({ store, receipt, price }) => {
     let receiptSave = {
       Store: store,
       Category: receipt,
+      Price: price,
       userId: auth.currentUser.uid
     }
     const docRef = await addDoc(collection(db, 'receipts'), receiptSave);
@@ -138,8 +142,7 @@ const ReceiptsScreen = () => {
             <ActivityIndicator size='small' />
             ) : (
               <FlatList
-                style={{ padding: 12, backgroundColor: '#FBFBFB', borderRadius: 15 }}
-
+                /* style={{ padding: 12, backgroundColor: '#FBFBFB', borderRadius: 15 }} */
                 data={receipts}
                 refreshing={isRefreshing}
                 onRefresh={() => {
@@ -148,11 +151,11 @@ const ReceiptsScreen = () => {
                 }}
                 keyExtractor={item => item.id}
                 renderItem={renderReceiptItem}
+                nestedScrollEnabled={true}
               />
             )}
 
           {/* Receipt component */}
-          {/* {<KvitteringCard />} */}
         </View>
         <Modal
           animationType="slide"
@@ -196,6 +199,12 @@ const styles = StyleSheet.create ({
   },
   filterContainer: {
     paddingLeft: 24,
+  },
+  priceContainer: {
+    backgroundColor: '#F4F9FF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 3,
   },
 
   /* Buttons */

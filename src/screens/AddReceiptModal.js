@@ -7,6 +7,7 @@ export default function AddReceiptModal(props) {
 
     let [receipt, setReceipt] = useState('');
     let [store, setStore] = useState('');
+    let [price, setPrice] = useState('');
 
     return (
         <View style={{backgroundColor: '#FFF', flex: 1}}>
@@ -51,14 +52,25 @@ export default function AddReceiptModal(props) {
                         style={styles.receiptPlaceholder}
                     />
 
+                    {/* category name */}
+                    <TextInput
+                        value={price}
+                        onChangeText={setPrice}
+
+                        placeholder='Pris' 
+                        style={styles.receiptPlaceholder}
+                    />
+
                     {/* Add receipt btn */}
                     <TouchableOpacity 
                         style={styles.addReceiptBtn}
                         title='Legg til' 
                         onPress={() => {
-                            props.addReceipt({ store, receipt });
-                            setReceipt('');
+                            props.addReceipt({ store, receipt, price });
                             setStore('');
+                            setReceipt('');
+                            setPrice('');
+                            
 
                             props.onClose();
                         }}

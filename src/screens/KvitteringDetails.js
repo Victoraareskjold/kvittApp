@@ -10,7 +10,7 @@ const KvitteringDetails = ({ navigation, route }) => {
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView style={{ backgroundColor: '#FFF'}}/>
 
-      <ScrollView 
+      <View 
       showsVerticalScrollIndicator={false}
       >
 
@@ -61,32 +61,6 @@ const KvitteringDetails = ({ navigation, route }) => {
                     <View style={styles.varerContainer}>
                         <Text style={styles.body2}>Vare</Text>
                         <Text style={styles.body2}>{item.pris}</Text>
-                    </View>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body2}>Vare</Text>
-                        <Text style={styles.body2}>{item.pris}</Text>
-                    </View>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body2}>Vare</Text>
-                        <Text style={styles.body2}>{item.pris}</Text>
-                    </View>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body2}>Vare</Text>
-                        <Text style={styles.body2}>{item.pris}</Text>
-                    </View>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body2}>Vare</Text>
-                        <Text style={styles.body2}>{item.pris}</Text>
-                    </View>
-                    
-                </View> */}
-
-                {/* Total pris */}
-                {/* <View style={styles.totPrisContainer}>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body1}>Vare</Text>
-                        <Text style={styles.body1}>{item.pris}</Text>
-                    </View>
                 </View> */}
 
                 {/* Barcode */}
@@ -99,7 +73,7 @@ const KvitteringDetails = ({ navigation, route }) => {
 
         </View>
 
-      </ScrollView>
+      </View>
 
     </View>
   )
