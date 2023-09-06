@@ -145,10 +145,11 @@ export default function AddReceiptModal(props) {
                         style={styles.addReceiptBtn}
                         title='Legg til' 
                         onPress={() => {
-                            props.addReceipt({ store, receipt, price, date });
+                            props.addReceipt({ store, receipt, price, dateOfReceipt });
                             setStore('');
                             setReceipt('');
                             setPrice('');
+                            setDateOfReceipt('');
 
                             props.onClose();
                         }}

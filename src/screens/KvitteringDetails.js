@@ -48,6 +48,7 @@ const KvitteringDetails = ({ navigation, route }) => {
                 <View style={{ marginBottom: 32 }}>
                     <Text style={styles.subHeader}>{item.Store}</Text>
                     <Text style={styles.body2}>{item.Category}</Text>
+                    <Text style={styles.body2}>{item.Date}</Text>
                 </View>
 
                 {/* Divider */}

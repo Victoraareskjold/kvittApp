@@ -87,12 +87,12 @@ const ReceiptsScreen = () => {
     );
   }
 
-  let addReceipt = async ({ store, receipt, price, date }) => {
+  let addReceipt = async ({ store, receipt, price, dateOfReceipt }) => {
     let receiptSave = {
       Store: store,
       Category: receipt,
       Price: price,
-      Date: date,
+      Date: dateOfReceipt,
       userId: auth.currentUser.uid
     }
     const docRef = await addDoc(collection(db, 'receipts'), receiptSave);
