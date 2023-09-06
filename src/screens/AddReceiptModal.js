@@ -1,13 +1,53 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Pressable, Image, TextInput, Touchable, Button, SafeAreaViewBase } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, TouchableWithoutFeedback, Button } from 'react-native'
 import { SafeAreaView } from 'react-native';
 import React, { useState } from 'react'
-import { Modal } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 export default function AddReceiptModal(props) {
 
-    let [receipt, setReceipt] = useState('');
-    let [store, setStore] = useState('');
-    let [price, setPrice] = useState('');
+    const [receipt, setReceipt] = useState('');
+    const [store, setStore] = useState('');
+    const [price, setPrice] = useState('');
+    const [dateOfReceipt, setDateOfReceipt] = useState('');
+
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+    const toggleDatePicker = () => {
+        setShowPicker(!showPicker);
+    };
+    const onChange = ({ type }, selectedDate) => {
+        if (type == 'set') {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+
+            if (Platform.OS === 'android') {
+                toggleDatePicker();
+                setDateOfReceipt(formatDate(currentDate));
+                setShowDateInput(true);
+            }
+        } else {
+            toggleDatePicker();
+        }
+    };
+
+    const confirmIOSDate = () => {
+        const formattedDate = formatDate(date);
+        setDateOfReceipt(formattedDate);
+        toggleDatePicker();
+    };
+
+    const hideDatePicker = () => {
+        setShowPicker(false);
+    };
+
+    const formatDate = (rawDate) => {
+        let date = new Date(rawDate);
+        let year = date.getFullYear();
+        let month = date.toLocaleString('default', { month: 'long' }); // Måneden som bokstaver
+        let day = date.getDate();
+    
+        return `${day} ${month} ${year}`; // Formatert streng
+    };
 
     return (
         <View style={{backgroundColor: '#FFF', flex: 1}}>
@@ -61,16 +101,54 @@ export default function AddReceiptModal(props) {
                         style={styles.receiptPlaceholder}
                     />
 
+                    {/* Datepicker */}
+                    <View>
+                        {showPicker && (
+                            <DateTimePicker 
+                                mode='date'
+                                display='spinner'
+                                value={date}
+                                onChange={onChange}
+                                style={styles.datePicker}
+                            />
+                        )}
+
+                            {/* IOS only */}
+                            {showPicker && Platform.OS === 'ios' && (
+                                <View
+                                style={{ flexDirection: 'row', justifyContent: 'space-around'}}
+                                >
+                                    <Button title='Ok' onPress={confirmIOSDate}></Button>
+                                </View>
+                            )}
+
+                        {!showPicker && (
+                            <Pressable
+                                onPress={toggleDatePicker}
+                            >
+                            <TextInput 
+                                value={dateOfReceipt}
+                                onChangeText={setDateOfReceipt}
+
+                                placeholder='Dato' 
+                                style={styles.receiptPlaceholder}
+
+                                editable={false}
+                                onPressIn={toggleDatePicker}
+                            />
+                        </Pressable>
+                        )}
+                    </View>
+
                     {/* Add receipt btn */}
                     <TouchableOpacity 
                         style={styles.addReceiptBtn}
                         title='Legg til' 
                         onPress={() => {
-                            props.addReceipt({ store, receipt, price });
+                            props.addReceipt({ store, receipt, price, date });
                             setStore('');
                             setReceipt('');
                             setPrice('');
-                            
 
                             props.onClose();
                         }}
@@ -139,5 +217,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         marginBottom: 12,
         borderRadius: 15,
+    },
+
+    /* Date Picker */
+    datePicker: {
+        height: 160,
+        marginTop: -10,
     },
 })

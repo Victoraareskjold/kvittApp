@@ -70,7 +70,7 @@ const ReceiptsScreen = () => {
                                 />
                                 <View>
                                     <Text style={{ fontSize: 16 }}>{item.Store}</Text>
-                                    <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
+                                    <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
                                 </View>
                             </View>
 
@@ -87,11 +87,12 @@ const ReceiptsScreen = () => {
     );
   }
 
-  let addReceipt = async ({ store, receipt, price }) => {
+  let addReceipt = async ({ store, receipt, price, date }) => {
     let receiptSave = {
       Store: store,
       Category: receipt,
       Price: price,
+      Date: date,
       userId: auth.currentUser.uid
     }
     const docRef = await addDoc(collection(db, 'receipts'), receiptSave);
