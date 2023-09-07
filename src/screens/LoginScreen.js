@@ -5,6 +5,8 @@ import { useState } from "react";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
+console.disableYellowBow= true;
+
 export default function LoginScreen({ navigation }) {
 
     if (auth.currentUser) {
