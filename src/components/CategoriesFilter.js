@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 
 const CategoriesFilter = ({ onSelectCategory }) => {
-    const categories = ['Alle', 'Mat', 'Trening', 'Klær', 'Underholdning', 'Elektronikk', 'Helse', 'Reise'];
+    const categories = ['Alle', 'Mat', 'Elektronikk', 'Klær', 'Helse', 'Trening', 'Underholdning', 'Reise'];
     const [activeCategory, setActiveCategory] = useState('');
 
     const handleCategoryPress = (category) => {
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         paddingVertical: 6,
         paddingHorizontal: 12,
-        marginTop: 20,
-        marginBottom: 48,
+        marginTop: 0,
+        marginBottom: 24,
     },
     activeCategory: {
         backgroundColor: "#2984FF",

@@ -33,7 +33,7 @@ const ReceiptsScreen = () => {
   let [isLoading, setIsLoading] = useState(true);
   let [isRefreshing, setIsRefreshing] = useState(false);
   let [receipts, setReceipts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("Alle"); 
+  const [selectedCategory, setSelectedCategory] = useState(""); 
 
   useEffect(() => {
     loadReceiptList();
@@ -120,10 +120,10 @@ const ReceiptsScreen = () => {
     );
   };
 
-  let addReceipt = async ({ store, receipt, price, dateOfReceipt }) => {
+  let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt }) => {
     let receiptSave = {
       Store: store,
-      Category: receipt,
+      Category: selectedCategory,
       Price: price,
       Date: dateOfReceipt,
       userId: auth.currentUser.uid,
