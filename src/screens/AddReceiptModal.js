@@ -57,20 +57,17 @@ export default function AddReceiptModal(props) {
         <View style={{ backgroundColor: '#FFF', flex: 1 }}>
             <SafeAreaView />
             <View>
-
-                <View style={styles.headerContainer}>
-
-                    <Pressable onPress={() => { props.onClose() }}>
+                    <Pressable 
+                        style={styles.headerContainer}
+                        onPress={() => { props.onClose() }}>
                         <Image
                             source={require("../../assets/backVector.png")}
                             style={{ width: 32, height: 32 }}
                         />
+                        <Text style={styles.subHeader}>
+                            Tilbake
+                        </Text>
                     </Pressable>
-
-                    <Text style={styles.subHeader}>
-                        Legg til kvittering
-                    </Text>
-                </View>
 
                 <View style={styles.addReceiptContainer}>
 
@@ -166,6 +163,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 24,
         marginBottom: 48,
+        marginTop: 24,
     },
     addReceiptContainer: {
         paddingHorizontal: 24,

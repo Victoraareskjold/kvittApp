@@ -191,8 +191,9 @@ const ReceiptsScreen = () => {
       </View>
       <Modal
         animationType="slide"
-        transparent={true}
+        /* transparent={true} */
         visible={modalVisible}
+        presentationStyle='formSheet'
         onRequestClose={() => setModalVisible(false)}
       >
         <AddReceiptModal onClose={() => setModalVisible(false)} addReceipt={addReceipt} />
