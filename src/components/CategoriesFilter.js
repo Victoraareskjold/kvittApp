@@ -1,36 +1,65 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import React from "react";
-import { categories, colors } from "../Categories";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 
-const CategoriesFilter = () => {
+const CategoriesFilter = ({ onSelectCategory }) => {
+    const categories = ['Alle', 'Mat', 'Trening', 'Klær', 'Underholdning', 'Elektronikk', 'Helse', 'Reise'];
+    const [activeCategory, setActiveCategory] = useState('');
+
+    const handleCategoryPress = (category) => {
+        setActiveCategory(category);
+        onSelectCategory(category);
+    };
+
     return (
         <View style={styles.container}>
-           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {categories.map((category, index) => {
-                    return (
-                        <View 
-                            key={index} // Add a unique key prop
-                            style={{ 
-                                backgroundColor: index === 0 ? colors.COLOR_PRIMARY : colors.COLOR_GREY, 
-                                marginRight: 8, 
-                                borderRadius: 50, 
-                                paddingVertical: 6, 
-                                paddingHorizontal: 12,
-                                marginTop: 20,
-                                marginBottom: 48,
-                            }}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {categories.map((item, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={[
+                            styles.filterContainer,
+                            item === activeCategory && styles.activeCategory,
+                        ]}
+                        onPress={() => handleCategoryPress(item)}
+                    >
+                        <Text
+                            style={[
+                                styles.filterText,
+                                item === activeCategory && styles.activeText, // Legg til styling for aktiv tekst
+                            ]}
                         >
-                            <Text style={{ color: index === 0 && colors.COLOR_LIGHT_ALT, fontSize: 14 }}>{category.category}</Text>
-                        </View>
-                    );
-                })}
-           </ScrollView>
+                            {item}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
         </View>
     );
 };
 
 export default CategoriesFilter;
 
-const styles = StyleSheet.create ({
-    
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    filterContainer: {
+        backgroundColor: "#FBFBFB",
+        marginRight: 8,
+        borderRadius: 50,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginTop: 20,
+        marginBottom: 48,
+    },
+    activeCategory: {
+        backgroundColor: "#2984FF",
+    },
+    filterText: {
+        color: "#272727", // Standard tekstfarge
+    },
+    activeText: {
+        color: "#FFF", // Tekstfarge for aktiv kategori
+    },
 });
