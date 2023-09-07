@@ -21,6 +21,7 @@ function HomeStackGroup() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
+      <HomeStack.Screen name="ReceiptsScreen" component={ReceiptsScreen} />
       <HomeStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
     </HomeStack.Navigator>
   );
@@ -32,7 +33,7 @@ const KvitteringStack = createNativeStackNavigator();
 function KvitteringStackGroup() {
   return (
     <KvitteringStack.Navigator screenOptions={{ headerShown: false }}>
-      <KvitteringStack.Screen name="AlleKvitteringer" component={ReceiptsScreen} />
+      <KvitteringStack.Screen name="ReceiptsScreen" component={ReceiptsScreen} />
       <KvitteringStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
       <KvitteringStack.Screen name="AddReceiptModal" component={AddReceiptModal} />
     </KvitteringStack.Navigator>

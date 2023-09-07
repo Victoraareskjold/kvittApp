@@ -26,7 +26,7 @@ const HomeScreen = ({navigation}) => {
 
                 {/* Se alle btn */}
                 <TouchableOpacity 
-                onPress={() => navigation.navigate('AlleKvitteringerScreen')}
+                  onPress={() => navigation.navigate('ReceiptsScreen')}
                 >
                     <Text style={styles.linkBtn}>Se alle</Text>
                 </TouchableOpacity>

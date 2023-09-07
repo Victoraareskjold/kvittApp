@@ -109,8 +109,6 @@ const ReceiptsScreen = () => {
     <View style={{backgroundColor: '#FFF', flex: 1}}>
     <SafeAreaView />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-
         {/* Header container */}
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Alle kvitteringer</Text>
@@ -169,7 +167,6 @@ const ReceiptsScreen = () => {
             addReceipt={addReceipt}
           />
         </Modal>
-      </ScrollView>
       </View>
   );
 };
