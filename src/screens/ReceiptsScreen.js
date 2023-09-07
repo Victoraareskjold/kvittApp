@@ -33,7 +33,7 @@ const ReceiptsScreen = () => {
   let [isLoading, setIsLoading] = useState(true);
   let [isRefreshing, setIsRefreshing] = useState(false);
   let [receipts, setReceipts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const [selectedCategory, setSelectedCategory] = useState("Alle"); 
 
   useEffect(() => {
     loadReceiptList();
@@ -171,7 +171,7 @@ const ReceiptsScreen = () => {
         <Text style={styles.subHeader}>I dag</Text>
 
         {isLoading ? (
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size='small' />
         ) : (
           <FlatList
             /* style={{ padding: 12, backgroundColor: '#FBFBFB', borderRadius: 15 }} */

@@ -10,11 +10,11 @@ export default function AddReceiptModal(props) {
     const [store, setStore] = useState('');
     const [price, setPrice] = useState('');
     const [dateOfReceipt, setDateOfReceipt] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('Alle');
-    const [errorMessage, setErrorMessage] = useState(""); // Legg til feilmeldingsvariabel
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
@@ -114,7 +114,7 @@ export default function AddReceiptModal(props) {
                                 <TextInput
                                     value={dateOfReceipt}
                                     placeholder='Dato'
-                                    style={styles.receiptPlaceholder}
+                                    style={styles.DatePlaceholder}
                                     editable={false}
                                     onPressIn={toggleDatePicker}
                                 />
@@ -124,7 +124,7 @@ export default function AddReceiptModal(props) {
 
                     <CategoriesFilter
                         onSelectCategory={setSelectedCategory}
-                        value={selectedCategory}
+                        excludeAll={true} // Ekskluder "Alle" kategorien
                     />
 
                     <TouchableOpacity
@@ -132,14 +132,14 @@ export default function AddReceiptModal(props) {
                         title='Legg til'
                         onPress={() => {
                             if (!store || !selectedCategory || !price || !dateOfReceipt) {
-                                setErrorMessage("Husk å fylle ut alle felter");
+                                setErrorMessage("Fyll ut alle feltene for å legge til kvittering.");
                             } else {
                                 props.addReceipt({ store, selectedCategory, price, dateOfReceipt });
                                 setStore('');
                                 setPrice('');
                                 setDateOfReceipt('');
-                                setSelectedCategory('Alle');
-                                setErrorMessage(""); // Fjern feilmeldingen hvis alt er fylt ut riktig
+                                setSelectedCategory('');
+                                setErrorMessage("");
                                 props.onClose();
                             }
                         }}
@@ -150,7 +150,7 @@ export default function AddReceiptModal(props) {
                     </TouchableOpacity>
 
                     {/* Vis feilmelding hvis et felt mangler */}
-                    <View style={{ width: '100%', alignItems: 'center', marginTop: 6}}>
+                    <View style={{ width: '100%', alignItems: 'center', marginTop: 8}}>
                         <Text style={{ color: 'red' }}>{errorMessage}</Text>
                     </View>
                 </View>
@@ -187,6 +187,13 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginBottom: 12,
+        borderRadius: 15,
+    },
+    DatePlaceholder: {
+        backgroundColor: '#F4F9FF',
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        marginBottom: 0,
         borderRadius: 15,
     },
     datePicker: {
