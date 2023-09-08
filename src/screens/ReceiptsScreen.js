@@ -49,7 +49,7 @@ const ReceiptsScreen = () => {
       q = query(
         collection(db, "receipts"),
         where("userId", "==", auth.currentUser.uid),
-        where("Category", "==", selectedCategory) 
+        where("Category", "==", selectedCategory)
       );
     }
 
@@ -98,10 +98,10 @@ const groupedReceipts = groupReceiptsByDate(receipts);
           style={{
             backgroundColor: "#FFF",
             borderRadius: 15,
-            marginBottom: 12,
+            marginBottom: 0,
             alignItems: "center",
-            paddingHorizontal: 12,
-            paddingVertical: 12,
+            paddingHorizontal: 24,
+            paddingVertical: 20,
 
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 0 },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   kvitteringContainer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 0,
     flex: 1,
   },
   searchContainer: {
@@ -291,9 +291,11 @@ const styles = StyleSheet.create({
     color: "#2984FF",
   },
   dateHeader: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#FBFBFB',
     fontSize: 20,
-    marginBottom: 12,
+    marginBottom: 0,
+    paddingVertical: 2,
+    paddingHorizontal: 24,
   },
 });
 

@@ -48,7 +48,7 @@ export default function ResetPassword({ navigation }) {
             {/* Email */}
             <Text style={styles.body}>Email</Text>
                 <TextInput 
-                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
+                style={{width: '100%', backgroundColor: '#FBFBFB', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
                 placeholder='Email'
                 
                 value={email}
