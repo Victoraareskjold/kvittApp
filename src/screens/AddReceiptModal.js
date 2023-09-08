@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, Button } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, Button, KeyboardAvoidingView, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native';
 import React, { useState } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -54,21 +54,37 @@ export default function AddReceiptModal(props) {
     };
 
     return (
-        <View style={{ backgroundColor: '#FFF', flex: 1 }}>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}
+        >
+            <ScrollView showsVerticalScrollIndicator={false} >
             <SafeAreaView />
             <View>
                     <Pressable 
                         style={styles.headerContainer}
                         onPress={() => { props.onClose() }}>
                         <Image
-                            source={require("../../assets/backVector.png")}
-                            style={{ width: 32, height: 32 }}
+                            source={require("../../assets/closeIcon.png")}
+                            style={{ width: 20, height: 20 }}
                         />
-                        <Text style={styles.subHeader}>
-                            Tilbake
-                        </Text>
                     </Pressable>
 
+                {/* Hero image */}
+                <View style={{ alignItems: 'center' }}>
+                    <Image 
+                        source={require('../../assets/qrcode.png')}
+                        style={{ width: 120, height: 120 }}
+                    />
+                </View>
+
+                {/* Hero text */}
+                <View style={styles.heroTextContainer}>
+                    <Text style={styles.header}>Legg til kvittering</Text>
+                    <Text style={{ color: "#272727", opacity: 0.76, fontSize: 14, fontWeight: "500"}}>Her kan du legge til kvittering manuelt</Text>
+                </View>
+
+                {/* Input fields */}
                 <View style={styles.addReceiptContainer}>
 
                     <TextInput
@@ -79,6 +95,7 @@ export default function AddReceiptModal(props) {
                     />
 
                     <TextInput
+                        inputMode='numeric'
                         value={price}
                         onChangeText={setPrice}
                         placeholder='Pris'
@@ -153,42 +170,63 @@ export default function AddReceiptModal(props) {
                 </View>
 
             </View>
-        </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     headerContainer: {
-        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'flex-end',
         flexDirection: 'row',
         paddingHorizontal: 24,
-        marginBottom: 48,
+        marginBottom: 24,
         marginTop: 24,
     },
     addReceiptContainer: {
         paddingHorizontal: 24,
     },
+    heroTextContainer: {
+        paddingHorizontal: 24,
+        marginBottom: 24,
+        marginTop: 12,
+    },
+    header: {
+        fontSize: 28,
+        fontWeight: "bold",
+        marginBottom: 6,
+        marginTop: 24,
+        color: "#272727",
+      },
     subHeader: {
         fontSize: 24,
+    },
+    body1: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    body2: {
+        fontSize: 14,
     },
     addReceiptBtn: {
         backgroundColor: '#2984FF',
         paddingVertical: 12,
         paddingHorizontal: 16,
-        marginTop: 12,
-        borderRadius: 50,
+        marginTop: 48,
+        borderRadius: 10,
         height: 54,
         justifyContent: 'center',
     },
     receiptPlaceholder: {
-        backgroundColor: '#F4F9FF',
+        backgroundColor: '#FBFBFB',
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginBottom: 12,
         borderRadius: 15,
     },
     DatePlaceholder: {
-        backgroundColor: '#F4F9FF',
+        backgroundColor: '#FBFBFB',
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginBottom: 0,

@@ -10,6 +10,7 @@ import {
   FlatList,
   Pressable,
   Image,
+  KeyboardAvoidingView
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";

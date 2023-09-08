@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center', paddingHorizontal: 24 }}
         >
 
@@ -75,7 +75,7 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.body}>Passord</Text>
             <TextInput 
                 secureTextEntry={true}
-                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 24}}
+                style={{width: '100%', backgroundColor: '#F4F9FF', marginTop: 4, paddingVertical: 16, paddingHorizontal: 12, borderRadius: 15, marginBottom: 12}}
                 placeholder='Passord'
 
                 value={password}
