@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 
-const CategoriesFilter = ({ onSelectCategory, excludeAll }) => { 
+const CategoriesFilter = ({ onSelectCategory, excludeAll = true }) => { 
     const categories = ['Mat', 'Klær', 'Trening', 'Elektronikk', 'Undeholdning', 'Helse', 'Reise'];
 
     if (!excludeAll) {
         categories.unshift('Alle');
     }
 
-    const [activeCategory, setActiveCategory] = useState('');
+    const [activeCategory, setActiveCategory] = useState(excludeAll ? '' : 'Alle');;
 
     const handleCategoryPress = (category) => {
         setActiveCategory(category);

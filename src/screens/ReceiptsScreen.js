@@ -37,6 +37,7 @@ const ReceiptsScreen = () => {
   let [receipts, setReceipts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Alle"); 
 
+
   useEffect(() => {
     loadReceiptList();
   }, [selectedCategory]); 
@@ -188,7 +189,7 @@ const groupedReceipts = groupReceiptsByDate(receipts);
 
       {/* Categories filter */}
       <View style={styles.filterContainer}>
-        <CategoriesFilter onSelectCategory={setSelectedCategory} />{""}
+        <CategoriesFilter onSelectCategory={setSelectedCategory}  excludeAll={false}/>{""}
         {/* Oppdater den valgte kategorien */}
       </View>
 
