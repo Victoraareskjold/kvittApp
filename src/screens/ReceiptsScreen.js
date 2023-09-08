@@ -10,7 +10,8 @@ import {
   FlatList,
   Pressable,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  SectionList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
@@ -60,10 +61,34 @@ const ReceiptsScreen = () => {
       receipts.push(receipt);
     });
 
+  // Sorter kvitteringene etter dato-feltet som strenger
+  receipts.sort((a, b) => {
+    return b.Date.localeCompare(a.Date); // Dette vil sortere i synkende rekkefølge (nyeste dato først)
+  });
+
     setReceipts(receipts);
     setIsLoading(false);
     setIsRefreshing(false);
   };
+
+  // Opprett en funksjon for å gruppere kvitteringer etter dato
+const groupReceiptsByDate = (receipts) => {
+  const groupedReceipts = {};
+  receipts.forEach((receipt) => {
+    const date = receipt.Date; // Anta at Date-feltet er en strengrepresentasjon av datoen
+
+    if (!groupedReceipts[date]) {
+      groupedReceipts[date] = [];
+    }
+
+    groupedReceipts[date].push(receipt);
+  });
+
+  return groupedReceipts;
+};
+
+// Bruk funksjonen for å gruppere kvitteringer etter dato
+const groupedReceipts = groupReceiptsByDate(receipts);
 
   let renderReceiptItem = ({ item }) => {
     return (
@@ -103,8 +128,8 @@ const ReceiptsScreen = () => {
             >
               <Image source={item.image} style={{ width: 24, height: 24, marginRight: 12 }} />
               <View>
-                <Text style={{ fontSize: 16 }}>{item.Store}</Text>
-                <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
+                <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>{item.Store}</Text>
+                <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
               </View>
             </View>
 
@@ -169,27 +194,29 @@ const ReceiptsScreen = () => {
 
       {/* Receipts */}
       <View style={styles.kvitteringContainer}>
-        <Text style={styles.subHeader}>I dag</Text>
-
         {isLoading ? (
           <ActivityIndicator size='small' />
         ) : (
-          <FlatList
-            /* style={{ padding: 12, backgroundColor: '#FBFBFB', borderRadius: 15 }} */
-            data={receipts}
+          <SectionList
+            showsVerticalScrollIndicator={false}
+            sections={Object.entries(groupedReceipts).map(([date, data]) => ({
+              title: date,
+              data,
+            }))}
+            keyExtractor={(item) => item.id}
+            renderItem={renderReceiptItem}
+            renderSectionHeader={({ section: { title } }) => (
+              <Text style={styles.dateHeader}>{title}</Text>
+            )}
             refreshing={isRefreshing}
             onRefresh={() => {
               loadReceiptList();
               setIsRefreshing(true);
             }}
-            keyExtractor={(item) => item.id}
-            renderItem={renderReceiptItem}
-            nestedScrollEnabled={true}
           />
         )}
-
-        {/* Receipt component */}
       </View>
+      
       <Modal
         animationType="slide"
         /* transparent={true} */
@@ -214,6 +241,7 @@ const styles = StyleSheet.create({
   },
   kvitteringContainer: {
     paddingHorizontal: 24,
+    flex: 1,
   },
   searchContainer: {
     paddingHorizontal: 24,
@@ -261,6 +289,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#2984FF",
+  },
+  dateHeader: {
+    backgroundColor: '#FFF',
+    fontSize: 20,
+    marginBottom: 12,
   },
 });
 
