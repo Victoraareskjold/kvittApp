@@ -48,6 +48,7 @@ function TabGroup() {
     <Tab.Navigator
       screenOptions={({ route, navigation }) => ({
         headerShown: false,
+        tabBarStyle: {},
         tabBarIcon: ({ color, focused, size }) => {
           let iconName;
           if (route.name === "HomeStackGroup") {

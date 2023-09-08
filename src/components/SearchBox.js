@@ -26,7 +26,7 @@ export default SearchBox;
 const styles = StyleSheet.create ({
     searchContainer: {
         flexDirection: 'row',
-        marginTop: 24,
+        marginTop: 0,
         backgroundColor: '#FBFBFB',
         paddingVertical: 12,
         flexDirection: 'row',

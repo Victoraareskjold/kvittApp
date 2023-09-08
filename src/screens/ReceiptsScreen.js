@@ -127,7 +127,7 @@ const groupedReceipts = groupReceiptsByDate(receipts);
                 height: 36,
               }}
             >
-              <Image source={item.image} style={{ width: 24, height: 24, marginRight: 12 }} />
+              <Image source={item.Image} style={{ width: 24, height: 24, marginRight: 12 }} />
               <View>
                 <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>{item.Store}</Text>
                 <Text style={{ opacity: 0.6 }}>{item.Category}</Text>

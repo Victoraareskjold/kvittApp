@@ -1,79 +1,294 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  Image,
+  KeyboardAvoidingView,
+  SectionList,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import KvitteringCard from "../components/KvitteringCard";
+import SearchBox from "../components/SearchBox";
+import CategoriesFilter from "../components/CategoriesFilter";
+import { useNavigation } from "@react-navigation/native";
+import AddReceiptModal from "./AddReceiptModal";
 
-import { auth } from "../../firebase";
-import { sendEmailVerification } from "@firebase/auth";
+import { auth, db } from "../../firebase";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+} from "@firebase/firestore";
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({}) => {
 
+  let [modalVisible, setModalVisible] = useState(false);
+  let [isLoading, setIsLoading] = useState(true);
+  let [isRefreshing, setIsRefreshing] = useState(false);
+  let [receipts, setReceipts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Alle"); 
+
+  useEffect(() => {
+    loadReceiptList();
+  }, [selectedCategory]); 
+
+  let loadReceiptList = async () => {
+    let q;
+    if (selectedCategory === "Alle") {
+      q = query(collection(db, "receipts"), where("userId", "==", auth.currentUser.uid));
+    } else {
+      q = query(
+        collection(db, "receipts"),
+        where("userId", "==", auth.currentUser.uid),
+        where("Category", "==", selectedCategory)
+      );
+    }
+
+    const querySnapshot = await getDocs(q);
+    let receipts = [];
+    querySnapshot.forEach((doc) => {
+      let receipt = doc.data();
+      receipt.id = doc.id;
+      receipts.push(receipt);
+    });
+
+  // Sorter kvitteringene etter dato-feltet som strenger
+  receipts.sort((a, b) => {
+    return b.Date.localeCompare(a.Date); // Dette vil sortere i synkende rekkefølge (nyeste dato først)
+  });
+
+  const limitedReceipts = receipts.slice(0, 5);
+
+    setReceipts(limitedReceipts);
+    setIsLoading(false);
+    setIsRefreshing(false);
+  };
+
+  // Opprett en funksjon for å gruppere kvitteringer etter dato
+const groupReceiptsByDate = (receipts) => {
+  const groupedReceipts = {};
+  receipts.forEach((receipt) => {
+    const date = receipt.Date; // Anta at Date-feltet er en strengrepresentasjon av datoen
+
+    if (!groupedReceipts[date]) {
+      groupedReceipts[date] = [];
+    }
+
+    groupedReceipts[date].push(receipt);
+  });
+
+  return groupedReceipts;
+};
+
+// Bruk funksjonen for å gruppere kvitteringer etter dato
+const groupedReceipts = groupReceiptsByDate(receipts);
+let renderReceiptItem = ({ item }) => {
   return (
-    <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView />
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View>
+      <Pressable
+        onPress={() => navigate("KvitteringDetails", { item: item })}
+        style={{
+          backgroundColor: "#FFF",
+          borderRadius: 15,
+          marginBottom: 0,
+          alignItems: "center",
+          paddingHorizontal: 24,
+          paddingVertical: 20,
 
-        {/* Header container */}
-        <View style={styles.headerContainer}>
-          <Text style={styles.header}>Hjem</Text>
-        </View>
-
-        {/* Recent receipts */}
-        <View style={styles.kvitteringContainer}>
-
-            <View style={styles.subHeaderContainer}>
-                <Text style={styles.subHeader}>Nylige kvitteringer</Text>
-
-                {/* Se alle btn */}
-                <TouchableOpacity 
-                  onPress={() => navigation.navigate('ReceiptsScreen')}
-                >
-                    <Text style={styles.linkBtn}>Se alle</Text>
-                </TouchableOpacity>
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0,
+          shadowRadius: 0,
+        }}
+      >
+        {/* Kvittering innhold */}
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Ikon, kategori og dato */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              height: 36,
+            }}
+          >
+            <Image source={item.image} style={{ width: 24, height: 24, marginRight: 12 }} />
+            <View>
+              <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>{item.Store}</Text>
+              <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
             </View>
+          </View>
 
-          {/* Kvitteringer */}
-          <KvitteringCard />
+          {/* Pris */}
+          <View style={styles.priceContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ color: "#2984FF", fontWeight: "600" }}>{item.Price}</Text>
+              <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
+            </View>
+          </View>
         </View>
-
-        </ScrollView>
-      </View>
+      </Pressable>
+    </View>
   );
+};
+
+let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt }) => {
+  let receiptSave = {
+    Store: store,
+    Category: selectedCategory,
+    Price: price,
+    Date: dateOfReceipt,
+    userId: auth.currentUser.uid,
+  };
+  const docRef = await addDoc(collection(db, "receipts"), receiptSave);
+
+  receiptSave.id = docRef.id;
+
+  let updatedReceipts = [...receipts];
+  updatedReceipts.push(receiptSave);
+
+  setReceipts(updatedReceipts);
+};
+
+return (
+  <View style={{ backgroundColor: "#FFF", flex: 1 }}>
+    <SafeAreaView />
+
+    {/* Header container */}
+    <View style={styles.headerContainer}>
+      <Text style={styles.header}>Hjem</Text>
+    </View>
+
+    {/* Receipts */}
+    <View style={styles.kvitteringContainer}>
+    <View style={styles.nyligeContainer}>
+      <Text style={styles.subHeader}>Nylige kvitteringer</Text>
+      {/* Se alle btn */}
+      <TouchableOpacity 
+        onPress={() => navigation.navigate('ReceiptsScreen')}
+      >
+          <Text style={styles.linkBtn}>Se alle</Text>
+      </TouchableOpacity>
+    </View>
+      {isLoading ? (
+        <ActivityIndicator size='small' />
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+        
+          data={receipts}
+          keyExtractor={(item) => item.id}
+          renderItem={renderReceiptItem}
+
+          refreshing={isRefreshing}
+          onRefresh={() => {
+            loadReceiptList();
+            setIsRefreshing(true);
+          }}
+        />
+      )}
+    </View>
+    
+    <Modal
+      animationType="slide"
+      /* transparent={true} */
+      visible={modalVisible}
+      presentationStyle='formSheet'
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <AddReceiptModal onClose={() => setModalVisible(false)} addReceipt={addReceipt} />
+    </Modal>
+  </View>
+);
 };
 
 export default HomeScreen;
 
-const styles = StyleSheet.create ({
+const styles = StyleSheet.create({
+  /* Containers */
+  headerContainer: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    paddingHorizontal: 24,
+    marginBottom: 24,
+  },
+  kvitteringContainer: {
+    paddingHorizontal: 0,
+    flex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: 24,
+  },
+  subHeaderContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+  },
+  filterContainer: {
+    paddingLeft: 24,
+  },
+  priceContainer: {
+    backgroundColor: "#F4F9FF",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 3,
+  },
+  nyligeContainer: {
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+  },
 
-    /* Containers */
-    headerContainer: {
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        paddingHorizontal: 24,
-        marginBottom: 48,
-    },
-    kvitteringContainer: {
-        paddingHorizontal: 24,
-    },
-    subHeaderContainer: {
-        flex: 1, 
-        flexDirection: 'row', 
-        alignItems: 'baseline', 
-        justifyContent: 'space-between',
-    },
+  /* Buttons */
+  leggTilBtn: {
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "500",
+  },
+  leggTilBtnContainer: {
+    backgroundColor: "#2984FF",
+    borderRadius: 50,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    alignItems: "center",
+  },
 
-    /* Text */
-    header: {
-        fontSize: 28,
-        fontWeight: 'bold',
-    },
-    subHeader: {
-        fontSize: 24,
-    },
-    linkBtn: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#2984FF',
-    },
+  /* Text */
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  subHeader: {
+    fontSize: 24,
+    marginBottom: 12,
+  },
+  linkBtn: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#2984FF",
+  },
+  dateHeader: {
+    backgroundColor: '#FBFBFB',
+    fontSize: 20,
+    marginBottom: 0,
+    paddingVertical: 2,
+    paddingHorizontal: 24,
+  },
 });
