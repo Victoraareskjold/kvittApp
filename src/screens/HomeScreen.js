@@ -11,10 +11,15 @@ import {
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
 import { auth, db } from "../../firebase";
-import { collection, query, where, getDocs } from "@firebase/firestore";
+import { collection, 
+  query, 
+  where, 
+  getDocs, 
+  orderBy 
+} from "@firebase/firestore";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -25,19 +30,35 @@ const HomeScreen = () => {
   const [receipts, setReceipts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Alle");
 
-  useEffect(() => {
-    loadReceiptList();
-  }, [selectedCategory]);
+  const [groupedReceipts, setGroupedReceipts] = useState({});
+
+  const dateStringToSortableNumber = (dateString) => {
+    const [day, month, year] = dateString.split('.');
+    return parseInt(year + month + day, 10);
+  };  
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadReceiptList();
+  
+      return () => {};
+    }, [selectedCategory])
+  );  
 
   const loadReceiptList = async () => {
     let q;
     if (selectedCategory === "Alle") {
-      q = query(collection(db, "receipts"), where("userId", "==", auth.currentUser.uid));
+      q = query(
+        collection(db, "receipts"), 
+        where("userId", "==", auth.currentUser.uid),
+        orderBy("Date", "desc")
+      );
     } else {
       q = query(
         collection(db, "receipts"),
         where("userId", "==", auth.currentUser.uid),
-        where("Category", "==", selectedCategory)
+        where("Category", "==", selectedCategory),
+        orderBy("Date", "desc")
       );
     }
 
@@ -49,10 +70,21 @@ const HomeScreen = () => {
       fetchedReceipts.push(receipt);
     });
 
-    fetchedReceipts.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+    // Sorter kvitteringene etter dato-feltet som strenger
+    fetchedReceipts.sort((a, b) => {
+      return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
+    });  
 
     const limitedReceipts = fetchedReceipts.slice(0, 5);
 
+    // Sort and group the limited receipts
+    limitedReceipts.sort((a, b) => {
+        return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
+    });
+
+    const receiptsGroupedByDate = groupReceiptsByDate(limitedReceipts);
+
+    setGroupedReceipts(receiptsGroupedByDate);
     setReceipts(limitedReceipts);
     setIsLoading(false);
     setIsRefreshing(false);
@@ -60,7 +92,6 @@ const HomeScreen = () => {
 
   const groupReceiptsByDate = (receipts) => {
     const groupedReceipts = {};
-
     receipts.forEach((receipt) => {
       const date = receipt.Date;
       if (!groupedReceipts[date]) {
@@ -68,14 +99,8 @@ const HomeScreen = () => {
       }
       groupedReceipts[date].push(receipt);
     });
-
-    return Object.keys(groupedReceipts).map(date => ({
-      title: date,
-      data: groupedReceipts[date]
-    }));
+    return groupedReceipts;
   };
-
-  const sectionedReceipts = groupReceiptsByDate(receipts);
 
   let renderReceiptItem = ({ item }) => {
     return (
@@ -158,7 +183,10 @@ const HomeScreen = () => {
         ) : (
           <SectionList
             showsVerticalScrollIndicator={false}
-            sections={sectionedReceipts}
+            sections={Object.entries(groupedReceipts).map(([date, data]) => ({
+              title: date,
+              data,
+            }))}
             keyExtractor={(item) => item.id}
             renderItem={renderReceiptItem}
             refreshing={isRefreshing}
