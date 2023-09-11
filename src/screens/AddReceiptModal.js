@@ -44,15 +44,15 @@ export default function AddReceiptModal(props) {
         setShowPicker(false);
     };
 
-    const formatDate = (rawDate) => {
-        let date = new Date(rawDate);
-        let year = date.getFullYear();
-        let month = ("0" + (date.getMonth() + 1)).slice(-2);  // Månedene er 0-indeksert
-        let day = ("0" + date.getDate()).slice(-2);
-    
-        return `${year}-${month}-${day}`;
-    };    
-
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0'); 
+        const year = d.getFullYear();
+     
+        return `${day}.${month}.${year}`;
+     };
+     
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
