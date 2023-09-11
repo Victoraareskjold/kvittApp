@@ -63,9 +63,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#2984FF",
     },
     filterText: {
-        color: "#272727", // Standard tekstfarge
+        color: "#272727", 
+        fontSize: 16,
     },
     activeText: {
-        color: "#FFF", // Tekstfarge for aktiv kategori
+        color: "#FFF", 
     },
 });

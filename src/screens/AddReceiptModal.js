@@ -81,7 +81,7 @@ export default function AddReceiptModal(props) {
                 {/* Hero text */}
                 <View style={styles.heroTextContainer}>
                     <Text style={styles.header}>Legg til kvittering</Text>
-                    <Text style={{ color: "#272727", opacity: 0.76, fontSize: 14, fontWeight: "500"}}>Her kan du legge til kvittering manuelt</Text>
+                    <Text style={{ color: "#272727", opacity: 0.76, fontSize: 16, fontWeight: "500"}}>Her kan du legge til kvittering manuelt</Text>
                 </View>
 
                 {/* Input fields */}
@@ -89,6 +89,7 @@ export default function AddReceiptModal(props) {
 
                     <TextInput
                         value={store}
+                        maxLength={30}
                         onChangeText={setStore}
                         placeholder='Butikk'
                         style={styles.receiptPlaceholder}
@@ -96,6 +97,7 @@ export default function AddReceiptModal(props) {
 
                     <TextInput
                         inputMode='numeric'
+                        maxLength={10}
                         value={price}
                         onChangeText={setPrice}
                         placeholder='Pris'
