@@ -3,44 +3,33 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   Modal,
   ActivityIndicator,
-  FlatList,
+  SectionList,
   Pressable,
   Image,
-  KeyboardAvoidingView,
-  SectionList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SearchBox from "../components/SearchBox";
-import CategoriesFilter from "../components/CategoriesFilter";
 import { useNavigation } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
-
 import { auth, db } from "../../firebase";
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-} from "@firebase/firestore";
+import { collection, query, where, getDocs } from "@firebase/firestore";
 
-const HomeScreen = ({}) => {
+const HomeScreen = () => {
+  const navigation = useNavigation();
 
-  let [modalVisible, setModalVisible] = useState(false);
-  let [isLoading, setIsLoading] = useState(true);
-  let [isRefreshing, setIsRefreshing] = useState(false);
-  let [receipts, setReceipts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("Alle"); 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [receipts, setReceipts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Alle");
 
   useEffect(() => {
     loadReceiptList();
-  }, [selectedCategory]); 
+  }, [selectedCategory]);
 
-  let loadReceiptList = async () => {
+  const loadReceiptList = async () => {
     let q;
     if (selectedCategory === "Alle") {
       q = query(collection(db, "receipts"), where("userId", "==", auth.currentUser.uid));
@@ -53,167 +42,135 @@ const HomeScreen = ({}) => {
     }
 
     const querySnapshot = await getDocs(q);
-    let receipts = [];
+    let fetchedReceipts = [];
     querySnapshot.forEach((doc) => {
       let receipt = doc.data();
       receipt.id = doc.id;
-      receipts.push(receipt);
+      fetchedReceipts.push(receipt);
     });
 
-  // Sorter kvitteringene etter dato-feltet som strenger
-  receipts.sort((a, b) => {
-    return b.Date.localeCompare(a.Date); // Dette vil sortere i synkende rekkefølge (nyeste dato først)
-  });
+    fetchedReceipts.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 
-  const limitedReceipts = receipts.slice(0, 5);
+    const limitedReceipts = fetchedReceipts.slice(0, 5);
 
     setReceipts(limitedReceipts);
     setIsLoading(false);
     setIsRefreshing(false);
   };
 
-  // Opprett en funksjon for å gruppere kvitteringer etter dato
-const groupReceiptsByDate = (receipts) => {
-  const groupedReceipts = {};
-  receipts.forEach((receipt) => {
-    const date = receipt.Date; // Anta at Date-feltet er en strengrepresentasjon av datoen
+  const groupReceiptsByDate = (receipts) => {
+    const groupedReceipts = {};
 
-    if (!groupedReceipts[date]) {
-      groupedReceipts[date] = [];
-    }
+    receipts.forEach((receipt) => {
+      const date = receipt.Date;
+      if (!groupedReceipts[date]) {
+        groupedReceipts[date] = [];
+      }
+      groupedReceipts[date].push(receipt);
+    });
 
-    groupedReceipts[date].push(receipt);
-  });
+    return Object.keys(groupedReceipts).map(date => ({
+      title: date,
+      data: groupedReceipts[date]
+    }));
+  };
 
-  return groupedReceipts;
-};
+  const sectionedReceipts = groupReceiptsByDate(receipts);
 
-// Bruk funksjonen for å gruppere kvitteringer etter dato
-const groupedReceipts = groupReceiptsByDate(receipts);
-let renderReceiptItem = ({ item }) => {
-  return (
-    <View>
-      <Pressable
-        onPress={() => navigate("KvitteringDetails", { item: item })}
-        style={{
-          backgroundColor: "#FFF",
-          borderRadius: 15,
-          marginBottom: 0,
-          alignItems: "center",
-          paddingHorizontal: 24,
-          paddingVertical: 20,
-
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0,
-          shadowRadius: 0,
-        }}
-      >
-        {/* Kvittering innhold */}
-        <View
+  let renderReceiptItem = ({ item }) => {
+    return (
+      <View>
+        <Pressable
+          onPress={() => navigate("KvitteringDetails", { item: item })}
           style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            backgroundColor: "#FFF",
+            borderRadius: 15,
+            marginBottom: 0,
             alignItems: "center",
+            paddingHorizontal: 24,
+            paddingVertical: 20,
+
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0,
+            shadowRadius: 0,
           }}
         >
-          {/* Ikon, kategori og dato */}
+          {/* Kvittering innhold */}
           <View
             style={{
+              width: "100%",
               flexDirection: "row",
+              justifyContent: "space-between",
               alignItems: "center",
-              height: 36,
             }}
           >
-            <Image source={item.image} style={{ width: 24, height: 24, marginRight: 12 }} />
-            <View>
-              <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>{item.Store}</Text>
-              <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
+            {/* Ikon, kategori og dato */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                height: 36,
+              }}
+            >
+              <Image source={item.Image} style={{ width: 24, height: 24, marginRight: 12 }} />
+              <View>
+                <Text style={{ fontSize: 18, textTransform: 'capitalize' }}>{item.Store}</Text>
+                <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
+              </View>
+            </View>
+
+            {/* Pris */}
+            <View style={styles.priceContainer}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ color: "#2984FF", fontWeight: "600" }}>{item.Price}</Text>
+                <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
+              </View>
             </View>
           </View>
-
-          {/* Pris */}
-          <View style={styles.priceContainer}>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ color: "#2984FF", fontWeight: "600" }}>{item.Price}</Text>
-              <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
-            </View>
-          </View>
-        </View>
-      </Pressable>
-    </View>
-  );
-};
-
-let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt }) => {
-  let receiptSave = {
-    Store: store,
-    Category: selectedCategory,
-    Price: price,
-    Date: dateOfReceipt,
-    userId: auth.currentUser.uid,
+        </Pressable>
+      </View>
+    );
   };
-  const docRef = await addDoc(collection(db, "receipts"), receiptSave);
 
-  receiptSave.id = docRef.id;
+  return (
+    <View style={{ backgroundColor: "#FFF", flex: 1 }}>
+      <SafeAreaView />
 
-  let updatedReceipts = [...receipts];
-  updatedReceipts.push(receiptSave);
-
-  setReceipts(updatedReceipts);
-};
-
-return (
-  <View style={{ backgroundColor: "#FFF", flex: 1 }}>
-    <SafeAreaView />
-
-    {/* Header container */}
+      {/* Header container */}
     <View style={styles.headerContainer}>
       <Text style={styles.header}>Hjem</Text>
     </View>
 
-    {/* Receipts */}
-    <View style={styles.kvitteringContainer}>
-    <View style={styles.nyligeContainer}>
-      <Text style={styles.subHeader}>Nylige kvitteringer</Text>
-      {/* Se alle btn */}
-      <TouchableOpacity 
-        onPress={() => navigation.navigate('ReceiptsScreen')}
-      >
-          <Text style={styles.linkBtn}>Se alle</Text>
-      </TouchableOpacity>
+      {/* Receipts */}
+      <View style={styles.kvitteringContainer}>
+        <View style={styles.nyligeContainer}>
+          <Text style={styles.subHeader}>Nylige kvitteringer</Text>
+          {/* Se alle btn */}
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('ReceiptsScreen')}
+          >
+              <Text style={styles.linkBtn}>Se alle</Text>
+          </TouchableOpacity>
+      </View>
+        {isLoading ? (
+          <ActivityIndicator size='small' />
+        ) : (
+          <SectionList
+            showsVerticalScrollIndicator={false}
+            sections={sectionedReceipts}
+            keyExtractor={(item) => item.id}
+            renderItem={renderReceiptItem}
+            refreshing={isRefreshing}
+            onRefresh={() => {
+              loadReceiptList();
+              setIsRefreshing(true);
+            }}
+          />
+        )}
+      </View>
     </View>
-      {isLoading ? (
-        <ActivityIndicator size='small' />
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-        
-          data={receipts}
-          keyExtractor={(item) => item.id}
-          renderItem={renderReceiptItem}
-
-          refreshing={isRefreshing}
-          onRefresh={() => {
-            loadReceiptList();
-            setIsRefreshing(true);
-          }}
-        />
-      )}
-    </View>
-    
-    <Modal
-      animationType="slide"
-      /* transparent={true} */
-      visible={modalVisible}
-      presentationStyle='formSheet'
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <AddReceiptModal onClose={() => setModalVisible(false)} addReceipt={addReceipt} />
-    </Modal>
-  </View>
-);
+  );
 };
 
 export default HomeScreen;

@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
 import CategoriesFilter from "../components/CategoriesFilter";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
 
 import { auth, db } from "../../firebase";
@@ -43,6 +43,14 @@ const ReceiptsScreen = () => {
     const [day, month, year] = dateString.split('.');
     return `${year}-${month}-${day}`;
   };    
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadReceiptList();
+  
+      return () => {};
+    }, [selectedCategory])
+  );  
 
   useEffect(() => {
     loadReceiptList();
@@ -140,7 +148,7 @@ const groupReceiptsByDate = (receipts) => {
             >
               <Image source={item.Image} style={{ width: 24, height: 24, marginRight: 12 }} />
               <View>
-                <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>{item.Store}</Text>
+                <Text style={{ fontSize: 18, textTransform: 'capitalize' }}>{item.Store}</Text>
                 <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
               </View>
             </View>
@@ -174,6 +182,7 @@ const groupReceiptsByDate = (receipts) => {
     updatedReceipts.push(receiptSave);
 
     setReceipts(updatedReceipts);
+    loadReceiptList(); // Oppdaterer sectionList
   };
 
   return (
@@ -304,7 +313,7 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     backgroundColor: '#FBFBFB',
-    fontSize: 20,
+    fontSize: 16,
     marginBottom: 0,
     paddingVertical: 2,
     paddingHorizontal: 24,
