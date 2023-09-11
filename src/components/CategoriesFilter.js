@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     },
     filterText: {
         color: "#272727", 
-        fontSize: 16,
+        fontSize: 14,
     },
     activeText: {
         color: "#FFF", 

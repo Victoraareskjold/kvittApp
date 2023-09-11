@@ -146,7 +146,7 @@ const groupReceiptsByDate = (receipts) => {
                 height: 36,
               }}
             >
-              <Image source={item.Image} style={{ width: 24, height: 24, marginRight: 12 }} />
+              <Image source={require('../../assets/StoreIcon/rema1000.png')} style={{ width: 40, height: 40, marginRight: 12, resizeMode: 'contain' }} />
               <View>
                 <Text style={{ fontSize: 18, textTransform: 'capitalize' }}>{item.Store}</Text>
                 <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
@@ -156,7 +156,7 @@ const groupReceiptsByDate = (receipts) => {
             {/* Pris */}
             <View style={styles.priceContainer}>
               <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#2984FF", fontWeight: "600" }}>{item.Price}</Text>
+                <Text style={{ color: "#2984FF", fontWeight: "600"}}>{item.Price}</Text>
                 <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
               </View>
             </View>
