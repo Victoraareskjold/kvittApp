@@ -47,11 +47,11 @@ export default function AddReceiptModal(props) {
     const formatDate = (rawDate) => {
         let date = new Date(rawDate);
         let year = date.getFullYear();
-        let month = date.toLocaleString('default', { month: 'long' });
-        let day = date.getDate();
-
-        return `${day} ${month} ${year}`;
-    };
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);  // Månedene er 0-indeksert
+        let day = ("0" + date.getDate()).slice(-2);
+    
+        return `${year}-${month}-${day}`;
+    };    
 
     return (
         <KeyboardAvoidingView 

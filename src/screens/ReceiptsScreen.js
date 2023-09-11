@@ -26,6 +26,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy
 } from "@firebase/firestore";
 
 const ReceiptsScreen = () => {
@@ -36,7 +37,12 @@ const ReceiptsScreen = () => {
   let [isRefreshing, setIsRefreshing] = useState(false);
   let [receipts, setReceipts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Alle"); 
+  const [groupedReceipts, setGroupedReceipts] = useState({});
 
+  const formatDate = (dateString) => {
+    const [day, month, year] = dateString.split('.');
+    return `${year}-${month}-${day}`;
+  };    
 
   useEffect(() => {
     loadReceiptList();
@@ -45,14 +51,19 @@ const ReceiptsScreen = () => {
   let loadReceiptList = async () => {
     let q;
     if (selectedCategory === "Alle") {
-      q = query(collection(db, "receipts"), where("userId", "==", auth.currentUser.uid));
+      q = query(
+        collection(db, "receipts"), 
+        where("userId", "==", auth.currentUser.uid),
+        orderBy("Date", "desc")
+      );
     } else {
       q = query(
         collection(db, "receipts"),
         where("userId", "==", auth.currentUser.uid),
-        where("Category", "==", selectedCategory)
+        where("Category", "==", selectedCategory),
+        orderBy("Date", "desc")
       );
-    }
+    }    
 
     const querySnapshot = await getDocs(q);
     let receipts = [];
@@ -64,32 +75,32 @@ const ReceiptsScreen = () => {
 
   // Sorter kvitteringene etter dato-feltet som strenger
   receipts.sort((a, b) => {
-    return b.Date.localeCompare(a.Date); // Dette vil sortere i synkende rekkefølge (nyeste dato først)
+    return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
   });
 
-    setReceipts(receipts);
-    setIsLoading(false);
-    setIsRefreshing(false);
-  };
+  const receiptsGroupedByDate = groupReceiptsByDate(receipts);
+  setGroupedReceipts(receiptsGroupedByDate);
+  setIsLoading(false);
+  setIsRefreshing(false);
+};
 
-  // Opprett en funksjon for å gruppere kvitteringer etter dato
+const dateStringToSortableNumber = (dateString) => {
+  const [day, month, year] = dateString.split('.');
+  return parseInt(year + month + day, 10);
+};
+
 const groupReceiptsByDate = (receipts) => {
   const groupedReceipts = {};
   receipts.forEach((receipt) => {
-    const date = receipt.Date; // Anta at Date-feltet er en strengrepresentasjon av datoen
-
+    const date = receipt.Date;
     if (!groupedReceipts[date]) {
       groupedReceipts[date] = [];
     }
-
     groupedReceipts[date].push(receipt);
   });
 
   return groupedReceipts;
-};
-
-// Bruk funksjonen for å gruppere kvitteringer etter dato
-const groupedReceipts = groupReceiptsByDate(receipts);
+};  
 
   let renderReceiptItem = ({ item }) => {
     return (
