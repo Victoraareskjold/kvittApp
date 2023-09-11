@@ -81,7 +81,7 @@ const HomeScreen = () => {
     return (
       <View>
         <Pressable
-          onPress={() => navigate("KvitteringDetails", { item: item })}
+          onPress={() => navigation.navigate("KvitteringDetails", { item: item })}
           style={{
             backgroundColor: "#FFF",
             borderRadius: 15,

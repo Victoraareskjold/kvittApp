@@ -28,7 +28,10 @@ export default function LoginScreen({ navigation }) {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     /* Signed in */
-                    navigation.navigate('HomeScreen', {user: userCredential.user});
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'HomeScreen' }],  // or 'HomeStackGroup', see note below
+                      });
                 })
                 .catch((error) => {
                     setErrorMessage(error.message)

@@ -21,7 +21,6 @@ function HomeStackGroup() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-      <HomeStack.Screen name="ReceiptsScreen" component={ReceiptsScreen} />
       <HomeStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
     </HomeStack.Navigator>
   );
