@@ -13,6 +13,7 @@ import KvitteringDetails from "../screens/KvitteringDetails";
 import AddReceiptModal from "../screens/AddReceiptModal";
 import SignUp from '../screens/SignUp'
 import ResetPassword from "../screens/ResetPassword";
+import SendReceipt from "../screens/SendReceipt";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -85,9 +86,8 @@ function TabGroup() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "KvitteringStackGroup") {
             iconName = focused ? "receipt" : "receipt-outline";
-          } else if (route.name === "Fordeler") {
-            iconName = focused ? "help" : "help";
-            color = focused ? "grey" : "lightgrey";
+          } else if (route.name === "SendReceipt") {
+            iconName = focused ? "person-add" : "person-add-outline";
           } else if (route.name === "Innstillinger") {
             iconName = focused ? "settings-sharp" : "settings-outline";
           }
@@ -99,7 +99,7 @@ function TabGroup() {
     >
       <Tab.Screen name="HomeStackGroup" component={HomeStackGroup} options={{ tabBarLabel: "Hjem" }} />
       <Tab.Screen name="KvitteringStackGroup" component={KvitteringStackGroup} options={{ tabBarLabel: "Kvitteringer" }} />
-      <Tab.Screen name="Fordeler" component={ReceiptsScreen} listeners={{ tabPress: (e) => { e.preventDefault(); } }} />
+      <Tab.Screen name="SendReceipt" component={SendReceipt} options={{ tabBarLabel: "Del kvittering" }} />
       <Tab.Screen name="Innstillinger" component={SettingsScreen} />
     </Tab.Navigator>
   );

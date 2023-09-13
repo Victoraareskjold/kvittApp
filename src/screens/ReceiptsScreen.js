@@ -186,7 +186,9 @@ const groupReceiptsByDate = (receipts) => {
 
       {/* Searchbar */}
       <View style={ContainerStyles.searchContainer}>
-        <SearchBox />
+        <SearchBox 
+          placeholder={'Søk etter butikk eller produkt'}
+        />
       </View>
 
       {/* Categories filter */}

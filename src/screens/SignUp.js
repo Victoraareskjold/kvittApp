@@ -2,8 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingVi
 import React from "react";
 import { useState } from "react";
 
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+
 
 import Colors from "../../Styles/Colors";
 import FontStyles from "../../Styles/FontStyles";
@@ -11,11 +13,12 @@ import ButtonStyles from "../../Styles/ButtonStyles";
 import ContainerStyles from "../../Styles/ContainerStyles";
 
 export default function LoginScreen({ navigation }) {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [name, setName] = useState("");
 
-    let [validationMessage, setValidationMessage] = useState('')
+    let [validationMessage, setValidationMessage] = useState('');
 
     let validateAndSet = (value, valueToCompare, setValue) => {
         if (value !== valueToCompare) {
@@ -28,17 +31,32 @@ export default function LoginScreen({ navigation }) {
 
     let signUp = () => {
         if (password === confirmPassword) {
-            createUserWithEmailAndPassword(auth, email, password)
+          createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                /* Signed in & email sent */
-                sendEmailVerification(auth.currentUser);
-                navigation.navigate('HomeScreen', {user: userCredential.user});
+              // Opprett Firestore-dokument for brukeren og lagre brukerinformasjon
+              const user = userCredential.user;
+              const uid = user.uid;
+    
+              const userDocRef = doc(db, "users", uid);
+    
+              // Legg til brukerinformasjon i Firestore
+              setDoc(userDocRef, {
+                navn: name,
+                epost: email,
+                // Legg til andre felt om nødvendig
+              });
+    
+              // Send e-postbekreftelse
+              sendEmailVerification(user);
+    
+              // Naviger til hjemmesiden
+              navigation.navigate("HomeScreen", { user: user });
             })
             .catch((error) => {
-                setValidationMessage(error.message);
+              setValidationMessage(error.message);
             });
-        } 
-    }
+        }
+      };
 
     return (
         <KeyboardAvoidingView 
@@ -49,14 +67,24 @@ export default function LoginScreen({ navigation }) {
             {/* Header & subheader */}
             <View style={{alignItems: "center"}}>
             
-                    <Text style={FontStyles.header}>
-                        Kvitt
-                    </Text>
+                <Text style={FontStyles.header}>
+                    Kvitt
+                </Text>
 
                 <Text style={[FontStyles.body2, { marginBottom: 80 }]}>
                     Registrer deg
                 </Text>
             </View>
+
+             {/* Firstname */}
+            <Text style={FontStyles.body2Fat}>Fullt navn</Text>
+            <TextInput
+                style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                placeholder="Fullt navn"
+                value={name}
+                onChangeText={(text) => setName(text)}
+            ></TextInput>
+
 
             {/* Email */}
             <Text style={FontStyles.body2Fat}>Email</Text>
@@ -100,7 +128,7 @@ export default function LoginScreen({ navigation }) {
                 onPress={signUp}
                 style={ButtonStyles.primaryBtn}
             >
-                <Text style={FontStyles.bigBtn}>Kom i gang</Text>
+                <Text style={FontStyles.bigBtn}>Registrer deg</Text>
             </TouchableOpacity>
 
             {/* Already have an account? */}

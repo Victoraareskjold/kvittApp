@@ -13,7 +13,7 @@ const SearchBox = ({  placeholder }) => {
             />
             <TextInput 
                 value={input} onChangeText={(text) => setInput(text)} 
-                placeholder="Søk etter butikk eller produkt"
+                placeholder={placeholder}
                 style={{width: '100%'}}
             >
             </TextInput>
