@@ -29,6 +29,12 @@ import {
   orderBy
 } from "@firebase/firestore";
 
+import Colors from "../../Styles/Colors";
+import FontStyles from "../../Styles/FontStyles";
+import ButtonStyles from "../../Styles/ButtonStyles";
+import ContainerStyles from "../../Styles/ContainerStyles";
+import ReceiptStyles from "../../Styles/ReceiptStyles";
+
 const ReceiptsScreen = () => {
   const { navigate } = useNavigation();
 
@@ -115,51 +121,27 @@ const groupReceiptsByDate = (receipts) => {
       <View>
         <Pressable
           onPress={() => navigate("KvitteringDetails", { item: item })}
-          style={{
-            backgroundColor: "#FFF",
-            borderRadius: 15,
-            marginBottom: 0,
-            alignItems: "center",
-            paddingHorizontal: 24,
-            paddingVertical: 20,
-
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0,
-            shadowRadius: 0,
-          }}
+          style={ReceiptStyles.receiptCard}
         >
-          {/* Kvittering innhold */}
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* Ikon, kategori og dato */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                height: 36,
-              }}
-            >
-              <Image source={require('../../assets/StoreIcon/rema1000.png')} style={{ width: 40, height: 40, marginRight: 12, resizeMode: 'contain' }} />
+
+          <View style={ReceiptStyles.receiptAlignment}>
+
+            <View style={ReceiptStyles.cardAlignment}>
+              <Image 
+                source={require('../../assets/StoreIcon/rema1000.png')} 
+                style={ReceiptStyles.iconStyle}
+              />
               <View>
-                <Text style={{ fontSize: 18, textTransform: 'capitalize' }}>{item.Store}</Text>
-                <Text style={{ opacity: 0.6 }}>{item.Category}</Text>
+                <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+                <Text style={ReceiptStyles.categoryText}>{item.Category}</Text>
               </View>
             </View>
 
-            {/* Pris */}
-            <View style={styles.priceContainer}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#2984FF", fontWeight: "600"}}>{item.Price}</Text>
-                <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
-              </View>
+            <View style={ReceiptStyles.priceContainer}>
+                <Text style={ReceiptStyles.priceText}>{item.Price}</Text>
+                <Text style={ReceiptStyles.priceText}> ,-</Text>
             </View>
+
           </View>
         </Pressable>
       </View>
@@ -186,35 +168,36 @@ const groupReceiptsByDate = (receipts) => {
   };
 
   return (
-    <View style={{ backgroundColor: "#FFF", flex: 1 }}>
+    <View style={ContainerStyles.backgroundContainer}>
       <SafeAreaView />
 
       {/* Header container */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Alle kvitteringer</Text>
+      <View style={ContainerStyles.headerContainer}>
+        <Text style={FontStyles.header}>Alle kvitteringer</Text>
 
-        {/* Legg til btn */}
+        {/* Add receipt btn */}
         <TouchableOpacity
-          style={styles.leggTilBtnContainer}
+          style={ButtonStyles.addReceiptBtn}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.leggTilBtn}>Legg til</Text>
+          <Text style={FontStyles.smallBtn}>Legg til</Text>
         </TouchableOpacity>
       </View>
 
       {/* Searchbar */}
-      <View style={styles.searchContainer}>
+      <View style={ContainerStyles.searchContainer}>
         <SearchBox />
       </View>
 
       {/* Categories filter */}
-      <View style={styles.filterContainer}>
-        <CategoriesFilter onSelectCategory={setSelectedCategory}  excludeAll={false}/>{""}
-        {/* Oppdater den valgte kategorien */}
+      <View style={ContainerStyles.filterContainer}>
+        <CategoriesFilter 
+          onSelectCategory={setSelectedCategory}  
+          excludeAll={false}/>{""}
       </View>
 
       {/* Receipts */}
-      <View style={styles.kvitteringContainer}>
+      <View style={{flex: 1}}>
         {isLoading ? (
           <ActivityIndicator size='small' />
         ) : (
@@ -227,7 +210,7 @@ const groupReceiptsByDate = (receipts) => {
             keyExtractor={(item) => item.id}
             renderItem={renderReceiptItem}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={styles.dateHeader}>{title}</Text>
+              <Text style={ReceiptStyles.dateHeader}>{title}</Text>
             )}
             refreshing={isRefreshing}
             onRefresh={() => {
@@ -250,74 +233,5 @@ const groupReceiptsByDate = (receipts) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  /* Containers */
-  headerContainer: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: 24,
-    marginBottom: 24,
-  },
-  kvitteringContainer: {
-    paddingHorizontal: 0,
-    flex: 1,
-  },
-  searchContainer: {
-    paddingHorizontal: 24,
-  },
-  subHeaderContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-  },
-  filterContainer: {
-    paddingLeft: 24,
-  },
-  priceContainer: {
-    backgroundColor: "#F4F9FF",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 3,
-  },
-
-  /* Buttons */
-  leggTilBtn: {
-    fontSize: 14,
-    color: "#fff",
-    fontWeight: "500",
-  },
-  leggTilBtnContainer: {
-    backgroundColor: "#2984FF",
-    borderRadius: 50,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignItems: "center",
-  },
-
-  /* Text */
-  header: {
-    fontSize: 28,
-    fontWeight: "bold",
-  },
-  subHeader: {
-    fontSize: 24,
-    marginBottom: 12,
-  },
-  linkBtn: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2984FF",
-  },
-  dateHeader: {
-    backgroundColor: '#FBFBFB',
-    fontSize: 16,
-    marginBottom: 0,
-    paddingVertical: 2,
-    paddingHorizontal: 24,
-  },
-});
 
 export default ReceiptsScreen;

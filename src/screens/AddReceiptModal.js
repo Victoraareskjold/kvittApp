@@ -1,8 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, Button, KeyboardAvoidingView, ScrollView } from 'react-native'
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import CategoriesFilter from '../components/CategoriesFilter'
+
+import Colors from "../../Styles/Colors";
+import FontStyles from "../../Styles/FontStyles";
+import ButtonStyles from "../../Styles/ButtonStyles";
+import ContainerStyles from "../../Styles/ContainerStyles";
+import ReceiptStyles from "../../Styles/ReceiptStyles";
 
 export default function AddReceiptModal(props) {
 
@@ -59,15 +65,12 @@ export default function AddReceiptModal(props) {
             style={{ flex: 1, backgroundColor: '#fff', justifyContent: 'center' }}
         >
             <ScrollView showsVerticalScrollIndicator={false} >
-            <SafeAreaView />
+            <SafeAreaView style={{ marginTop: 32 }}/>
             <View>
                     <Pressable 
-                        style={styles.headerContainer}
+                        style={ContainerStyles.topRight}
                         onPress={() => { props.onClose() }}>
-                        <Image
-                            source={require("../../assets/closeIcon.png")}
-                            style={{ width: 20, height: 20 }}
-                        />
+                        <Text style={FontStyles.linkBtn}>Avbryt</Text>
                     </Pressable>
 
                 {/* Hero image */}
@@ -79,29 +82,20 @@ export default function AddReceiptModal(props) {
                 </View>
 
                 {/* Hero text */}
-                <View style={styles.heroTextContainer}>
-                    <Text style={styles.header}>Legg til kvittering</Text>
-                    <Text style={{ color: "#272727", opacity: 0.76, fontSize: 16, fontWeight: "500"}}>Her kan du legge til kvittering manuelt</Text>
+                <View style={ContainerStyles.columnContainer}>
+                    <Text style={FontStyles.header}>Legg til kvittering</Text>
+                    <Text style={FontStyles.body1}>Her kan du legge til kvittering manuelt</Text>
                 </View>
 
                 {/* Input fields */}
-                <View style={styles.addReceiptContainer}>
+                <View style={ContainerStyles.placeholderContainer}>
 
                     <TextInput
                         value={store}
                         maxLength={30}
                         onChangeText={setStore}
                         placeholder='Butikk'
-                        style={styles.receiptPlaceholder}
-                    />
-
-                    <TextInput
-                        inputMode='numeric'
-                        maxLength={10}
-                        value={price}
-                        onChangeText={setPrice}
-                        placeholder='Pris'
-                        style={styles.receiptPlaceholder}
+                        style={ButtonStyles.defaultPlaceholder}
                     />
 
                     <View>
@@ -111,7 +105,7 @@ export default function AddReceiptModal(props) {
                                 display='spinner'
                                 value={date}
                                 onChange={onChange}
-                                style={styles.datePicker}
+                                style={ContainerStyles.datePicker}
                             />
                         )}
 
@@ -130,7 +124,7 @@ export default function AddReceiptModal(props) {
                                 <TextInput
                                     value={dateOfReceipt}
                                     placeholder='Dato'
-                                    style={styles.DatePlaceholder}
+                                    style={ButtonStyles.defaultPlaceholder}
                                     editable={false}
                                     onPressIn={toggleDatePicker}
                                 />
@@ -138,13 +132,22 @@ export default function AddReceiptModal(props) {
                         )}
                     </View>
 
+                    <TextInput
+                        inputMode='numeric'
+                        maxLength={10}
+                        value={price}
+                        onChangeText={setPrice}
+                        placeholder='Pris'
+                        style={ButtonStyles.defaultPlaceholder}
+                    />
+
                     <CategoriesFilter
                         onSelectCategory={setSelectedCategory}
                         excludeAll={true} // Ekskluder "Alle" kategorien
                     />
 
                     <TouchableOpacity
-                        style={styles.addReceiptBtn}
+                        style={ButtonStyles.primaryBtn}
                         title='Legg til'
                         onPress={() => {
                             if (!store || !selectedCategory || !price || !dateOfReceipt) {
@@ -160,9 +163,7 @@ export default function AddReceiptModal(props) {
                             }
                         }}
                     >
-                        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 16, textAlign: 'center' }}>
-                            Legg til kvittering
-                        </Text>
+                        <Text style={FontStyles.bigBtn}>Legg til kvittering</Text>
                     </TouchableOpacity>
 
                     {/* Vis feilmelding hvis et felt mangler */}
@@ -176,66 +177,3 @@ export default function AddReceiptModal(props) {
         </KeyboardAvoidingView>
     );
 }
-
-const styles = StyleSheet.create({
-    headerContainer: {
-        width: '100%',
-        justifyContent: 'flex-end',
-        flexDirection: 'row',
-        paddingHorizontal: 24,
-        marginBottom: 24,
-        marginTop: 24,
-    },
-    addReceiptContainer: {
-        paddingHorizontal: 24,
-    },
-    heroTextContainer: {
-        paddingHorizontal: 24,
-        marginBottom: 24,
-        marginTop: 12,
-    },
-    header: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 6,
-        marginTop: 24,
-        color: "#272727",
-      },
-    subHeader: {
-        fontSize: 24,
-    },
-    body1: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    body2: {
-        fontSize: 14,
-    },
-    addReceiptBtn: {
-        backgroundColor: '#2984FF',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        marginTop: 48,
-        borderRadius: 10,
-        height: 54,
-        justifyContent: 'center',
-    },
-    receiptPlaceholder: {
-        backgroundColor: '#FBFBFB',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-        marginBottom: 12,
-        borderRadius: 15,
-    },
-    DatePlaceholder: {
-        backgroundColor: '#FBFBFB',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
-        marginBottom: 0,
-        borderRadius: 15,
-    },
-    datePicker: {
-        height: 160,
-        marginTop: -10,
-    },
-});

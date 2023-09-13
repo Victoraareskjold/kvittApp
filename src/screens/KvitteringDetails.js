@@ -16,25 +16,6 @@ const KvitteringDetails = ({ navigation, route }) => {
 
         <View style={styles.container}>
 
-            {/* Header container */}
-            <View style={styles.headerContainer}>
-                <Pressable onPress={() => navigation.goBack()}>
-                    <Image 
-                        source={require("../../assets/backVector.png")}
-                        style={{ width: 32, height: 32 }}
-                    />
-                </Pressable>
-                
-                <Text style={styles.header}>{item.name}</Text>
-
-                <Pressable>
-                    <Image 
-                        source={require("../../assets/dots.png")}
-                        style={{ width: 32, height: 32 }}
-                    />
-                </Pressable>
-            </View>
-
             {/* Kvittering innhold */}
             <View style={styles.kvitteringContainer}>
 

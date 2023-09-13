@@ -9,6 +9,7 @@ import {
   SectionList,
   Pressable,
   Image,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -20,6 +21,12 @@ import { collection,
   getDocs, 
   orderBy 
 } from "@firebase/firestore";
+
+import Colors from "../../Styles/Colors";
+import FontStyles from "../../Styles/FontStyles";
+import ButtonStyles from "../../Styles/ButtonStyles";
+import ContainerStyles from "../../Styles/ContainerStyles";
+import ReceiptStyles from "../../Styles/ReceiptStyles";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -104,54 +111,30 @@ const HomeScreen = () => {
 
   let renderReceiptItem = ({ item }) => {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <Pressable
           onPress={() => navigation.navigate("KvitteringDetails", { item: item })}
-          style={{
-            backgroundColor: "#FFF",
-            borderRadius: 15,
-            marginBottom: 0,
-            alignItems: "center",
-            paddingHorizontal: 24,
-            paddingVertical: 20,
-
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0,
-            shadowRadius: 0,
-          }}
+          style={ReceiptStyles.receiptCard}
         >
-          {/* Kvittering innhold */}
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {/* Ikon, kategori og dato */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                height: 36,
-              }}
-            >
-              <Image source={require('../../assets/StoreIcon/rema1000.png')} style={{ width: 40, height: 40, marginRight: 12, resizeMode: 'contain' }} />
+
+          <View style={ReceiptStyles.receiptAlignment}>
+
+            <View style={ReceiptStyles.cardAlignment}>
+              <Image 
+                source={require('../../assets/StoreIcon/rema1000.png')} 
+                style={ReceiptStyles.iconStyle} 
+              />
               <View>
-                <Text style={{ fontSize: 18, textTransform: 'capitalize' }}>{item.Store}</Text>
-                <Text style={{ opacity: 0.6 }}>{item.Date}</Text>
+                <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+                <Text style={ReceiptStyles.dateText}>{item.Date}</Text>
               </View>
             </View>
 
-            {/* Pris */}
-            <View style={styles.priceContainer}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ color: "#2984FF", fontWeight: "600" }}>{item.Price}</Text>
-                <Text style={{ color: "#2984FF", fontWeight: "600" }}> ,-</Text>
-              </View>
+            <View style={ReceiptStyles.priceContainer}>
+                <Text style={ReceiptStyles.priceText}>{item.Price}</Text>
+                <Text style={ReceiptStyles.priceText}> ,-</Text>
             </View>
+
           </View>
         </Pressable>
       </View>
@@ -159,121 +142,47 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={{ backgroundColor: "#FFF", flex: 1 }}>
+    <View style={ContainerStyles.backgroundContainer}>
       <SafeAreaView />
 
       {/* Header container */}
-    <View style={styles.headerContainer}>
-      <Text style={styles.header}>Hjem</Text>
+    <View style={ContainerStyles.headerContainer}>
+      <Text style={FontStyles.header}>Hjem</Text>
     </View>
 
       {/* Receipts */}
-      <View style={styles.kvitteringContainer}>
-        <View style={styles.nyligeContainer}>
-          <Text style={styles.subHeader}>Nylige kvitteringer</Text>
+        <View style={ContainerStyles.subHeaderContainer}>
+          <Text style={FontStyles.subHeader}>Nylige kvitteringer</Text>
+
           {/* Se alle btn */}
           <TouchableOpacity 
             onPress={() => navigation.navigate('ReceiptsScreen')}
           >
-              <Text style={styles.linkBtn}>Se alle</Text>
+              <Text style={FontStyles.linkBtn}>Se alle</Text>
           </TouchableOpacity>
-      </View>
-        {isLoading ? (
-          <ActivityIndicator size='small' />
-        ) : (
-          <SectionList
-            showsVerticalScrollIndicator={false}
-            sections={Object.entries(groupedReceipts).map(([date, data]) => ({
-              title: date,
-              data,
-            }))}
-            keyExtractor={(item) => item.id}
-            renderItem={renderReceiptItem}
-            refreshing={isRefreshing}
-            onRefresh={() => {
-              loadReceiptList();
-              setIsRefreshing(true);
-            }}
-          />
-        )}
-      </View>
-    </View>
+
+          {/* Recent receipts list */}
+          </View>
+            {isLoading ? (
+              <ActivityIndicator size='small' />
+            ) : (
+              <SectionList
+                showsVerticalScrollIndicator={false}
+                sections={Object.entries(groupedReceipts).map(([date, data]) => ({
+                  title: date,
+                  data,
+                }))}
+                keyExtractor={(item) => item.id}
+                renderItem={renderReceiptItem}
+                refreshing={isRefreshing}
+                onRefresh={() => {
+                  loadReceiptList();
+                  setIsRefreshing(true);
+                }}
+              />
+            )}
+          </View>
   );
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  /* Containers */
-  headerContainer: {
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: 24,
-    marginBottom: 24,
-  },
-  kvitteringContainer: {
-    paddingHorizontal: 0,
-    flex: 1,
-  },
-  searchContainer: {
-    paddingHorizontal: 24,
-  },
-  subHeaderContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-  },
-  filterContainer: {
-    paddingLeft: 24,
-  },
-  priceContainer: {
-    backgroundColor: "#F4F9FF",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 3,
-  },
-  nyligeContainer: {
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-
-  /* Buttons */
-  leggTilBtn: {
-    fontSize: 14,
-    color: "#fff",
-    fontWeight: "500",
-  },
-  leggTilBtnContainer: {
-    backgroundColor: "#2984FF",
-    borderRadius: 50,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignItems: "center",
-  },
-
-  /* Text */
-  header: {
-    fontSize: 28,
-    fontWeight: "bold",
-  },
-  subHeader: {
-    fontSize: 24,
-    marginBottom: 12,
-  },
-  linkBtn: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#2984FF",
-  },
-  dateHeader: {
-    backgroundColor: '#FBFBFB',
-    fontSize: 20,
-    marginBottom: 0,
-    paddingVertical: 2,
-    paddingHorizontal: 24,
-  },
-});

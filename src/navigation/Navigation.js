@@ -19,9 +19,22 @@ const HomeStack = createNativeStackNavigator();
 
 function HomeStackGroup() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-      <HomeStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
+    <HomeStack.Navigator>
+
+      <HomeStack.Screen
+        options={{ headerShown: false }}
+        name="HomeScreen"
+        component={HomeScreen}
+      />
+
+      <HomeStack.Screen 
+        name="KvitteringDetails" 
+        component={KvitteringDetails} 
+        options={({ route }) => ({
+          headerTitle: route.params.item.Store,
+        })}
+      />
+
     </HomeStack.Navigator>
   );
 }
@@ -31,10 +44,28 @@ const KvitteringStack = createNativeStackNavigator();
 
 function KvitteringStackGroup() {
   return (
-    <KvitteringStack.Navigator screenOptions={{ headerShown: false }}>
-      <KvitteringStack.Screen name="ReceiptsScreen" component={ReceiptsScreen} />
-      <KvitteringStack.Screen name="KvitteringDetails" component={KvitteringDetails} />
-      <KvitteringStack.Screen name="AddReceiptModal" component={AddReceiptModal} />
+    <KvitteringStack.Navigator>
+
+      <KvitteringStack.Screen 
+        options={{ headerShown: false }} 
+        name="ReceiptsScreen" 
+        component={ReceiptsScreen} 
+      />
+
+      <HomeStack.Screen 
+        name="KvitteringDetails" 
+        component={KvitteringDetails} 
+        options={({ route }) => ({
+          headerTitle: route.params.item.Store,
+        })}
+      />
+
+      <KvitteringStack.Screen 
+        options={{ headerShown: false }}
+        name="AddReceiptModal" 
+        component={AddReceiptModal} 
+      />
+
     </KvitteringStack.Navigator>
   );
 }

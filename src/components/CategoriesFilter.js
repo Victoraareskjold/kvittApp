@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 
+import Colors from "../../Styles/Colors";
+import FontStyles from "../../Styles/FontStyles";
+import ButtonStyles from "../../Styles/ButtonStyles";
+import ContainerStyles from "../../Styles/ContainerStyles";
+
 const CategoriesFilter = ({ onSelectCategory, excludeAll = true }) => { 
     const categories = ['Mat', 'Klær', 'Trening', 'Elektronikk', 'Undeholdning', 'Helse', 'Reise'];
 
@@ -22,7 +27,7 @@ const CategoriesFilter = ({ onSelectCategory, excludeAll = true }) => {
                     <TouchableOpacity
                         key={index}
                         style={[
-                            styles.filterContainer,
+                            ButtonStyles.filterBtn,
                             item === activeCategory && styles.activeCategory,
                         ]}
                         onPress={() => handleCategoryPress(item)}
