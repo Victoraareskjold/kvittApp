@@ -1,14 +1,19 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 import OnboardingAssets from './OnboardingAssets'
 import { SafeAreaView } from 'react-native'
 import Slider from '../../components/Slider'
 import OnboardingStyles from '../../../Styles/OnboardingStyles'
+import Colors from '../../../Styles/Colors'
 
-const Onboarding = () => {
+const Onboarding = ({ navigation }) => {
+
+    const { navigate } = useNavigation();
+
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: Colors.white,}}>
         <View style={OnboardingStyles.centerContainer}>
             <View style={OnboardingStyles.headerContainer}>
                 <Image 
@@ -23,7 +28,10 @@ const Onboarding = () => {
             </View>
 
             <View style={OnboardingStyles.buttonsContainer}>
-                <TouchableOpacity style={OnboardingStyles.primaryBtn}>
+                <TouchableOpacity 
+                    style={OnboardingStyles.primaryBtn}
+                    onPress={() => navigation.navigate('LoginScreen')}
+                >
                     <Text style={OnboardingStyles.linkText}>Logg inn</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>

@@ -14,6 +14,7 @@ import AddReceiptModal from "../screens/AddReceiptModal";
 import SignUp from '../screens/SignUp'
 import ResetPassword from "../screens/ResetPassword";
 import SendReceipt from "../screens/SendReceipt";
+import Onboarding from "../screens/onboarding/Onboarding";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -112,7 +113,8 @@ const Stack = createNativeStackNavigator();
 export default function Navigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{headerShown: false}}>
+      <Stack.Navigator initialRouteName="Onboarding" screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="ResetPassword" component={ResetPassword} />
