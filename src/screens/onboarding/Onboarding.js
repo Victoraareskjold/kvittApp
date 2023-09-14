@@ -1,0 +1,40 @@
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import React from 'react'
+
+import OnboardingAssets from './OnboardingAssets'
+import { SafeAreaView } from 'react-native'
+import Slider from '../../components/Slider'
+import OnboardingStyles from '../../../Styles/OnboardingStyles'
+
+const Onboarding = () => {
+  return (
+    <SafeAreaView style={{flex:1}}>
+        <View style={OnboardingStyles.centerContainer}>
+            <View style={OnboardingStyles.headerContainer}>
+                <Image 
+                    source={require('../../../assets/kvittLogo.png')}
+                    style={{height: 32, width: 32, marginRight: 12}}
+                />
+                <Text style={OnboardingStyles.header}>Kvitt</Text>
+            </View>
+
+            <View style={OnboardingStyles.mainContainer}>
+                <Slider />
+            </View>
+
+            <View style={OnboardingStyles.buttonsContainer}>
+                <TouchableOpacity style={OnboardingStyles.primaryBtn}>
+                    <Text style={OnboardingStyles.linkText}>Logg inn</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Text style={OnboardingStyles.linkText2}>Registrer deg</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    </SafeAreaView>
+  )
+}
+
+export default Onboarding
+
+const styles = StyleSheet.create({})
