@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native'
 import Slider from '../../components/Slider'
 import OnboardingStyles from '../../../Styles/OnboardingStyles'
 import Colors from '../../../Styles/Colors'
+import SignupScreen from '../SignUp'
 
 const Onboarding = ({ navigation }) => {
 
@@ -34,7 +35,9 @@ const Onboarding = ({ navigation }) => {
                 >
                     <Text style={OnboardingStyles.linkText}>Logg inn</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUp')}
+                >
                     <Text style={OnboardingStyles.linkText2}>Registrer deg</Text>
                 </TouchableOpacity>
             </View>

@@ -12,9 +12,10 @@ import SettingsScreen from "../screens/SettingsScreen";
 import KvitteringDetails from "../screens/KvitteringDetails";
 import AddReceiptModal from "../screens/AddReceiptModal";
 import SignUp from '../screens/SignUp'
-import ResetPassword from "../screens/ResetPassword";
 import SendReceipt from "../screens/SendReceipt";
 import Onboarding from "../screens/onboarding/Onboarding";
+import PhoneVerification from "../screens/PhoneVerification";
+import SetupCode from "../screens/SetupCode";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -117,7 +118,9 @@ export default function Navigation() {
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
+        <Stack.Screen name="PhoneVerification" component={PhoneVerification} />
+        <Stack.Screen name="SetupCode" component={SetupCode} />
+
         <Stack.Screen name="HomeScreen" component={TabGroup} />
       </Stack.Navigator>
     </NavigationContainer>

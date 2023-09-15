@@ -12,6 +12,7 @@ const OnboardingItem = ({item}) => {
                 resizeMode='contain' 
                 style={OnboardingStyles.heroImage}
             />
+            {/* <Lottie style={OnboardingStyles.heroImage} autoPlay loop source={require('../../../assets/animations/milhøvennlig.json')}/> */}
 
             <Text style={OnboardingStyles.subHeader}>{item.title}</Text>
             <Text style={OnboardingStyles.body}>{item.description}</Text>

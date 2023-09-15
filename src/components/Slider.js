@@ -15,11 +15,31 @@ const Slider = () => {
         setCurrentIndex(viewableItems[0].index);
     });
 
+    const sliderRef = React.useRef(null);
+
+    const data = OnboardingAssets;
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            if (currentIndex < data.length - 1) {
+                sliderRef.current.scrollToIndex({ index: currentIndex + 1 });
+                setCurrentIndex(currentIndex + 1);
+            } else {
+                sliderRef.current.scrollToIndex({ index: 0 });
+                setCurrentIndex(0);
+            }
+        }, 8000);  // Tid i millisekunder. For øyeblikket vil det scrolle hvert 10. sekund.
+
+        return () => clearTimeout(timer);  // Rens opp timeren ved unmount for å forhindre minnelekkasjer.
+    }, [currentIndex]);
+
+
   return (
     <View>
         <FlatList 
+            ref={sliderRef}
             style={{ width: '100%' }}
-            data={OnboardingAssets}
+            data={data}
             renderItem={({item}) => <OnboardingItem item={item}/>}
             horizontal
             pagingEnabled
@@ -29,7 +49,7 @@ const Slider = () => {
             viewabilityConfig={viewConfigRef.current}
         />
 
-        <Pagination data={OnboardingAssets} activeIndex={currentIndex} />
+        <Pagination data={data} activeIndex={currentIndex} />
     </View>
   )
 }

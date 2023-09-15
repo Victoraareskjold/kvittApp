@@ -1,7 +1,7 @@
 export default [
     {
         id: 1,
-        image: require('../../../assets/onboardingHero/tree.png'),
+        image: require('../../../assets/onboardingHero/miljøvennlig.png'),
         title: 'En bærekraftig løsning',
         description: 'lorem ipsum dolor sit amet lorem iopsum dolor sit amet amet!',
     },
@@ -13,7 +13,7 @@ export default [
     },
     {
         id: 3,
-        image: require('../../../assets/onboardingHero/tree.png'),
+        image: require('../../../assets/onboardingHero/miljøvennlig.png'),
         title: 'Vet ikke enda',
         description: 'lorem ipsum dolor sit amet lorem iopsum dolor sit amet amet!',
     },

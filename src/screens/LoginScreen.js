@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image } from "react-native";
 import React from "react";
 import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
@@ -9,6 +10,7 @@ import Colors from "../../Styles/Colors";
 import FontStyles from "../../Styles/FontStyles";
 import ButtonStyles from "../../Styles/ButtonStyles";
 import ContainerStyles from "../../Styles/ContainerStyles";
+import { Ionicons } from '@expo/vector-icons';
 
 console.disableYellowBow= true;
 
@@ -49,51 +51,36 @@ export default function LoginScreen({ navigation }) {
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24, justifyContent: 'center' }]}
+            style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
         >
+            <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
 
             {/* Header & subheader */}
-            <View style={{alignItems: "center"}}>
+                <Ionicons 
+                    name="chevron-back" 
+                    size={24} 
+                    color="black" 
+                    style={{marginBottom: 12}}
+                    onPress={() => navigation.goBack()}
+                />
 
                 <Text style={FontStyles.header}>
-                    Kvitt
+                    Velkommen tilbake
                 </Text>
 
-                <Text style={[FontStyles.body2, { marginBottom: 80 }]}>
-                    Logg inn
+                <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
+                    Lorem ipsum dolor sit amet
                 </Text>
-                
-            </View>
 
             {/* Email */}
-            <Text style={FontStyles.body2Fat}>Email</Text>
+            <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
                 <TextInput 
                 style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                placeholder='Email'
+                placeholder='+47 123 45 678'
                 
                 value={email}
                 onChangeText={text => setEmail(text)}
             ></TextInput>
-
-            {/* Password */}
-            <Text style={FontStyles.body2Fat}>Passord</Text>
-            <TextInput 
-                secureTextEntry={true}
-                style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                placeholder='Passord'
-
-                value={password}
-                onChangeText={text => setPassword(text)}
-            ></TextInput>
-
-            {/* Forgot password? */}
-            <View style={{alignItems: 'flex-end', marginBottom: 80}}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('ResetPassword')}
-                >
-                    <Text style={FontStyles.fatBody}>Glemt passord?</Text>
-                </TouchableOpacity>
-            </View>
 
             {/* Error message */}
             <View style={ContainerStyles.errorMessageContainer}>
@@ -101,24 +88,15 @@ export default function LoginScreen({ navigation }) {
             </View>
 
             {/* Log inn */}
-            <TouchableOpacity
-                onPress={login}
-                style={ButtonStyles.primaryBtn}
-            >
-                <Text style={FontStyles.bigBtn}>Logg inn</Text>
-            </TouchableOpacity>
-
-            {/* Register */}
-            <View style={{alignItems: 'center', marginBottom: 80}}>
-                <TouchableOpacity 
-                    onPress={() => navigation.navigate('SignUp')}
-                    style={{flexDirection: 'row'}}
+            <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
+                <TouchableOpacity
+                    onPress={login}
+                    style={ButtonStyles.primaryBtn}
                 >
-                    <Text style={FontStyles.body2}>Har du ikke bruker? </Text>
-                    <Text style={FontStyles.fatBody}>Registrer deg</Text>
-                    </TouchableOpacity>
+                    <Text style={FontStyles.bigBtn}>Logg inn</Text>
+                </TouchableOpacity>
             </View>
-            
+            </SafeAreaView>
         </KeyboardAvoidingView>
     );
 };
