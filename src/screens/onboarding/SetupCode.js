@@ -12,38 +12,6 @@ import OnboardingStyles from "../../../Styles/OnboardingStyles";
 
 export default function SetupCode({ route, navigation }) {
 
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
-    const [isCodeSent, setIsCodeSent] = useState(false);
-    let verificationId;
-
-    const sendVerificationCode = async () => {
-        const phoneProvider = new PhoneAuthProvider();
-        verificationId = await phoneProvider.verifyPhoneNumber(phoneNumber, window.recaptchaVerifier);
-        setIsCodeSent(true);
-    };
-    
-    const verifyCodeAndContinue = async () => {
-        const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-        try {
-            await signInWithCredential(getAuth(), credential);
-    
-            // Data from the SignupScreen component
-            const { firstName, lastName } = route.params;
-    
-            // Save or send data for further registration
-            // Here we're just passing it to another screen for the sake of demonstration
-            navigation.navigate("setupCode", {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber
-            });
-    
-        } catch (error) {
-            console.error("Feil ved kodeverifisering: ", error);
-        }
-    };    
-
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -60,40 +28,21 @@ export default function SetupCode({ route, navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Bekreft Telefonnummer
+                    Sett opp kode
                 </Text>
 
-                <TextInput 
-                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4}]}
-                    placeholder="123 45 678"
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
-                />
+                <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
+                    4 sifferet
+                </Text>
 
-                {isCodeSent && (
-                    <TextInput 
-                        style={[ButtonStyles.defaultPlaceholder, { marginTop: 4}]}
-                        placeholder="8 siffer"
-                        value={verificationCode}
-                        onChangeText={setVerificationCode}
-                    />
-                )}
-
-                {isCodeSent ? (
+                <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
                     <TouchableOpacity 
-                        style={ButtonStyles.primaryBtn}
-                        onPress={verifyCodeAndContinue} 
+                        style={ButtonStyles.primaryBtn} 
+                        onPress={''} 
                     >
                         <Text style={FontStyles.bigBtn}>Gå videre</Text>
                     </TouchableOpacity>
-                ) : (
-                    <TouchableOpacity 
-                        style={ButtonStyles.primaryBtn} 
-                        onPress={sendVerificationCode} 
-                    >
-                        <Text style={FontStyles.bigBtn}>Send kode</Text>
-                    </TouchableOpacity>
-                )}
+                </View>
 
             </SafeAreaView>
         </KeyboardAvoidingView>
