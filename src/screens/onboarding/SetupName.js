@@ -4,24 +4,20 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 
-import { auth, db } from "../../firebase";
+import { auth, db } from "../../../firebase";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
-import Colors from "../../Styles/Colors";
-import FontStyles from "../../Styles/FontStyles";
-import ButtonStyles from "../../Styles/ButtonStyles";
-import ContainerStyles from "../../Styles/ContainerStyles";
-import OnboardingStyles from "../../Styles/OnboardingStyles";
+import Colors from "../../../Styles/Colors";
+import FontStyles from "../../../Styles/FontStyles";
+import ButtonStyles from "../../../Styles/ButtonStyles";
+import ContainerStyles from "../../../Styles/ContainerStyles";
+import OnboardingStyles from "../../../Styles/OnboardingStyles";
 
-export default function SignupScreen({ navigation }) {
+export default function SetupName({ navigation }) {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     let [validationMessage, setValidationMessage] = useState('');
 
@@ -40,38 +36,11 @@ export default function SignupScreen({ navigation }) {
             return;
         }
         
-        navigation.navigate("PhoneVerification", {
+        navigation.navigate("SetupPhone", {
             firstName: firstName,
             lastName: lastName,
         });
     };
-    
-    /* let signUp = () => {
-        if (!firstName || !lastName) {
-            setValidationMessage('Vennligst fyll ut alle feltene');
-            return;
-        }
-
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              const uid = user.uid;
-              const userDocRef = doc(db, "users", uid);
-              
-              setDoc(userDocRef, {
-                fornavn: firstName,
-                mellomnavn: middleName,
-                etternavn: lastName,
-                epost: email,
-                // Legg til andre felt om nødvendig
-              });
-              sendEmailVerification(user);
-              navigation.navigate("HomeScreen", { user: user });
-            })
-            .catch((error) => {
-              setValidationMessage(error.message);
-            });
-        }; */
 
     return (
         <KeyboardAvoidingView 
@@ -90,7 +59,7 @@ export default function SignupScreen({ navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Kom i gang
+                    Hei
                 </Text>
 
                 <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
