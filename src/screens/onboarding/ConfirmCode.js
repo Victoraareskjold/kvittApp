@@ -8,7 +8,7 @@ import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 
-export default function SetupCode({ route, navigation }) {
+export default function ConfirmCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
 
@@ -48,20 +48,28 @@ export default function SetupCode({ route, navigation }) {
         // Data fra SetupPhone-skjermen
         const { firstName, lastName, phoneNumber } = route.params;
 
-        // Her kan du gjøre noe med koden, for eksempel lagre den i en database
+        // Sammenlign koden med den lagrede koden fra SetupCode
+        const setupCode = route.params.code;
 
-        // Naviger til neste skjerm eller gjør hva du vil med koden
-        navigation.navigate("ConfirmCode", {
-            firstName: firstName,
-            lastName: lastName,
-            phoneNumber: phoneNumber,
-            code: enteredCode
-        });
+        if (enteredCode === setupCode) {
+            // Koden er riktig, du kan gjøre hva du vil her, for eksempel lagre den i en database
+
+            // Naviger til neste skjerm eller gjør hva du vil med koden
+            navigation.navigate("FaceId", {
+                firstName: firstName,
+                lastName: lastName,
+                phoneNumber: phoneNumber,
+                code: enteredCode
+            });
+        } else {
+            // Koden er feil, gi beskjed til brukeren
+            alert('Kodene skrevet er ikke like.');
+        }
     };
 
     return (
         <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : '0'}
             style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
         >
             <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
@@ -75,11 +83,11 @@ export default function SetupCode({ route, navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Sett opp kode
+                    Bekreft kode
                 </Text>
 
                 <Text style={[FontStyles.body2, { marginBottom: 32 }]}>
-                    Skriv inn en 4-sifret kode
+                    Skriv inn den 4-sifrede koden på nytt
                 </Text>
 
                 <View style={styles.codeInputContainer}>

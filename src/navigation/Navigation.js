@@ -16,6 +16,8 @@ import SendReceipt from "../screens/SendReceipt";
 import Onboarding from "../screens/onboarding/Onboarding";
 import SetupPhone from "../screens/onboarding/SetupPhone";
 import SetupCode from "../screens/onboarding/SetupCode";
+import ConfirmCode from "../screens/onboarding/ConfirmCode";
+import FaceId from "../screens/onboarding/FaceId";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -31,8 +33,8 @@ function HomeStackGroup() {
       />
 
       <HomeStack.Screen 
-        name="KvitteringDetails" 
-        component={KvitteringDetails} 
+        name="ReceiptView" 
+        component={ReceiptView} 
         options={({ route }) => ({
           headerTitle: route.params.item.Store,
         })}
@@ -120,6 +122,8 @@ export default function Navigation() {
         <Stack.Screen name="SetupName" component={SetupName} />
         <Stack.Screen name="SetupPhone" component={SetupPhone} />
         <Stack.Screen name="SetupCode" component={SetupCode} />
+        <Stack.Screen name="ConfirmCode" component={ConfirmCode} />
+        <Stack.Screen name="FaceId" component={FaceId} />
 
         <Stack.Screen name="HomeScreen" component={TabGroup} />
       </Stack.Navigator>

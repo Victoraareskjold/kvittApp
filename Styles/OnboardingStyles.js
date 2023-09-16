@@ -64,6 +64,11 @@ export default {
         flexDirection: 'row',
         justifyContent: 'center',
     },
+    imageContainer: {
+        paddingHorizontal: 24,
+        alignItems: 'center',
+        marginTop: 128,
+    },
 
     primaryBtn: {
         backgroundColor: Colors.primary,

@@ -10,7 +10,29 @@ import ContainerStyles from "../../../Styles/ContainerStyles";
 
 export default function SetupPhone({ route, navigation }) {
 
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('+47 ');
+
+    const handlePhoneNumberChange = (text) => {
+        // Sjekk at tekst alltid starter med "+47 "
+        if (!text.startsWith('+47 ')) {
+            text = '+47 ' + text.replace('+47', '').trim();
+        }
+    
+        // Hent bare sifrene (uten +47)
+        let digits = text.substring(4).replace(/\D/g, '');
+    
+        // Bruk substr eller slice til å hente deler av nummeret og deretter formatere det
+        if (digits.length <= 3) {
+            text = `+47 ${digits}`;
+        } else if (digits.length <= 5) {
+            text = `+47 ${digits.substr(0, 3)} ${digits.substr(3)}`;
+        } else {
+            text = `+47 ${digits.substr(0, 3)} ${digits.substr(3, 2)} ${digits.substr(5)}`;
+        }
+    
+        // Setter telefonnummerets nye formaterte verdi
+        setPhoneNumber(text);
+    };    
 
     const [validationMessage, setValidationMessage] = useState('');
 
@@ -22,6 +44,8 @@ export default function SetupPhone({ route, navigation }) {
     
         // Data from the SetupName screen
         const { firstName, lastName } = route.params;
+
+        console.log('Telefonnummer:', phoneNumber);
         
         navigation.navigate("SetupCode", {
             firstName: firstName,
@@ -58,7 +82,9 @@ export default function SetupPhone({ route, navigation }) {
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4}]}
                     placeholder="+47 123 45 678"
                     value={phoneNumber}
-                    onChangeText={setPhoneNumber}
+                    onChangeText={handlePhoneNumberChange}
+                    keyboardType="number-pad"
+                    maxLength={14} // +47, 3 mellomrom, og 8 sifre
                 />
 
                 <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
