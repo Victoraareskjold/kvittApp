@@ -61,7 +61,7 @@ export default function SetupCode({ route, navigation }) {
 
     return (
         <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : '0'}
             style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
         >
             <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>

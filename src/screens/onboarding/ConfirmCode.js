@@ -3,6 +3,9 @@ import { Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 
+import db from "../../../firebase";
+import { collection, addDoc } from 'firebase/firestore';
+
 import Colors from "../../../Styles/Colors";
 import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
@@ -11,6 +14,23 @@ import ContainerStyles from "../../../Styles/ContainerStyles";
 export default function ConfirmCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
+
+    /* Firebase create user */
+    const createUserInFirestore = async (firstName, lastName, phoneNumber, code) => {
+        console.log("user:", { firstName, lastName, phoneNumber, code });
+        const usersRef = collection(db, 'users');
+        try {
+            const docRef = await addDoc(usersRef, {
+                firstName: firstName,
+                lastName: lastName,
+                phoneNumber: phoneNumber,
+                code: code,
+            });
+            console.log('User added with ID:', docRef.id);
+        } catch (error) {
+            console.error('Error adding user: ', error.message, error.code);
+        }        
+    }    
 
     useEffect(() => {
         // Fokus på den første TextInput når komponenten lastes
@@ -54,13 +74,10 @@ export default function ConfirmCode({ route, navigation }) {
         if (enteredCode === setupCode) {
             // Koden er riktig, du kan gjøre hva du vil her, for eksempel lagre den i en database
 
+            createUserInFirestore(firstName, lastName, phoneNumber, enteredCode);
+
             // Naviger til neste skjerm eller gjør hva du vil med koden
-            navigation.navigate("FaceId", {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-                code: enteredCode
-            });
+            navigation.navigate("FaceId");
         } else {
             // Koden er feil, gi beskjed til brukeren
             alert('Kodene skrevet er ikke like.');

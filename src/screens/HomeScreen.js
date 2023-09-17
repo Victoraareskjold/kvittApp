@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
-import { auth, db } from "../../firebase";
+import { db } from "../../firebase";
 import { collection, 
   query, 
   where, 
@@ -55,15 +55,16 @@ const HomeScreen = () => {
   const loadReceiptList = async () => {
     let q;
     if (selectedCategory === "Alle") {
+      /* console.log(db); */
       q = query(
         collection(db, "receipts"), 
-        where("userId", "==", auth.currentUser.uid),
+        /* where("userId", "==", auth.currentUser.uid), */
         orderBy("Date", "desc")
       );
     } else {
       q = query(
         collection(db, "receipts"),
-        where("userId", "==", auth.currentUser.uid),
+        /* where("userId", "==", auth.currentUser.uid), */
         where("Category", "==", selectedCategory),
         orderBy("Date", "desc")
       );

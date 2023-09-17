@@ -38,6 +38,7 @@ export default StyleSheet.create({
         color: Colors.default,
         opacity: 0.5,
         fontWeight: '600',
+        letterSpacing: .5,
     },
 
     /* Button fonts */

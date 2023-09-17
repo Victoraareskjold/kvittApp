@@ -44,8 +44,6 @@ export default function SetupPhone({ route, navigation }) {
     
         // Data from the SetupName screen
         const { firstName, lastName } = route.params;
-
-        console.log('Telefonnummer:', phoneNumber);
         
         navigation.navigate("SetupCode", {
             firstName: firstName,

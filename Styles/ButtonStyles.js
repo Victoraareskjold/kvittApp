@@ -31,7 +31,7 @@ const ButtonStyles = StyleSheet.create({
 
     /* Placeholders */
     defaultPlaceholder: {
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.darkGrey,
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginBottom: 12,

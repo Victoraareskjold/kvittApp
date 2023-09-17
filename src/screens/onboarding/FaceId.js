@@ -16,26 +16,33 @@ export default function FaceId({ route, navigation }) {
         <View style={OnboardingStyles.centerContainer}>
 
             <View style={OnboardingStyles.imageContainer}>
+
+                {/* FaceID image */}
                 <Image 
                     source={require('../../../assets/faceId.png')}
                     style={{height: 250, width: 250, marginBottom: 32}}
                 />
                 <Text style={OnboardingStyles.subHeader}>Raskere pålogging</Text>
-            <Text style={OnboardingStyles.body}>Lorem ipsum</Text>
-            </View>
+                <Text style={OnboardingStyles.body}>Lorem ipsum</Text>
+                </View>
 
-            <View style={OnboardingStyles.buttonsContainer}>
+                {/* Activate FaceID */}
+                <View style={OnboardingStyles.buttonsContainer}>
                 <TouchableOpacity 
                     style={OnboardingStyles.primaryBtn}
-                    onPress={navigation.navigate("HomeScreen")}
+                    onPress={() => navigation.navigate("HomeScreen")}
                 >
+
                     <Text style={OnboardingStyles.linkText}>Aktiver Face ID</Text>
                 </TouchableOpacity>
+
+                {/* No FaceId */}
                 <TouchableOpacity
-                    onPress={navigation.navigate("HomeScreen")}
+                    onPress={() => navigation.navigate("HomeScreen")}
                 >
                     <Text style={OnboardingStyles.linkText2}>Nei takk</Text>
                 </TouchableOpacity>
+                
             </View>
 
         </View>

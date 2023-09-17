@@ -46,11 +46,11 @@ export default {
     },
     body: {
         fontSize: 16,
-        fontWeight: 'regular',
-        letterSpacing: 1,
+        fontWeight: '400',
+        letterSpacing: 0.5,
         textAlign: 'center',
         color: Colors.default,
-        opacity: 0.76,
+        opacity: 0.5,
         width: screenWidth - 48,
     },
     dot: {

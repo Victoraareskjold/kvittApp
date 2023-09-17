@@ -63,39 +63,42 @@ const ReceiptsScreen = () => {
   }, [selectedCategory]); 
 
   let loadReceiptList = async () => {
-    let q;
-    if (selectedCategory === "Alle") {
-      q = query(
-        collection(db, "receipts"), 
-        where("userId", "==", auth.currentUser.uid),
-        orderBy("Date", "desc")
-      );
-    } else {
-      q = query(
-        collection(db, "receipts"),
-        where("userId", "==", auth.currentUser.uid),
-        where("Category", "==", selectedCategory),
-        orderBy("Date", "desc")
-      );
-    }    
+    try {
+        let q;
+        if (selectedCategory === "Alle") {
+          q = query(
+            collection(db, "receipts"), 
+            /* where("userId", "==", auth.currentUser.uid), */
+            orderBy("Date", "desc")
+          );
+        } else {
+          q = query(
+            collection(db, "receipts"),
+            /* where("userId", "==", auth.currentUser.uid), */
+            where("Category", "==", selectedCategory),
+            orderBy("Date", "desc")
+          );
+        }    
 
-    const querySnapshot = await getDocs(q);
-    let receipts = [];
-    querySnapshot.forEach((doc) => {
-      let receipt = doc.data();
-      receipt.id = doc.id;
-      receipts.push(receipt);
-    });
+        const querySnapshot = await getDocs(q);
+        let receipts = [];
+        querySnapshot.forEach((doc) => {
+          let receipt = doc.data();
+          receipt.id = doc.id;
+          receipts.push(receipt);
+        });
 
-  // Sorter kvitteringene etter dato-feltet som strenger
-  receipts.sort((a, b) => {
-    return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
-  });
+        receipts.sort((a, b) => {
+            return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
+        });
 
-  const receiptsGroupedByDate = groupReceiptsByDate(receipts);
-  setGroupedReceipts(receiptsGroupedByDate);
-  setIsLoading(false);
-  setIsRefreshing(false);
+        const receiptsGroupedByDate = groupReceiptsByDate(receipts);
+        setGroupedReceipts(receiptsGroupedByDate);
+        setIsLoading(false);
+        setIsRefreshing(false);
+    } catch (error) {
+        console.error("Feil ved henting av kvitteringer:", error);
+    }
 };
 
 const dateStringToSortableNumber = (dateString) => {
@@ -154,7 +157,7 @@ const groupReceiptsByDate = (receipts) => {
       Category: selectedCategory,
       Price: price,
       Date: dateOfReceipt,
-      userId: auth.currentUser.uid,
+      /* userId: auth.currentUser.uid, */
     };
     const docRef = await addDoc(collection(db, "receipts"), receiptSave);
 
