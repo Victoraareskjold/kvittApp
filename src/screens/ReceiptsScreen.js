@@ -123,7 +123,7 @@ const groupReceiptsByDate = (receipts) => {
     return (
       <View>
         <Pressable
-          onPress={() => navigate("KvitteringDetails", { item: item })}
+          onPress={() => navigate("ReceiptView", { item: item })}
           style={ReceiptStyles.receiptCard}
         >
 

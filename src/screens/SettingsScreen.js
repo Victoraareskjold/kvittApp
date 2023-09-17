@@ -8,14 +8,14 @@ const SettingsScreen = () => {
   const navigation = useNavigation()
 
   /* Logg ut btn */
-  const handleSignOut = () => {
+  /* const handleSignOut = () => {
     auth
     .signOut()
     .then(() => {
-      navigation.replace('LoginScreen')
+      navigation.replace('Onboarding')
     })
     .catch(error => alert(error.message))
-  }
+  } */
 
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
@@ -59,7 +59,8 @@ const SettingsScreen = () => {
           
           {/* Logg ut */}
           <TouchableOpacity 
-          onPress={handleSignOut}
+          /* onPress={handleSignOut} */
+          onPress={() => navigation.replace("Onboarding")}
           style={styles.settingsBtnContainer}
           >
             <Image 

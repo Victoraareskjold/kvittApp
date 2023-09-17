@@ -114,7 +114,7 @@ const HomeScreen = () => {
     return (
       <View style={{flex: 1}}>
         <Pressable
-          onPress={() => navigation.navigate("KvitteringDetails", { item: item })}
+          onPress={() => navigation.navigate("ReceiptView", { item: item })}
           style={ReceiptStyles.receiptCard}
         >
 

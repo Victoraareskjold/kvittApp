@@ -36,7 +36,7 @@ function HomeStackGroup() {
         name="ReceiptView" 
         component={ReceiptView} 
         options={({ route }) => ({
-          headerTitle: route.params.item.Store,
+          headerTitle: /* route.params.item.Store, */ 'Tilbake'
         })}
       />
 
@@ -61,7 +61,7 @@ function KvitteringStackGroup() {
         name="ReceiptView" 
         component={ReceiptView} 
         options={({ route }) => ({
-          headerTitle: route.params.item.Store,
+          headerTitle: /* route.params.item.Store, */ 'Tilbake'
         })}
       />
 

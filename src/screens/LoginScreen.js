@@ -16,7 +16,7 @@ console.disableYellowBow= true;
 
 export default function LoginScreen({ navigation }) {
 
-    if (auth.currentUser) {
+    /* if (auth.currentUser) {
         navigation.navigate('HomeScreen');
     }   else {
         onAuthStateChanged(auth, (user) => {
@@ -24,7 +24,7 @@ export default function LoginScreen({ navigation }) {
                 navigation.navigate('HomeScreen');
             } 
         });
-    }
+    } */
 
     let [errorMessage, setErrorMessage] = useState('')
     let [email, setEmail] = useState('')
@@ -90,7 +90,7 @@ export default function LoginScreen({ navigation }) {
             {/* Log inn */}
             <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
                 <TouchableOpacity
-                    onPress={login}
+                    onPress={() => navigation.navigate("HomeScreen")}
                     style={ButtonStyles.primaryBtn}
                 >
                     <Text style={FontStyles.bigBtn}>Logg inn</Text>
