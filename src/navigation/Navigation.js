@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import ReceiptsScreen from "../screens/ReceiptsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import AllSettings from "../screens/Settings/AllSettings"
 import ReceiptView from "../components/ReceiptView";
 import AddReceiptModal from "../screens/AddReceiptModal";
 import SetupName from '../screens/onboarding/SetupName'
@@ -18,6 +18,8 @@ import SetupPhone from "../screens/onboarding/SetupPhone";
 import SetupCode from "../screens/onboarding/SetupCode";
 import ConfirmCode from "../screens/onboarding/ConfirmCode";
 import FaceId from "../screens/onboarding/FaceId";
+import UserSettings from "../screens/Settings/UserSettings";
+import CardsSettings from "../screens/Settings/CardsSettings";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -36,7 +38,7 @@ function HomeStackGroup() {
         name="ReceiptView" 
         component={ReceiptView} 
         options={({ route }) => ({
-          headerTitle: /* route.params.item.Store, */ 'Tilbake'
+          headerTitle: route.params.item.Store, 
         })}
       />
 
@@ -57,11 +59,11 @@ function KvitteringStackGroup() {
         component={ReceiptsScreen} 
       />
 
-      <HomeStack.Screen 
+      <KvitteringStack.Screen 
         name="ReceiptView" 
         component={ReceiptView} 
         options={({ route }) => ({
-          headerTitle: /* route.params.item.Store, */ 'Tilbake'
+          headerTitle: route.params.item.Store,
         })}
       />
 
@@ -72,6 +74,35 @@ function KvitteringStackGroup() {
       />
 
     </KvitteringStack.Navigator>
+  );
+}
+
+/* Settings stack */
+const SettingsStack = createNativeStackNavigator();
+
+function SettingsStackGroup() {
+  return (
+    <SettingsStack.Navigator>
+
+      <SettingsStack.Screen 
+        options={{ headerShown: false }} 
+        name="Innstillinger" 
+        component={AllSettings} 
+      />
+
+      <SettingsStack.Screen 
+        options={{ headerShown: true }}
+        name="Din profil" 
+        component={UserSettings} 
+      />
+
+      <SettingsStack.Screen 
+        options={{ headerShown: true }}
+        name="Dine kort" 
+        component={CardsSettings} 
+      />
+
+    </SettingsStack.Navigator>
   );
 }
 
@@ -104,7 +135,7 @@ function TabGroup() {
       <Tab.Screen name="HomeStackGroup" component={HomeStackGroup} options={{ tabBarLabel: "Hjem" }} />
       <Tab.Screen name="KvitteringStackGroup" component={KvitteringStackGroup} options={{ tabBarLabel: "Kvitteringer" }} />
       <Tab.Screen name="SendReceipt" component={SendReceipt} options={{ tabBarLabel: "Del kvittering" }} />
-      <Tab.Screen name="Innstillinger" component={SettingsScreen} />
+      <Tab.Screen name="Innstillinger" component={SettingsStackGroup} />
     </Tab.Navigator>
   );
 }

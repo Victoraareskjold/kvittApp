@@ -10,7 +10,7 @@ export default {
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: 24,
-        marginBottom: 24,
+        marginBottom: 32,
     },
     topRight: {
         paddingHorizontal: 24,
@@ -42,6 +42,22 @@ export default {
     errorMessageContainer: {
         alignItems: 'center',
         marginBottom: 24,
+    },
+    paddingContainer: {
+        paddingHorizontal: 24,
+    },
+    settingsBtnContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    centerContainer: {
+        paddingHorizontal: 24,
+        alignItems: 'center',
+    },
+    userPhoto: {
+        height: 96,
+        width: 96,
     },
 
     /* DateTimePicker */

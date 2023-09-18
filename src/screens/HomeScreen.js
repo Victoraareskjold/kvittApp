@@ -147,9 +147,9 @@ const HomeScreen = () => {
       <SafeAreaView />
 
       {/* Header container */}
-    <View style={ContainerStyles.headerContainer}>
-      <Text style={FontStyles.header}>Hjem</Text>
-    </View>
+      <View style={ContainerStyles.headerContainer}>
+        <Text style={FontStyles.header}>Hjem</Text>
+      </View>
 
       {/* Receipts */}
         <View style={ContainerStyles.subHeaderContainer}>

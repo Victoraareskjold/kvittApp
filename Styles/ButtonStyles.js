@@ -12,10 +12,19 @@ const ButtonStyles = StyleSheet.create({
         justifyContent: "center",
         marginBottom: 12,
     },
+    secondaryBtn: {
+        backgroundColor: Colors.grey,
+        borderRadius: 50,
+        paddingVertical: 18,
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 12,
+    },
     addReceiptBtn: {
         backgroundColor: "#2984FF",
         borderRadius: 50,
-        paddingVertical: 6,
+        paddingVertical: 8,
         paddingHorizontal: 12,
         alignItems: "center",
     },
@@ -37,6 +46,14 @@ const ButtonStyles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 50,
     },
+
+    /* Icons */
+    settingsIcon: {
+        height: 24, 
+        width: 24, 
+        resizeMode: 'contain', 
+        marginRight: 12,
+      },
 });
 
 export default ButtonStyles;
