@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 
-import db from "../../../firebase";
+import { db } from "../../../firebase";
 import { collection, addDoc } from 'firebase/firestore';
 
 import Colors from "../../../Styles/Colors";

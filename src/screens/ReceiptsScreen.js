@@ -93,9 +93,11 @@ const ReceiptsScreen = () => {
         });
 
         const receiptsGroupedByDate = groupReceiptsByDate(receipts);
+        
         setGroupedReceipts(receiptsGroupedByDate);
         setIsLoading(false);
         setIsRefreshing(false);
+
     } catch (error) {
         console.error("Feil ved henting av kvitteringer:", error);
     }
