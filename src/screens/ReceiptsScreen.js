@@ -190,7 +190,7 @@ const groupReceiptsByDate = (receipts) => {
       </View>
 
       {/* Searchbar */}
-      <View style={ContainerStyles.searchContainer}>
+      <View style={{ paddingHorizontal: 24 }}>
         <SearchBox 
           placeholder={'Søk etter butikk eller produkt'}
         />

@@ -86,7 +86,7 @@ function SettingsStackGroup() {
 
       <SettingsStack.Screen 
         options={{ headerShown: false }} 
-        name="Innstillinger" 
+        name="MainSettings" 
         component={AllSettings} 
       />
 

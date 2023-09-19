@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -10,8 +10,10 @@ import ReceiptStyles from "../../../Styles/ReceiptStyles";
 
 const UserSettings = () => {
   return (
-    <View style={ContainerStyles.backgroundContainer}>
-      <SafeAreaView />
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : '100'}
+            style={[ContainerStyles.backgroundContainer, { paddingTop: 32 }]}
+        >
 
         {/* Header container */}
         <View style={[ContainerStyles.centerContainer, { marginBottom: 32 }]}>
@@ -30,8 +32,8 @@ const UserSettings = () => {
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                     placeholder='+47 123 45 678'
 
-                    value={''}
-                    onChangeText={''}
+                    /* value={''}
+                    onChangeText={''} */
                 ></TextInput>
 
             {/* Lastname */}
@@ -40,8 +42,8 @@ const UserSettings = () => {
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                     placeholder='+47 123 45 678'
 
-                    value={''}
-                    onChangeText={''}
+                    /* value={''}
+                    onChangeText={''} */
                 ></TextInput>
 
             {/* Email */}
@@ -50,8 +52,8 @@ const UserSettings = () => {
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                     placeholder='+47 123 45 678'
 
-                    value={''}
-                    onChangeText={''}
+                    /* value={''}
+                    onChangeText={''} */
                 ></TextInput>
 
             {/* Phone */}
@@ -60,8 +62,8 @@ const UserSettings = () => {
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4, marginBottom: 32 }]}
                     placeholder='+47 123 45 678'
 
-                    value={''}
-                    onChangeText={''}
+                    /* value={''}
+                    onChangeText={''} */
                 ></TextInput>
 
             <TouchableOpacity 
@@ -75,8 +77,7 @@ const UserSettings = () => {
             </TouchableOpacity>
 
         </View>
-      
-    </View>
+        </KeyboardAvoidingView>
   )
 }
 

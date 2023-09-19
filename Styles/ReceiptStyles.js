@@ -41,12 +41,14 @@ export default {
     /* Fonts */
     storeText: {
         color: Colors.default,
-        fontSize: 18, 
+        fontSize: 16, 
         textTransform: 'capitalize',
+        fontWeight: '500',
     },
     dateText: {
         color: Colors.default,
         opacity: 0.6,
+        fontWeight: '500',
     },
     categoryText: {
         color: Colors.default,
@@ -58,10 +60,11 @@ export default {
     },
     dateHeader: {
         backgroundColor: Colors.grey,
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: '500',
-        color: Colors.default,
+        color: Colors.defaultLight,
         paddingHorizontal: 24,
-        paddingVertical: 2,
+        paddingVertical: 4,
+        opacity: 1,
     },
 };

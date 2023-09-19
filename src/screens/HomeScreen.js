@@ -10,6 +10,7 @@ import {
   Pressable,
   Image,
   Button,
+  FlatList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -27,8 +28,10 @@ import FontStyles from "../../Styles/FontStyles";
 import ButtonStyles from "../../Styles/ButtonStyles";
 import ContainerStyles from "../../Styles/ContainerStyles";
 import ReceiptStyles from "../../Styles/ReceiptStyles";
+import RecentContacts from "../components/RecentContacts";
 
 const HomeScreen = () => {
+
   const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,10 +42,29 @@ const HomeScreen = () => {
 
   const [groupedReceipts, setGroupedReceipts] = useState({});
 
+  const [recentContacts, setRecentContacts] = useState([]);
+
   const dateStringToSortableNumber = (dateString) => {
     const [day, month, year] = dateString.split('.');
     return parseInt(year + month + day, 10);
   };  
+
+  useEffect(() => {
+    const fetchRecentUsers = async () => {
+        const recentUsersQuery = query(collection(db, "users"));
+        const snapshot = await getDocs(recentUsersQuery);
+        const usersList = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
+        });
+
+        console.log("Recent Contacts:", recentContacts);
+        setRecentContacts(usersList);
+    };
+
+    fetchRecentUsers();
+}, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -151,7 +173,9 @@ const HomeScreen = () => {
         <Text style={FontStyles.header}>Hjem</Text>
       </View>
 
-      {/* Receipts */}
+      <RecentContacts recentContacts={recentContacts}/>
+
+      {/* Recent receipts */}
         <View style={ContainerStyles.subHeaderContainer}>
           <Text style={FontStyles.subHeader}>Nylige kvitteringer</Text>
 

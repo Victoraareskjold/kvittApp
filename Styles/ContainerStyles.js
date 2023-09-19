@@ -25,8 +25,18 @@ export default {
         justifyContent: 'space-between',
         alignItems: 'baseline',
     },
-    searchContainer: {
+    contactsContainer: {
         paddingHorizontal: 24,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        marginTop: 0,
+        backgroundColor: '#FBFBFB',
+        paddingVertical: 12,
+        flexDirection: 'row',
+        borderRadius: 50,
+        paddingHorizontal: 12,
+        alignItems: 'center',
     },
     filterContainer: {
         paddingLeft: 24,
@@ -59,6 +69,15 @@ export default {
         height: 96,
         width: 96,
     },
+    smallUserPhoto: {
+        height: 64,
+        width: 64,
+    },
+    smallerUserPhoto: {
+        height: 48,
+        width: 48,
+        marginRight: 12,
+    },
 
     /* DateTimePicker */
     DatePlaceholder: {
@@ -71,5 +90,12 @@ export default {
     datePicker: {
         height: 160,
         marginTop: -10,
+    },
+
+    userName: {
+        textAlign: 'center',
+        width: 64,
+        overflow: 'hidden',
+        marginTop: 4,
     },
 };

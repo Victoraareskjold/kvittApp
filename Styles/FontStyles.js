@@ -5,13 +5,13 @@ export default StyleSheet.create({
     header: {
         fontSize: 28,
         letterSpacing: 0.5,
-        fontWeight: '500',
+        fontWeight: '600',
         color: Colors.default,
     },
     subHeader: {
         fontSize: 20,
         letterSpacing: 0.5,
-        fontWeight: '400',
+        fontWeight: '500',
         color: Colors.default,
     },
     fatBody: {

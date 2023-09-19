@@ -8,8 +8,8 @@ const SearchBox = ({  placeholder }) => {
     return (
         <View style={styles.searchContainer}>
             <Image 
-            source={require("../../assets/searchIcon.png")}
-            style={{ width: 18, height: 18, marginRight: 4 }}
+                source={require("../../assets/searchIcon.png")}
+                style={{ width: 18, height: 18, marginRight: 4 }}
             />
             <TextInput 
                 value={input} onChangeText={(text) => setInput(text)} 
