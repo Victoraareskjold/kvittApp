@@ -41,21 +41,23 @@ export default {
     /* Fonts */
     storeText: {
         color: Colors.default,
-        fontSize: 16, 
+        fontSize: 18, 
         textTransform: 'capitalize',
-        fontWeight: '500',
+        fontWeight: '400',
     },
     dateText: {
         color: Colors.default,
         opacity: 0.6,
-        fontWeight: '500',
+        fontWeight: '400',
     },
     categoryText: {
         color: Colors.default,
         opacity: 0.6,
+        fontWeight: '400',
     },
     priceText: {
         color: Colors.primary, 
+        fontSize: 16,
         fontWeight: '600',
     },
     dateHeader: {

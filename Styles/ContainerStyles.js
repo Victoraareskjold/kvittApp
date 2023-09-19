@@ -10,7 +10,7 @@ export default {
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: 24,
-        marginBottom: 32,
+        marginBottom: 24,
     },
     topRight: {
         paddingHorizontal: 24,

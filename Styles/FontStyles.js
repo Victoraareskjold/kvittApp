@@ -5,7 +5,7 @@ export default StyleSheet.create({
     header: {
         fontSize: 28,
         letterSpacing: 0.5,
-        fontWeight: '600',
+        fontWeight: '700',
         color: Colors.default,
     },
     subHeader: {
@@ -21,7 +21,8 @@ export default StyleSheet.create({
     },
     body: {
         color: Colors.default,
-        fontSize: 14,
+        fontSize: 16,
+        fontWeight: '400',
     },
     bodyFat: {
         color: Colors.default,
@@ -55,7 +56,7 @@ export default StyleSheet.create({
         letterSpacing: 0.5,
     },
     smallBtn: {
-        fontSize: 14,
+        fontSize: 18,
         color: Colors.white,
         fontWeight: '500',
         letterSpacing: 0.5,

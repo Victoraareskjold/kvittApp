@@ -178,7 +178,6 @@ const HomeScreen = () => {
       </View>
 
       <RecentContacts 
-
         recentContacts={recentContacts}/>
 
       {/* Recent receipts */}
@@ -192,7 +191,6 @@ const HomeScreen = () => {
               <Text style={FontStyles.linkBtn}>Se alle</Text>
           </TouchableOpacity>
 
-          {/* Recent receipts list */}
           </View>
             {isLoading ? (
               <ActivityIndicator size='small' />

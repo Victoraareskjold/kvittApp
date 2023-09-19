@@ -4,11 +4,12 @@ import { View, Text, FlatList, Image } from 'react-native';
 import ContainerStyles from '../../Styles/ContainerStyles';
 import FontStyles from '../../Styles/FontStyles';
 import ReceiptStyles from '../../Styles/ReceiptStyles';
+import Colors from '../../Styles/Colors';
 
 const RecentContacts = ({ recentContacts }) => {
   return (
     <View style={[ContainerStyles.contactsContainer, {marginTop: 0, marginBottom: 32}]}>
-      <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Nylige kontakter</Text>
+      <Text style={[FontStyles.subHeader, { marginBottom: 12 }]}>Nylige personer</Text>
       <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
@@ -22,7 +23,7 @@ const RecentContacts = ({ recentContacts }) => {
                 />
                 <Text 
                     style={[ContainerStyles.userName, ReceiptStyles.storeText]}
-                    numberOfLines={2}
+                    numberOfLines={1}
                     ellipsizeMode='tail'
                 >
                   {item.firstName}

@@ -157,7 +157,6 @@ const SendReceipt = () => {
                       </View>
 
                   )}
-                  style={{ height: 200 }}
               />
             </View>
 

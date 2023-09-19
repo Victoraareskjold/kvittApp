@@ -44,7 +44,7 @@ const SettingsScreen = () => {
               source={require('../../../assets/innstillinger/bruker.png')}
               style={ButtonStyles.settingsIcon}
             />
-            <Text>Din profil</Text>
+            <Text style={FontStyles.body}>Din profil</Text>
           </TouchableOpacity>
 
           {/* My cards */}
@@ -56,7 +56,7 @@ const SettingsScreen = () => {
               source={require('../../../assets/innstillinger/bankkort.png')}
               style={ButtonStyles.settingsIcon}
             />
-            <Text>Mine kort</Text>
+            <Text style={FontStyles.body}>Mine kort</Text>
           </TouchableOpacity>
           
           {/* Help and support */}
@@ -65,7 +65,7 @@ const SettingsScreen = () => {
               source={require('../../../assets/innstillinger/_.png')}
               style={ButtonStyles.settingsIcon}
             />
-            <Text>Hjelp & kundestøtte</Text>
+            <Text style={FontStyles.body}>Hjelp & kundestøtte</Text>
           </TouchableOpacity>
           
           {/* Sign out */}
@@ -78,7 +78,7 @@ const SettingsScreen = () => {
               source={require('../../../assets/innstillinger/loggut.png')}
               style={ButtonStyles.settingsIcon}
             />
-            <Text>Logg ut</Text>
+            <Text style={FontStyles.body}>Logg ut</Text>
           </TouchableOpacity>
           
         </View>

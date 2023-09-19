@@ -34,7 +34,7 @@ const CategoriesFilter = ({ onSelectCategory, excludeAll = true }) => {
                     >
                         <Text
                             style={[
-                                styles.filterText,
+                                FontStyles.body,
                                 item === activeCategory && styles.activeText, // Legg til styling for aktiv tekst
                             ]}
                         >
@@ -55,23 +55,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
     },
-    filterContainer: {
-        backgroundColor: "#FBFBFB",
-        marginRight: 8,
-        borderRadius: 50,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        marginTop: 0,
-        marginBottom: 24,
-    },
     activeCategory: {
-        backgroundColor: "#2984FF",
-    },
-    filterText: {
-        color: "#272727", 
-        fontSize: 14,
+        backgroundColor: Colors.primary,
+        color: Colors.white,
     },
     activeText: {
-        color: "#FFF", 
+        color: Colors.white, 
     },
 });
