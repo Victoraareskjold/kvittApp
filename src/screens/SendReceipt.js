@@ -110,10 +110,11 @@ const SendReceipt = () => {
             </View>
 
             {/* Recent contacts */}
-            <View style={[ContainerStyles.contactsContainer, {marginTop: 32}]}>
+            {/* <View style={[ContainerStyles.contactsContainer, {marginTop: 32}]}>
               <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Nylige kontakter</Text>
               <FlatList
                   horizontal
+                  showsHorizontalScrollIndicator={false}
                   data={recentContacts}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
@@ -132,11 +133,11 @@ const SendReceipt = () => {
 
                   )}
               />
-            </View>
+            </View> */}
 
             {/* All contacts */}
-            <View style={[ContainerStyles.contactsContainer, {marginTop: 32}]}>
-              <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Alle kontakter</Text>
+            <View style={[ContainerStyles.contactsContainer, {marginTop: 20, flex: 1}]}>
+              {/* <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Alle kontakter</Text> */}
               <FlatList
                   data={recentContacts}
                   keyExtractor={(item) => item.id}

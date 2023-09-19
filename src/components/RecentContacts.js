@@ -10,6 +10,7 @@ const RecentContacts = ({ recentContacts }) => {
     <View style={[ContainerStyles.contactsContainer, {marginTop: 0, marginBottom: 32}]}>
       <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Nylige kontakter</Text>
       <FlatList
+          showsHorizontalScrollIndicator={false}
           horizontal
           data={recentContacts}
           keyExtractor={(item) => item.id}

@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
+import StoreLogos from './StoreLogos';
+import ReceiptStyles from '../../Styles/ReceiptStyles';
 
 const KvitteringDetails = ({ navigation, route }) => {
 
   const { item }= route.params;
+
+  const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
   
   return (
     <View style={{backgroundColor: '#FFF', flex: 1}}>
@@ -21,7 +25,7 @@ const KvitteringDetails = ({ navigation, route }) => {
 
                 {/* Butikk logo */}
                 <Image 
-                    source={item.image}
+                    source={StoreLogo}
                     style={{ width: '100%', height: 100, resizeMode: 'contain', marginBottom: 32 }}
                 />
 
@@ -30,6 +34,7 @@ const KvitteringDetails = ({ navigation, route }) => {
                     <Text style={styles.subHeader}>{item.Store}</Text>
                     <Text style={styles.body2}>{item.Category}</Text>
                     <Text style={styles.body2}>{item.Date}</Text>
+
                 </View>
 
                 {/* Divider */}
@@ -43,13 +48,14 @@ const KvitteringDetails = ({ navigation, route }) => {
                     <View style={styles.varerContainer}>
                         <Text style={styles.body2}>Vare</Text>
                         <Text style={styles.body2}>{item.pris}</Text>
-                </View> */}
+                </View> 
+                
 
                 {/* Barcode */}
-                {/* <Image 
+                <Image 
                     source={require("../../assets/barcode.png")}
                     style={{ width: '100%', height: 62 }}
-                /> */}
+                />
 
             </View>
 

@@ -18,6 +18,7 @@ import SearchBox from "../components/SearchBox";
 import CategoriesFilter from "../components/CategoriesFilter";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
+import StoreLogos from "../components/StoreLogos";
 
 import { auth, db } from "../../firebase";
 import {
@@ -122,6 +123,8 @@ const groupReceiptsByDate = (receipts) => {
 };  
 
   let renderReceiptItem = ({ item }) => {
+    const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
+
     return (
       <View>
         <Pressable
@@ -133,7 +136,7 @@ const groupReceiptsByDate = (receipts) => {
 
             <View style={ReceiptStyles.cardAlignment}>
               <Image 
-                source={require('../../assets/StoreIcon/rema1000.png')} 
+                source={StoreLogo}
                 style={ReceiptStyles.iconStyle}
               />
               <View>

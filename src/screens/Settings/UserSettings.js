@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from 'react';
 
 import Colors from "../../../Styles/Colors";
 import FontStyles from "../../../Styles/FontStyles";
@@ -9,6 +10,7 @@ import ContainerStyles from "../../../Styles/ContainerStyles";
 import ReceiptStyles from "../../../Styles/ReceiptStyles";
 
 const UserSettings = () => {
+
   return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : '100'}
@@ -67,13 +69,17 @@ const UserSettings = () => {
                 ></TextInput>
 
             <TouchableOpacity 
-                style={[ButtonStyles.primaryBtn, {flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 12}]}
+                style={[ButtonStyles.primaryBtn, {paddingHorizontal: 12}]}
             >
-                <Image 
+                {/* <Image 
                     source={require('../../../assets/trash.png')}
                     style={{ height: 20, width: 20, marginRight: 12}}
-                />
-                <Text style={FontStyles.smallBtn}>Slett profilen din</Text>
+                /> */}
+                <Text style={[FontStyles.bigBtn]}>Oppdater profil</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+                <Text style={[FontStyles.body2Fat, {textAlign: 'center'}]}>Slett profilen din</Text>
             </TouchableOpacity>
 
         </View>
@@ -82,5 +88,3 @@ const UserSettings = () => {
 }
 
 export default UserSettings
-
-const styles = StyleSheet.create({})

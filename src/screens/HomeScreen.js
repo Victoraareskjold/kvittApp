@@ -15,6 +15,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
+import StoreLogos from "../components/StoreLogos";
+
 import { db } from "../../firebase";
 import { collection, 
   query, 
@@ -133,6 +135,8 @@ const HomeScreen = () => {
   };
 
   let renderReceiptItem = ({ item }) => {
+    const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
+
     return (
       <View style={{flex: 1}}>
         <Pressable
@@ -144,7 +148,7 @@ const HomeScreen = () => {
 
             <View style={ReceiptStyles.cardAlignment}>
               <Image 
-                source={require('../../assets/StoreIcon/rema1000.png')} 
+                source={StoreLogo} 
                 style={ReceiptStyles.iconStyle} 
               />
               <View>
@@ -173,7 +177,9 @@ const HomeScreen = () => {
         <Text style={FontStyles.header}>Hjem</Text>
       </View>
 
-      <RecentContacts recentContacts={recentContacts}/>
+      <RecentContacts 
+
+        recentContacts={recentContacts}/>
 
       {/* Recent receipts */}
         <View style={ContainerStyles.subHeaderContainer}>

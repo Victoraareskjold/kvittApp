@@ -96,6 +96,6 @@ export default {
         textAlign: 'center',
         width: 64,
         overflow: 'hidden',
-        marginTop: 4,
+        marginTop: 6,
     },
 };
