@@ -2,6 +2,20 @@
   "expo": {
     "name": "kvittApp",
     "slug": "kvittApp",
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyAOo2Sy-RUXQ6Ka7Fd7T0pLzMfNzKjTQmU",
+          "authDomain": "kvittapp-51ecd.firebaseapp.com",
+          "projectId": "kvittapp-51ecd",
+          "storageBucket": "kvittapp-51ecd.appspot.com",
+          "messagingSenderId": "761636648550",
+          "appId": "1:761636648550:web:a2f4b25bd23e88853ddfa7",
+          /* "measurementId": "G-QZGMJQF71H" */
+        }
+      }
+    },
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -38,6 +52,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/11a65611-e414-4675-a3b4-ea204bc8adf6"
-    }
+    },
   }
 }
