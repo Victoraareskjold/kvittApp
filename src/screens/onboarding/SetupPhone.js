@@ -93,6 +93,7 @@ export default function SetupPhone({ navigation, route }) {
               onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
               value={phoneNumber}
               autoComplete="tel"
+              maxLength={10}
             />
             <TouchableOpacity style={ButtonStyles.primaryBtn} onPress={sendVerification}>
               <Text style={FontStyles.bigBtn}>Send kode</Text>
@@ -102,10 +103,11 @@ export default function SetupPhone({ navigation, route }) {
           <>
             <TextInput
               style={ButtonStyles.defaultPlaceholder}
-              placeholder="Verifiseringskode"
+              placeholder="6 Siffer"
               keyboardType="number-pad"
               onChangeText={setCode}
               value={code}
+              maxLength={6}
             />
             <TouchableOpacity style={ButtonStyles.primaryBtn} onPress={confirmCode}>
               <Text style={FontStyles.bigBtn}>Bekreft kode</Text>

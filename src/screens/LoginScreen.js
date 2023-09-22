@@ -37,6 +37,14 @@ export default function LoginScreen({ navigation }) {
     const sendVerification = async () => {
         try {
             if (!fullPhoneNumber) return Alert.alert('Feil', 'Ugyldig telefonnummer');
+    
+            const userRef = firebase.firestore().collection('users');
+            const snapshot = await userRef.where('phoneNumber', '==', fullPhoneNumber).get();
+    
+            if (snapshot.empty) {
+                return Alert.alert('Feil', 'Dette nummeret er ikke registrert i vår database.');
+            }
+    
             const phoneProvider = new firebase.auth.PhoneAuthProvider();
             const id = await phoneProvider.verifyPhoneNumber(fullPhoneNumber, recaptchaVerifier.current);
             setVerificationId(id);
@@ -45,7 +53,7 @@ export default function LoginScreen({ navigation }) {
             console.error('Error sending verification code: ', error);
             Alert.alert('Feil', 'En feil oppsto ved sending av verifiseringskode.');
         }
-    };    
+    };  
     
     const confirmCode = async () => {
         try {
@@ -53,7 +61,7 @@ export default function LoginScreen({ navigation }) {
           await firebase.auth().signInWithCredential(credential);
           navigation.navigate('HomeScreen');
         } catch (error) {
-          Alert.alert('Feil', 'En feil oppsto. Vennligst prøv igjen senere.');
+          Alert.alert('Feil', 'Feil kode ble oppgitt');
         }
     };
 
@@ -88,6 +96,8 @@ export default function LoginScreen({ navigation }) {
                 <TextInput
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                     placeholder="123 45 678"
+                    keyboardType="phone-pad"
+                    maxLength={10}
                     value={phoneNumber}
                     onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
                     autoComplete="tel"
@@ -103,7 +113,10 @@ export default function LoginScreen({ navigation }) {
               <>
                 <Text style={FontStyles.body2Fat}>Verifiseringskode</Text>
                 <TextInput
-                  placeholder="6 siffer"
+                  placeholder="6 Siffer"
+                  maxLength={6}
+                  keyboardType="number-pad"
+                  textContentType="oneTimeCode"
                   value={code}
                   onChangeText={setCode}
                   style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
