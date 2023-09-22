@@ -1,10 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image, Alert } from "react-native";
 import React from "react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { auth } from "../../firebase";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 import Colors from "../../Styles/Colors";
 import FontStyles from "../../Styles/FontStyles";
@@ -12,57 +9,70 @@ import ButtonStyles from "../../Styles/ButtonStyles";
 import ContainerStyles from "../../Styles/ContainerStyles";
 import { Ionicons } from '@expo/vector-icons';
 
-console.disableYellowBow= true;
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import firebase from "firebase/compat/app";
+import { firebaseConfig } from '../../firebase'; 
 
 export default function LoginScreen({ navigation }) {
 
-    /* if (auth.currentUser) {
-        navigation.navigate('HomeScreen');
-    }   else {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigation.navigate('HomeScreen');
-            } 
-        });
-    } */
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [code, setCode] = useState('');
+    const [codeSent, setCodeSent] = useState(false);
+    const [verificationId, setVerificationId] = useState('');
+    const recaptchaVerifier = useRef(null);
+    const [fullPhoneNumber, setFullPhoneNumber] = useState('');
 
-    let [errorMessage, setErrorMessage] = useState('')
-    let [email, setEmail] = useState('')
-    let [password, setPassword] = useState('')
-
-    let login = () => {
-        if (email !== '' && password !== '') {
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    /* Signed in */
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'HomeScreen' }],  // or 'HomeStackGroup', see note below
-                      });
-                })
-                .catch((error) => {
-                    setErrorMessage(error.message)
-                });
-        } else {
-            setErrorMessage('Vennligst skriv inn email og passord')
+    useEffect(() => {
+        const cleanedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
+        if (cleanedPhoneNumber.length === 8) setFullPhoneNumber('+47' + cleanedPhoneNumber);
+    }, [phoneNumber]);    
+    
+    const formatPhoneNumber = (number) => {
+        let cleaned = number.replace(/[^\d]/g, '');
+        if (cleaned.length > 3 && cleaned.length <= 6) cleaned = cleaned.replace(/(\d{3})(\d{1,3})/, '$1 $2');
+        else if (cleaned.length > 6) cleaned = cleaned.replace(/(\d{3})(\d{2})(\d{3})/, '$1 $2 $3');
+        return cleaned;
+    };
+    
+    const sendVerification = async () => {
+        try {
+            if (!fullPhoneNumber) return Alert.alert('Feil', 'Ugyldig telefonnummer');
+            const phoneProvider = new firebase.auth.PhoneAuthProvider();
+            const id = await phoneProvider.verifyPhoneNumber(fullPhoneNumber, recaptchaVerifier.current);
+            setVerificationId(id);
+            setCodeSent(true);
+        } catch (error) {
+            console.error('Error sending verification code: ', error);
+            Alert.alert('Feil', 'En feil oppsto ved sending av verifiseringskode.');
         }
-    }
+    };    
+    
+    const confirmCode = async () => {
+        try {
+          const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code);
+          await firebase.auth().signInWithCredential(credential);
+          navigation.navigate('HomeScreen');
+        } catch (error) {
+          Alert.alert('Feil', 'En feil oppsto. Vennligst prøv igjen senere.');
+        }
+    };
 
     return (
         <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : '0'} 
             style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
         >
-            <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
-
+          <SafeAreaView style={{ backgroundColor: Colors.white, flex: 1 }}>
+            <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
+            
             {/* Header & subheader */}
-                <Ionicons 
-                    name="chevron-back" 
-                    size={24} 
-                    color="black" 
-                    style={{marginBottom: 12}}
-                    onPress={() => navigation.goBack()}
-                />
+            <Ionicons 
+                name="chevron-back" 
+                size={24} 
+                color="black" 
+                style={{marginBottom: 12}}
+                onPress={() => navigation.goBack()}
+            />
 
                 <Text style={FontStyles.header}>
                     Velkommen tilbake
@@ -71,32 +81,42 @@ export default function LoginScreen({ navigation }) {
                 <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
                     Lorem ipsum dolor sit amet
                 </Text>
-
-            {/* Email */}
-            <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
-                <TextInput 
-                style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                placeholder='+47 123 45 678'
-                
-                value={email}
-                onChangeText={text => setEmail(text)}
-            ></TextInput>
-
-            {/* Error message */}
-            <View style={ContainerStyles.errorMessageContainer}>
-                <Text style={{color: 'red'}}>{errorMessage}</Text>
-            </View>
-
-            {/* Log inn */}
-            <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("HomeScreen")}
+            
+            {!codeSent ? (
+              <>
+                <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
+                <TextInput
+                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                    placeholder="123 45 678"
+                    value={phoneNumber}
+                    onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
+                    autoComplete="tel"
+                />
+                <TouchableOpacity 
+                    onPress={sendVerification}
                     style={ButtonStyles.primaryBtn}
                 >
-                    <Text style={FontStyles.bigBtn}>Logg inn</Text>
+                  <Text style={FontStyles.bigBtn}>Send kode</Text>
                 </TouchableOpacity>
-            </View>
-            </SafeAreaView>
+              </>
+            ) : (
+              <>
+                <Text style={FontStyles.body2Fat}>Verifiseringskode</Text>
+                <TextInput
+                  placeholder="6 siffer"
+                  value={code}
+                  onChangeText={setCode}
+                  style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                />
+                <TouchableOpacity 
+                    onPress={confirmCode}
+                    style={ButtonStyles.primaryBtn}
+                >
+                  <Text style={FontStyles.bigBtn}>Bekreft kode</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </SafeAreaView>
         </KeyboardAvoidingView>
-    );
-};
+      );
+    }

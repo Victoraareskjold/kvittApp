@@ -76,7 +76,7 @@ export default function SetupPhone({ navigation, route }) {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : '0'} style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}>
       <SafeAreaView style={{ backgroundColor: Colors.white, flex: 1 }}>
         <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
         <Ionicons name="chevron-back" size={24} color="black" onPress={() => navigation.goBack()} />
@@ -108,7 +108,7 @@ export default function SetupPhone({ navigation, route }) {
               value={code}
             />
             <TouchableOpacity style={ButtonStyles.primaryBtn} onPress={confirmCode}>
-              <Text style={FontStyles.bigBtn}>Bekreft kode og gå videre</Text>
+              <Text style={FontStyles.bigBtn}>Bekreft kode</Text>
             </TouchableOpacity>
           </>
         )}
