@@ -10,6 +10,8 @@ import ButtonStyles from "../../Styles/ButtonStyles";
 import ContainerStyles from "../../Styles/ContainerStyles";
 import ReceiptStyles from "../../Styles/ReceiptStyles";
 
+import firebase from 'firebase/compat/app';
+
 export default function AddReceiptModal(props) {
 
     const [receipt, setReceipt] = useState('');

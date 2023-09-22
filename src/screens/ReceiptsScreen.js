@@ -69,13 +69,13 @@ const ReceiptsScreen = () => {
         if (selectedCategory === "Alle") {
           q = query(
             collection(db, "receipts"), 
-            /* where("userId", "==", auth.currentUser.uid), */
+            where("userId", "==", auth.currentUser.uid),
             orderBy("Date", "desc")
           );
         } else {
           q = query(
             collection(db, "receipts"),
-            /* where("userId", "==", auth.currentUser.uid), */
+            where("userId", "==", auth.currentUser.uid),
             where("Category", "==", selectedCategory),
             orderBy("Date", "desc")
           );
@@ -157,23 +157,31 @@ const groupReceiptsByDate = (receipts) => {
   };
 
   let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt }) => {
-    let receiptSave = {
-      Store: store,
-      Category: selectedCategory,
-      Price: price,
-      Date: dateOfReceipt,
-      /* userId: auth.currentUser.uid, */
-    };
-    const docRef = await addDoc(collection(db, "receipts"), receiptSave);
-
-    receiptSave.id = docRef.id;
-
-    let updatedReceipts = [...receipts];
-    updatedReceipts.push(receiptSave);
-
-    setReceipts(updatedReceipts);
-    loadReceiptList(); // Oppdaterer sectionList
-  };
+    try {
+        let receiptSave = {
+          Store: store,
+          Category: selectedCategory,
+          Price: price,
+          Date: formatDate(dateOfReceipt), // antar at du vil formatere datoen her
+          userId: auth.currentUser.uid,
+        };
+        
+        // Legge til ny kvittering med compat versjon
+        const receiptsCollection = db.collection('receipts');
+        const docRef = await receiptsCollection.add(receiptSave);
+        
+        // Legger til id til kvitteringobjektet og oppdaterer lokal tilstand
+        receiptSave.id = docRef.id;
+        
+        let updatedReceipts = [...receipts];
+        updatedReceipts.push(receiptSave);
+        setReceipts(updatedReceipts);
+        
+        loadReceiptList(); // Oppdaterer sectionList
+    } catch(error) {
+        console.error("Feil ved tillegg av kvittering:", error);
+    }
+};
 
   return (
     <View style={ContainerStyles.backgroundContainer}>

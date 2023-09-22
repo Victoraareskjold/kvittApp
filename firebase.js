@@ -12,8 +12,11 @@ export const firebaseConfig = {
     measurementId: "G-QZGMJQF71H"
 };
 
-console.disableYellowBow= true;
+console.disableYellowBox= true;
 
 if (!firebase.apps.length){
     firebase.initializeApp(firebaseConfig)
 }
+
+export const auth = firebase.auth();
+export const db = firebase.firestore();
