@@ -4,7 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 
 import { db } from "../../../firebase";
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc } from 'firebase/firestore';
+import firebase from "firebase/compat/app";
+import { firebaseConfig } from '../../../firebase';
 
 import Colors from "../../../Styles/Colors";
 import FontStyles from "../../../Styles/FontStyles";
@@ -14,23 +16,6 @@ import ContainerStyles from "../../../Styles/ContainerStyles";
 export default function ConfirmCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
-
-    /* Firebase create user */
-    const createUserInFirestore = async (firstName, lastName, phoneNumber, code) => {
-        console.log("user:", { firstName, lastName, phoneNumber, code });
-        const usersRef = collection(db, 'users');
-        try {
-            const docRef = await addDoc(usersRef, {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-                code: code,
-            });
-            console.log('User added with ID:', docRef.id);
-        } catch (error) {
-            console.error('Error adding user: ', error.message, error.code);
-        }        
-    }    
 
     useEffect(() => {
         // Fokus på den første TextInput når komponenten lastes
@@ -56,33 +41,34 @@ export default function ConfirmCode({ route, navigation }) {
         setCode(newCode);
     };
 
-    const storeCodeAndContinue = () => {
+    /* oppdaterer database for å legge til kode */
+    const storeCodeAndContinue = async () => {
         const enteredCode = code.join('');
-
+    
         if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
-            // Validering: Koden må være nøyaktig 4 sifre og kun inneholde sifre (0-9)
             alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
             return;
         }
-
-        // Data fra SetupPhone-skjermen
+    
         const { firstName, lastName, phoneNumber } = route.params;
-
-        // Sammenlign koden med den lagrede koden fra SetupCode
         const setupCode = route.params.code;
-
+    
         if (enteredCode === setupCode) {
-            // Koden er riktig, du kan gjøre hva du vil her, for eksempel lagre den i en database
-
-            createUserInFirestore(firstName, lastName, phoneNumber, enteredCode);
-
-            // Naviger til neste skjerm eller gjør hva du vil med koden
-            navigation.navigate("FaceId");
+            try {
+                const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+                
+                // Oppdater dokumentet med den 4-sifrede koden
+                await userDocRef.update({ code: enteredCode });
+    
+                navigation.navigate("FaceId");
+            } catch (error) {
+                console.error("Error updating document: ", error);
+                alert('En feil oppsto ved oppdatering av dokumentet.');
+            }
         } else {
-            // Koden er feil, gi beskjed til brukeren
             alert('Kodene skrevet er ikke like.');
         }
-    };
+    };    
 
     return (
         <KeyboardAvoidingView 
