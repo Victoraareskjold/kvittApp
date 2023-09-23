@@ -58,12 +58,10 @@ export default function ConfirmCode({ route, navigation }) {
         await SecureStore.setItemAsync('userToken', userToken);
       
         // Lagre mapping av token til userId i Firebase
-        const db = firebase.firestore();
-        const tokenRef = db.collection('tokenToUserId');
-      
-        await tokenRef.add({
-          token: userToken,
-          userId: userId
+        const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+        await userDocRef.update({ 
+        token: userToken, 
+        userId: firebase.auth().currentUser.uid
         });
       };        
 

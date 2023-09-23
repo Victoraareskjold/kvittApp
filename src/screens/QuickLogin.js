@@ -21,12 +21,12 @@ export default function QuickLoginScreen({ navigation }) {
         
         if (storedToken) {
             const db = firebase.firestore();
-            const tokenRef = db.collection('tokenToUserId');
+            const userRef = db.collection('users');
             
-            const snapshot = await tokenRef.where('token', '==', storedToken).get();
+            const snapshot = await userRef.where('token', '==', storedToken).get();
             if (!snapshot.empty) {
                 const doc = snapshot.docs[0];
-                setUserId(doc.data().userId);
+                setUserId(doc.id);  // Setter userId basert på dokument-IDen
             }
         }
     };

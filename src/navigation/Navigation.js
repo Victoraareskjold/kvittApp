@@ -162,8 +162,9 @@ export default function Navigation() {
       try {
         userToken = await SecureStore.getItemAsync('userToken');
         const db = firebase.firestore();
-        const tokenRef = db.collection('tokenToUserId');
-        const snapshot = await tokenRef.where('token', '==', userToken).get();
+        const userRef = db.collection('users').where('token', '==', userToken);
+        const snapshot = await userRef.get();
+        console.log("Hentet token fra SecureStore:", userToken);
   
         if (!snapshot.empty) {
           const userId = snapshot.docs[0].data().userId;
