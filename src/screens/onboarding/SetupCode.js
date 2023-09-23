@@ -8,6 +8,8 @@ import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 
+import * as SecureStore from 'expo-secure-store';
+
 export default function SetupCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
@@ -36,28 +38,31 @@ export default function SetupCode({ route, navigation }) {
         setCode(newCode);
     };
 
-    const storeCodeAndContinue = () => {
+    const storeCodeAndContinue = async () => {
         const enteredCode = code.join('');
-
+    
         if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
-            // Validering: Koden må være nøyaktig 4 sifre og kun inneholde sifre (0-9)
             alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
             return;
         }
-
+    
+        // Lagre koden sikkert
+        try {
+            await SecureStore.setItemAsync('userCode', enteredCode);
+        } catch (error) {
+            alert('Det oppstod en feil under lagring av koden.');
+            return;
+        }
+    
         // Data fra SetupPhone-skjermen
         const { firstName, lastName, phoneNumber } = route.params;
-
-        // Her kan du gjøre noe med koden, for eksempel lagre den i en database
-
-        // Naviger til neste skjerm eller gjør hva du vil med koden
+    
         navigation.navigate("ConfirmCode", {
             firstName: firstName,
             lastName: lastName,
-            phoneNumber: phoneNumber,
-            code: enteredCode
+            phoneNumber: phoneNumber
         });
-    };
+    };    
 
     return (
         <KeyboardAvoidingView 

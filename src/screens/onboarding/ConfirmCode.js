@@ -13,6 +13,8 @@ import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 
+import * as SecureStore from 'expo-secure-store';
+
 export default function ConfirmCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
@@ -41,34 +43,27 @@ export default function ConfirmCode({ route, navigation }) {
         setCode(newCode);
     };
 
-    /* oppdaterer database for å legge til kode */
     const storeCodeAndContinue = async () => {
         const enteredCode = code.join('');
-    
+        
         if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
             alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
             return;
         }
+        
+        try {
+            const storedCode = await SecureStore.getItemAsync('userCode');
     
-        const { firstName, lastName, phoneNumber } = route.params;
-        const setupCode = route.params.code;
-    
-        if (enteredCode === setupCode) {
-            try {
-                const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
-                
-                // Oppdater dokumentet med den 4-sifrede koden
-                await userDocRef.update({ code: enteredCode });
-    
+            if (enteredCode === storedCode) {
                 navigation.navigate("FaceId");
-            } catch (error) {
-                console.error("Error updating document: ", error);
-                alert('En feil oppsto ved oppdatering av dokumentet.');
+            } else {
+                alert('Kodene skrevet er ikke like.');
             }
-        } else {
-            alert('Kodene skrevet er ikke like.');
+        } catch (error) {
+            console.error("Error validating the code: ", error);
+            alert('En feil oppsto ved validering av koden.');
         }
-    };    
+    };          
 
     return (
         <KeyboardAvoidingView 
