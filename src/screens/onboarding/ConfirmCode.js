@@ -8,19 +8,27 @@ import { collection, addDoc, updateDoc } from 'firebase/firestore';
 import firebase from "firebase/compat/app";
 import { firebaseConfig } from '../../../firebase';
 
+import * as SecureStore from 'expo-secure-store';
+
 import Colors from "../../../Styles/Colors";
 import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 
 export default function ConfirmCode({ route, navigation }) {
+    const [setupCode, setSetupCode] = useState(null);
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
 
     useEffect(() => {
         // Fokus på den første TextInput når komponenten lastes
         refs[0].current.focus();
-    }, []); // Tomt avhengighetsarray for å kjøre denne effekten kun ved innlasting
+    
+        // Hente 4-sifret kode fra navigasjonsparametre
+        if (route.params && route.params.code) {
+            setSetupCode(route.params.code);  // Endret denne linjen
+        }
+    }, []);    
 
     const handleCodeChange = (text, index) => {
         const newCode = [...code];
@@ -41,17 +49,30 @@ export default function ConfirmCode({ route, navigation }) {
         setCode(newCode);
     };
 
+    // Denne funksjonen kaller du etter vellykket autentisering
+    const storeUserToken = async () => {
+        const userToken = "GENERERT_TOKEN"; // Dette er en forenkling. Du kan generere eller hente en mer kompleks token.
+        const userId = firebase.auth().currentUser.uid; // Henter uid fra Firebase Auth
+      
+        // Lagre token i SecureStore
+        await SecureStore.setItemAsync('userToken', userToken);
+      
+        // Lagre mapping av token til userId i Firebase
+        const db = firebase.firestore();
+        const tokenRef = db.collection('tokenToUserId');
+      
+        await tokenRef.add({
+          token: userToken,
+          userId: userId
+        });
+      };        
+
     /* oppdaterer database for å legge til kode */
     const storeCodeAndContinue = async () => {
         const enteredCode = code.join('');
-    
-        if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
-            alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
-            return;
-        }
-    
-        const { firstName, lastName, phoneNumber } = route.params;
-        const setupCode = route.params.code;
+
+        console.log("Entered Code:", enteredCode); // Debugging line
+        console.log("Setup Code:", setupCode); // Debugging line
     
         if (enteredCode === setupCode) {
             try {
@@ -59,6 +80,9 @@ export default function ConfirmCode({ route, navigation }) {
                 
                 // Oppdater dokumentet med den 4-sifrede koden
                 await userDocRef.update({ code: enteredCode });
+
+                // Lagre token i SecureStore
+                await storeUserToken();
     
                 navigation.navigate("FaceId");
             } catch (error) {

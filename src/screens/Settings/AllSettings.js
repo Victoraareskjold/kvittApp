@@ -9,19 +9,21 @@ import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 import { Ionicons } from '@expo/vector-icons';
+import * as SecureStore from 'expo-secure-store';
 
 const SettingsScreen = () => {
   const navigation = useNavigation()
 
   /* Logg ut btn */
-  const handleSignOut = () => {
-    auth
-    .signOut()
-    .then(() => {
-      navigation.replace('Onboarding')
-    })
-    .catch(error => alert(error.message))
-  }
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      await SecureStore.deleteItemAsync('userToken');
+      navigation.replace('Onboarding');
+    } catch (error) {
+      alert(error.message);
+    }
+  };  
 
   return (
     <View style={ContainerStyles.backgroundContainer}>

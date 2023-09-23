@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
+
+// Importer Firebase
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 /* Screens */
 import HomeScreen from "../screens/HomeScreen";
@@ -20,6 +24,7 @@ import ConfirmCode from "../screens/onboarding/ConfirmCode";
 import FaceId from "../screens/onboarding/FaceId";
 import UserSettings from "../screens/Settings/UserSettings";
 import CardsSettings from "../screens/Settings/CardsSettings";
+import QuickLogin from "../screens/QuickLogin";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -144,10 +149,53 @@ function TabGroup() {
 
 const Stack = createNativeStackNavigator();
 
+import * as SecureStore from 'expo-secure-store';
+
 export default function Navigation() {
+  const [isReady, setIsReady] = React.useState(false);
+  const [initialRoute, setInitialRoute] = React.useState("Onboarding");
+
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken;
+  
+      try {
+        userToken = await SecureStore.getItemAsync('userToken');
+        const db = firebase.firestore();
+        const tokenRef = db.collection('tokenToUserId');
+        const snapshot = await tokenRef.where('token', '==', userToken).get();
+  
+        if (!snapshot.empty) {
+          const userId = snapshot.docs[0].data().userId;
+          const userRef = db.collection('users').doc(userId);
+          const userDoc = await userRef.get();
+  
+          if (userDoc.exists) {
+            setInitialRoute("QuickLogin");
+          } else {
+            await SecureStore.deleteItemAsync('userToken');
+            setInitialRoute("Onboarding");
+          }
+        }
+      } catch (e) {
+        console.error("Feil ved henting av token:", e);
+        setInitialRoute("Onboarding");
+      }
+  
+      setIsReady(true);
+    };
+  
+    bootstrapAsync();
+  }, []);
+  
+  if (!isReady) {
+    return <NavigationContainer />;
+  }  
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Onboarding" screenOptions={{headerShown: false}}>
+      <Stack.Navigator initialRouteName={initialRoute} screenOptions={{headerShown: false}}>
+        <Stack.Screen name="QuickLogin" component={QuickLogin} />
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SetupName" component={SetupName} />
