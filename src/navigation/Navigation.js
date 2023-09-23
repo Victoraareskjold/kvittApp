@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
-import { auth } from '../../firebase'
-import * as SecureStore from 'expo-secure-store';
 
 /* Screens */
 import HomeScreen from "../screens/HomeScreen";
@@ -22,7 +20,6 @@ import ConfirmCode from "../screens/onboarding/ConfirmCode";
 import FaceId from "../screens/onboarding/FaceId";
 import UserSettings from "../screens/Settings/UserSettings";
 import CardsSettings from "../screens/Settings/CardsSettings";
-import QuickLogin from "../screens/QuickLogin";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -148,28 +145,9 @@ function TabGroup() {
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const [initialRoute, setInitialRoute] = useState('Onboarding');
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-        const user = auth.currentUser;
-        if (user) {
-            try {
-                const storedCode = await SecureStore.getItemAsync('userCode');
-                if (storedCode) setInitialRoute('QuickLoginScreen');
-                else setInitialRoute('HomeScreen');
-            } catch (error) {
-                console.error('Error reading SecureStore: ', error);
-            }
-        }
-    };
-    checkAuthStatus();
-  }, []);
-
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="initialRoute" screenOptions={{headerShown: false}}>
-        <Stack.Screen name="QuickLogin" component={QuickLogin} />
+      <Stack.Navigator initialRouteName="Onboarding" screenOptions={{headerShown: false}}>
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SetupName" component={SetupName} />
