@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Alert, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import * as SecureStore from 'expo-secure-store';
+
+import ContainerStyles from '../../Styles/ContainerStyles';
+import Colors from '../../Styles/Colors';
+import FontStyles from '../../Styles/FontStyles';
 
 export default function QuickLoginScreen({ navigation }) {
   const [code, setCode] = React.useState('');
@@ -59,15 +66,35 @@ export default function QuickLoginScreen({ navigation }) {
   
 
   return (
-    <View>
-      <Text>Angi din 4-sifrede kode</Text>
-      <TextInput 
-        value={code} 
-        onChangeText={setCode} 
-        keyboardType="numeric" 
-        maxLength={4} 
-      />
-      <Button title="Logg inn" onPress={handleLogin} />
-    </View>
+    <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : '0'}
+            style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
+        >
+            <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
+
+                <Ionicons 
+                    name="chevron-back" 
+                    size={24} 
+                    color="black" 
+                    style={{marginBottom: 12}}
+                    onPress={() => navigation.goBack()}
+                />
+
+                <Text style={FontStyles.header}>
+                    Logg inn
+                </Text>
+
+                <Text style={[FontStyles.body2, { marginBottom: 32 }]}>
+                    Skriv inn en 4-sifret kode
+                </Text>
+                <TextInput 
+                    value={code} 
+                    onChangeText={setCode} 
+                    keyboardType="numeric" 
+                    maxLength={4} 
+                />
+                <Button title="Logg inn" onPress={handleLogin} />
+            </SafeAreaView>
+        </KeyboardAvoidingView>
   );
 }
