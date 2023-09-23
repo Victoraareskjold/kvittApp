@@ -1,23 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from '@expo/vector-icons';
-
-import Colors from "../../../Styles/Colors";
-import FontStyles from "../../../Styles/FontStyles";
-import ButtonStyles from "../../../Styles/ButtonStyles";
-import ContainerStyles from "../../../Styles/ContainerStyles";
-
 import * as SecureStore from 'expo-secure-store';
 
-export default function SetupCode({ route, navigation }) {
+import Colors from "../../Styles/Colors";
+import FontStyles from "../../Styles/FontStyles";
+import ButtonStyles from "../../Styles/ButtonStyles";
+import ContainerStyles from "../../Styles/ContainerStyles";
+
+export default function QuickLogin({ navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
 
     useEffect(() => {
-        // Fokus på den første TextInput når komponenten lastes
         refs[0].current.focus();
-    }, []); // Tomt avhengighetsarray for å kjøre denne effekten kun ved innlasting
+    }, []);
 
     const handleCodeChange = (text, index) => {
         const newCode = [...code];
@@ -26,31 +23,27 @@ export default function SetupCode({ route, navigation }) {
         if (text && index < 3) refs[index + 1].current.focus();
     };
 
-    const storeCodeAndContinue = async () => {
+    const loginWithCode = async () => {
         const enteredCode = code.join('');
-    
+
         if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
             alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
             return;
         }
-    
-        // Lagre koden sikkert
+
         try {
-            await SecureStore.setItemAsync('userCode', enteredCode);
+            const storedCode = await SecureStore.getItemAsync('userCode');
+
+            if (enteredCode === storedCode) {
+                // naviger til hovedskjermen eller annen skjerm
+                navigation.navigate("HomeScreen");
+            } else {
+                alert('Ugyldig kode.');
+            }
         } catch (error) {
-            alert('Det oppstod en feil under lagring av koden.');
-            return;
+            alert('Det oppstod en feil under innlogging.');
         }
-    
-        // Data fra SetupPhone-skjermen
-        const { firstName, lastName, phoneNumber } = route.params;
-    
-        navigation.navigate("ConfirmCode", {
-            firstName: firstName,
-            lastName: lastName,
-            phoneNumber: phoneNumber
-        });
-    };    
+    };
 
     return (
         <KeyboardAvoidingView 
@@ -58,7 +51,15 @@ export default function SetupCode({ route, navigation }) {
             style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
         >
             <SafeAreaView style={{backgroundColor: Colors.white, flex: 1}}>
-                <Text>Enter your code</Text>
+
+            <Text style={FontStyles.header}>
+                    Velkommen tilbake
+                </Text>
+
+                <Text style={[FontStyles.body2, { marginBottom: 32 }]}>
+                    Skriv inn den 4-sifrede koden på nytt
+                </Text>
+
                 <View style={styles.codeInputContainer}>
                     {code.map((value, index) => (
                         <TextInput 
@@ -72,8 +73,11 @@ export default function SetupCode({ route, navigation }) {
                         />
                     ))}
                 </View>
-                <TouchableOpacity onPress={loginWithCode}>
-                    <Text>Login</Text>
+                <TouchableOpacity 
+                    onPress={loginWithCode}
+                    style={ButtonStyles.primaryBtn}
+                >
+                    <Text style={FontStyles.bigBtn}>Login</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         </KeyboardAvoidingView>
@@ -86,6 +90,8 @@ const styles = StyleSheet.create({
         width: 250,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginBottom: 32,
+        marginTop: 4,
     },
     codeInput: {
         width: 48,
