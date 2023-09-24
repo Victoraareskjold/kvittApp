@@ -25,11 +25,6 @@ const SettingsScreen = () => {
       const userToken = await SecureStore.getItemAsync('userToken');
       console.log("UserToken from SecureStore:", userToken);  // Logg dette for debugging
 
-<<<<<<< HEAD
-=======
-      // ...
-
->>>>>>> a0873b1a9351e57e9d315ceaeed27cf17932df03
       // Slett tokenet fra Firebase Database
       const db = firebase.firestore();
       const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
