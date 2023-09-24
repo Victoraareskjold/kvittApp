@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import firebase from 'firebase/compat/app';
+import { db, auth } from '../../firebase'
 import 'firebase/compat/firestore';
 import * as SecureStore from 'expo-secure-store';
 
@@ -25,9 +26,13 @@ export default function QuickLoginScreen({ navigation }) {
             
             const snapshot = await tokenRef.where('token', '==', storedToken).get();
             if (!snapshot.empty) {
-                const doc = snapshot.docs[0];
-                setUserId(doc.data().userId);
+              const doc = snapshot.docs[0];
+              console.log("Snapshot exists, setting User ID."); // Debugging line
+              setUserId(doc.data().userId);
+            } else {
+              console.log("Snapshot is empty."); // Debugging line
             }
+            
         }
     };
     

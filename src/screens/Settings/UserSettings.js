@@ -52,21 +52,6 @@ const UserSettings = () => {
         }
       };
 
-      /* Delete user */
-      /* const deleteUser = async () => {
-        if (!userId) return;
-        
-        const userDocRef = db.collection('users').doc(userId);
-        try {
-          await userDocRef.delete();
-          await firebase.auth().currentUser.delete();
-          alert('Profil slettet!');
-        } catch (error) {
-          console.error("Error deleting user: ", error);
-          alert('En feil oppsto ved sletting av profilen.');
-        }
-      }; */
-
       const deleteUser = () => {
         Alert.alert(
           'Bekreft sletting',
@@ -81,10 +66,30 @@ const UserSettings = () => {
               text: 'OK',
               onPress: async () => {
                 try {
+                  // Få tak i brukerens token
+                  const userToken = await SecureStore.getItemAsync('userToken');
+      
+                  // Slett tokenet fra SecureStore
+                  await SecureStore.deleteItemAsync('userToken');
+      
+                  // Slett tokenet fra Firebase Database
+                  const db = firebase.firestore();
+                  const tokenRef = db.collection('tokenToUserId');
+                  const snapshot = await tokenRef.where('token', '==', userToken).get();
+      
+                  if (!snapshot.empty) {
+                    const docId = snapshot.docs[0].id;
+                    await tokenRef.doc(docId).delete();
+                  }
+      
+                  // Slett bruker fra Firestore
                   await db.collection('users').doc(userId).delete();
+      
+                  // Slett bruker fra Firebase Authentication
                   await firebase.auth().currentUser.delete();
+      
                   alert('Profil slettet!');
-                  navigation.navigate('Onboarding'); // Navn på Onboard skjerm
+                  navigation.navigate('Onboarding'); // Navn på Onboarding skjerm
                 } catch (error) {
                   console.error("Error deleting user: ", error);
                   alert('En feil oppsto ved sletting av profilen.');
@@ -94,7 +99,7 @@ const UserSettings = () => {
           ],
           { cancelable: false },
         );
-      };      
+      };            
 
       const navigation = useNavigation();
 

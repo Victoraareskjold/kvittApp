@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth } from "../../../firebase";
 import { useNavigation } from "@react-navigation/native";
 
 import Colors from "../../../Styles/Colors";
@@ -9,6 +8,11 @@ import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
 import ContainerStyles from "../../../Styles/ContainerStyles";
 import { Ionicons } from '@expo/vector-icons';
+
+import { db, auth } from "../../../firebase";
+import firebase from "firebase/compat/app";
+import { firebaseConfig } from '../../../firebase';
+
 import * as SecureStore from 'expo-secure-store';
 
 const SettingsScreen = () => {
@@ -17,13 +21,29 @@ const SettingsScreen = () => {
   /* Logg ut btn */
   const handleSignOut = async () => {
     try {
+      // Få tak i brukerens token
+      const userToken = await SecureStore.getItemAsync('userToken');
+      console.log("UserToken from SecureStore:", userToken);  // Logg dette for debugging
+
+      // Slett tokenet fra Firebase Database
+      const db = firebase.firestore();
+      const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+      await userDocRef.update({ token: firebase.firestore.FieldValue.delete() });
+
+      if (!snapshot.empty) {
+        const docId = snapshot.docs[0].id;
+        await tokenRef.doc(docId).delete();
+      }
+  
+      // Logg brukeren ut fra Firebase
       await auth.signOut();
-      await SecureStore.deleteItemAsync('userToken');
+  
+      // Send brukeren tilbake til Onboarding
       navigation.replace('Onboarding');
     } catch (error) {
       alert(error.message);
     }
-  };  
+  };    
 
   return (
     <View style={ContainerStyles.backgroundContainer}>
