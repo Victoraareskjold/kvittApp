@@ -1,22 +1,53 @@
-import { StyleSheet, Text, View, Pressable, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from 'react'
 import StoreLogos from './StoreLogos';
 import ReceiptStyles from '../../Styles/ReceiptStyles';
+import ContainerStyles from "../../Styles/ContainerStyles";
 
-const KvitteringDetails = ({ navigation, route }) => {
+import { db } from "../../firebase";
+import { doc, deleteDoc } from "@firebase/firestore";
+import ButtonStyles from '../../Styles/ButtonStyles';
+import FontStyles from '../../Styles/FontStyles';
+
+const ReceiptView = ({ navigation, route }) => {
 
   const { item }= route.params;
-
   const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
-  
-  return (
-    <View style={{backgroundColor: '#FFF', flex: 1}}>
-    <SafeAreaView style={{ backgroundColor: '#FFF'}}/>
 
-      <View 
-      showsVerticalScrollIndicator={false}
-      >
+  // Funksjon for å slette kvittering
+  const deleteReceipt = async () => {
+    try {
+      const receiptRef = doc(db, "receipts", item.id); // Erstatt "receipts" med din faktiske kolleksjonsnavn
+      await deleteDoc(receiptRef);
+      navigation.goBack(); // Navigerer tilbake til forrige skjerm (antatt kvitteringsliste)
+    } catch (error) {
+      console.error("Feil ved sletting av kvittering:", error);
+    }
+  };
+
+  // Funksjon for å vise bekreftelsesdialog
+  const showDeleteAlert = () => {
+    Alert.alert(
+      "Slett kvittering",
+      "Er du sikker på at du vil slette denne kvitteringen?",
+      [
+        {
+          text: "Nei",
+          onPress: () => console.log("Sletting avbrutt"),
+          style: "cancel"
+        },
+        {
+          text: "Ja",
+          onPress: deleteReceipt
+        }
+      ]
+    );
+  };
+
+  return (
+    <View style={ContainerStyles.backgroundContainer}>
+      {/* <SafeAreaView /> */}
 
         <View style={styles.container}>
 
@@ -59,15 +90,22 @@ const KvitteringDetails = ({ navigation, route }) => {
 
             </View>
 
-        </View>
+            {/* Sletteknapp */}
+            <Pressable style={ButtonStyles.deleteButton} onPress={showDeleteAlert}>
+                <Image 
+                    source={require('../../assets/trash.png')}
+                    style={ButtonStyles.settingsIcon}
+                />
+            <Text style={FontStyles.bigBtn}>Slett kvittering</Text>
+            </Pressable>
 
-      </View>
+        </View>
 
     </View>
   )
 }
 
-export default KvitteringDetails
+export default ReceiptView
 
 const styles = StyleSheet.create({
     container: {

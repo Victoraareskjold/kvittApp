@@ -48,7 +48,7 @@ const ReceiptsScreen = () => {
 
   const formatDate = (dateString) => {
     const [day, month, year] = dateString.split('.');
-    return `${year}-${month}-${day}`;
+    return `${day}.${month}.${year}`;
   };    
 
   useFocusEffect(
@@ -222,7 +222,7 @@ const groupReceiptsByDate = (receipts) => {
           <SectionList
             showsVerticalScrollIndicator={false}
             sections={Object.entries(groupedReceipts).map(([date, data]) => ({
-              title: date,
+              title: formatDate(date),
               data,
             }))}
             keyExtractor={(item) => item.id}

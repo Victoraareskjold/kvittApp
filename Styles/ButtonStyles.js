@@ -37,6 +37,18 @@ const ButtonStyles = StyleSheet.create({
         marginTop: 0,
         marginBottom: 24,
     },
+    deleteButton: {
+        alignSelf: 'center',
+        flexDirection: 'row',
+/*         paddingHorizontal: 12, */
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 32,
+        backgroundColor: 'red',
+        width: '60%',
+        paddingVertical: 12,
+        borderRadius: 50,
+    },
 
     /* Placeholders */
     defaultPlaceholder: {

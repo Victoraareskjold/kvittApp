@@ -2,6 +2,7 @@ export default {
 
     "default": require('../../assets/default.png'),
 
+    "rema": require('../../assets/StoreIcon/rema1000.png'),
     "rema1000": require('../../assets/StoreIcon/rema1000.png'),
     "rema 1000": require('../../assets/StoreIcon/rema1000.png'),
 

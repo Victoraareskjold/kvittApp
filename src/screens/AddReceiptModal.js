@@ -93,6 +93,7 @@ export default function AddReceiptModal(props) {
                 <View style={ContainerStyles.placeholderContainer}>
 
                     <TextInput
+                        placeholderTextColor='grey'
                         value={store}
                         maxLength={30}
                         onChangeText={setStore}
@@ -103,6 +104,7 @@ export default function AddReceiptModal(props) {
                     <View>
                         {showPicker && (
                             <DateTimePicker
+                                textColor='grey'
                                 mode='date'
                                 display='spinner'
                                 value={date}
@@ -124,6 +126,7 @@ export default function AddReceiptModal(props) {
                                 onPress={toggleDatePicker}
                             >
                                 <TextInput
+                                    placeholderTextColor='grey'
                                     value={dateOfReceipt}
                                     placeholder='Dato'
                                     style={ButtonStyles.defaultPlaceholder}
@@ -135,6 +138,7 @@ export default function AddReceiptModal(props) {
                     </View>
 
                     <TextInput
+                        placeholderTextColor='grey'
                         inputMode='numeric'
                         maxLength={10}
                         value={price}
