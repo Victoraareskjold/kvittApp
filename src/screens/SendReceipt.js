@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image } from "react-native";
+import { View, Text, TextInput, FlatList, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { db } from "../../firebase";
 import { collection, query, where, getDocs, addDoc, orderBy } from "@firebase/firestore";
@@ -12,15 +12,13 @@ import ReceiptStyles from "../../Styles/ReceiptStyles";
 const SendReceipt = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-
+    const [isLoading, setIsLoading] = useState(false);
     const [recentContacts, setRecentContacts] = useState([]);
 
     useEffect(() => {
       const fetchRecentUsers = async () => {
           const recentUsersQuery = query(
               collection(db, "users"),
-              /* orderBy("desc"), */
-              /* limit(10) // henter de 10 siste brukerne, juster etter behov */
           );
   
           const snapshot = await getDocs(recentUsersQuery);
@@ -37,32 +35,70 @@ const SendReceipt = () => {
       fetchRecentUsers();
   }, []);
 
+    /* Søkefunksjon */
     useEffect(() => {
+        let isCancelled = false; // Ny linje for å sjekke om komponenten er avmontert
+    
         const fetchUsers = async () => {
+            if (!isCancelled) {
+                setIsLoading(true); 
+            }
+    
             if (searchTerm === "") {
-                setSearchResults([]);
+                if (!isCancelled) {
+                    setSearchResults([]);
+                    setIsLoading(false);
+                }
                 return;
             }
 
-            const userQuery = query(
-                collection(db, "users"),
-                where("firstName", ">=", searchTerm),
-                where("firstName", "<=", searchTerm + "\uf8ff")
-            );
-            const userSnapshot = await getDocs(userQuery);
-            const users = [];
-            userSnapshot.forEach((doc) => {
-                const data = doc.data();
-                const fullName = `${data.firstName} ${data.lastName}`;
-                if (fullName.includes(searchTerm) || data.phoneNumber.includes(searchTerm)) {
-                    users.push({ ...data, id: doc.id, name: fullName });
-                }
-            });
-            setSearchResults(users);
-        };
+        // Søk etter navn
+        const nameQuery = query(
+            collection(db, "users"),
+            where("firstName", ">=", searchTerm),
+            where("firstName", "<=", searchTerm + "\uf8ff")
+        );
+        const nameSnapshot = await getDocs(nameQuery);
+        const nameUsers = [];
+        nameSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const fullName = `${data.firstName} ${data.lastName}`;
+            if (fullName.includes(searchTerm)) {
+                nameUsers.push({ ...data, id: doc.id, name: fullName });
+            }
+        });
 
-        fetchUsers();
-    }, [searchTerm]);
+        // Søk etter telefonnummer med automatisk +47-prefix
+        const phoneSearchTerm = "+47" + searchTerm;
+        const phoneQuery = query(
+            collection(db, "users"),
+            where("phoneNumber", ">=", phoneSearchTerm),
+            where("phoneNumber", "<=", phoneSearchTerm + "\uf8ff")
+        );
+        const phoneSnapshot = await getDocs(phoneQuery);
+        const phoneUsers = [];
+        phoneSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const fullName = `${data.firstName} ${data.lastName}`;
+            if (data.phoneNumber.includes(phoneSearchTerm)) {
+                phoneUsers.push({ ...data, id: doc.id, name: fullName });
+            }
+        });
+
+        // Kombiner og sett resultatene
+        const combinedUsers = [...nameUsers, ...phoneUsers];
+        if (!isCancelled) {
+            setSearchResults(combinedUsers);
+            setIsLoading(false); 
+        }
+    };
+
+    fetchUsers();
+
+    return () => {
+        isCancelled = true; // Oppdater isCancelled når komponenten avmonteres
+    };
+}, [searchTerm]);
 
     const sendFriendRequest = async (userId) => {
         try {
@@ -101,39 +137,17 @@ const SendReceipt = () => {
 
               </View>
 
+              {isLoading ? (
+                <ActivityIndicator size="small" /* color="#0000ff" */ style={{marginTop: 24}} />
+              ) : (
                 <SearchResults 
                     results={searchResults} 
                     sendFriendRequest={sendFriendRequest} 
                     style={ContainerStyles.paddingContainer}
                 />
+              )}
 
             </View>
-
-            {/* Recent contacts */}
-            {/* <View style={[ContainerStyles.contactsContainer, {marginTop: 32}]}>
-              <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Nylige kontakter</Text>
-              <FlatList
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  data={recentContacts}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-
-                      <View style={{ marginRight: 24 }}>
-                        <Image 
-                            source={require('../../assets/user.png')}
-                            style={ContainerStyles.smallUserPhoto}
-                        />
-                        <Text 
-                            style={[ContainerStyles.userName, ReceiptStyles.storeText]}
-                            numberOfLines={2}
-                            ellipsizeMode='tail'
-                        >{item.firstName}</Text>
-                      </View>
-
-                  )}
-              />
-            </View> */}
 
             {/* All contacts */}
             <View style={[ContainerStyles.contactsContainer, {marginTop: 20, flex: 1}]}>
@@ -150,7 +164,6 @@ const SendReceipt = () => {
                               source={require('../../assets/user.png')}
                               style={ContainerStyles.smallerUserPhoto}
                           />
-                          {/* <Text style={{ marginRight: 12 }}>{item.profileImage}</Text> */}
                           <Text style={ReceiptStyles.storeText}>{item.name}</Text>
                         </View>
 
