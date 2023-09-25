@@ -171,12 +171,12 @@ export default function Navigation() {
           const userRef = db.collection('users').doc(userId);
           const userDoc = await userRef.get();
   
-          if (userDoc.exists) {
+          /* if (userDoc.exists) {
             setInitialRoute("QuickLogin");
           } else {
             await SecureStore.deleteItemAsync('userToken');
             setInitialRoute("Onboarding");
-          }
+          } */
         }
       } catch (e) {
         console.error("Feil ved henting av token:", e);

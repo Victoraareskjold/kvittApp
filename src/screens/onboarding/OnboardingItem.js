@@ -14,7 +14,7 @@ const OnboardingItem = ({item}) => {
             />
             {/* <Lottie style={OnboardingStyles.heroImage} autoPlay loop source={require('../../../assets/animations/milhøvennlig.json')}/> */}
 
-            <Text style={OnboardingStyles.subHeader}>{item.title}</Text>
+            <Text style={[OnboardingStyles.subHeader, {marginBottom: 12}]}>{item.title}</Text>
             <Text style={OnboardingStyles.body}>{item.description}</Text>
         </View>
 

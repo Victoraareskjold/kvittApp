@@ -86,7 +86,7 @@ export default function LoginScreen({ navigation }) {
                     Velkommen tilbake
                 </Text>
 
-                <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
+                <Text style={[FontStyles.body2, { marginBottom: 48 }]}>
                     Lorem ipsum dolor sit amet
                 </Text>
             
@@ -104,7 +104,7 @@ export default function LoginScreen({ navigation }) {
                 />
                 <TouchableOpacity 
                     onPress={sendVerification}
-                    style={ButtonStyles.primaryBtn}
+                    style={[ButtonStyles.primaryBtn, {marginTop: 24}]}
                 >
                   <Text style={FontStyles.bigBtn}>Send kode</Text>
                 </TouchableOpacity>
@@ -123,7 +123,7 @@ export default function LoginScreen({ navigation }) {
                 />
                 <TouchableOpacity 
                     onPress={confirmCode}
-                    style={ButtonStyles.primaryBtn}
+                    style={[ButtonStyles.primaryBtn, {marginTop: 24}]}
                 >
                   <Text style={FontStyles.bigBtn}>Bekreft kode</Text>
                 </TouchableOpacity>

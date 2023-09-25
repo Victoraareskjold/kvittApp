@@ -10,6 +10,8 @@ export default {
         alignItems: 'center',
     },
     buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         paddingHorizontal: 24,
         alignItems: 'center',
     },
@@ -23,7 +25,7 @@ export default {
     centerContainer: {
         justifyContent: 'space-between',
         flex: 1,
-        paddingVertical: 32,
+        paddingVertical: 24,
     },
     heroImage: {
         width: screenWidth - 48,
@@ -72,6 +74,16 @@ export default {
 
     primaryBtn: {
         backgroundColor: Colors.primary,
+        borderRadius: 50,
+        paddingVertical: 18,
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 12,
+    },
+
+    secondaryBtn: {
+        backgroundColor: Colors.grey,
         borderRadius: 50,
         paddingVertical: 18,
         width: "100%",

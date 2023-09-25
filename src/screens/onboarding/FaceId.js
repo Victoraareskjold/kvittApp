@@ -27,7 +27,7 @@ export default function FaceId({ route, navigation }) {
                 </View>
 
                 {/* Activate FaceID */}
-                <View style={OnboardingStyles.buttonsContainer}>
+                <View style={[OnboardingStyles.buttonsContainer, {flexDirection: 'column'}]}>
                 <TouchableOpacity 
                     style={OnboardingStyles.primaryBtn}
                     onPress={() => navigation.navigate("HomeScreen")}

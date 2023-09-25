@@ -29,16 +29,17 @@ const Onboarding = ({ navigation }) => {
             </View>
 
             <View style={OnboardingStyles.buttonsContainer}>
-                <TouchableOpacity 
-                    style={OnboardingStyles.primaryBtn}
-                    onPress={() => navigation.navigate('LoginScreen')}
-                >
-                    <Text style={OnboardingStyles.linkText}>Logg inn</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
+                    style={[OnboardingStyles.secondaryBtn, {width: 'auto', paddingHorizontal: 40, marginBottom: 0}]}
                     onPress={() => navigation.navigate('SetupName')}
                 >
                     <Text style={OnboardingStyles.linkText2}>Registrer deg</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[OnboardingStyles.primaryBtn, {width: 'auto', paddingHorizontal: 40, marginBottom: 0}]}
+                    onPress={() => navigation.navigate('LoginScreen')}
+                >
+                    <Text style={OnboardingStyles.linkText}>Logg inn</Text>
                 </TouchableOpacity>
             </View>
         </View>
