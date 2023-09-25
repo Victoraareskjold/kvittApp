@@ -14,6 +14,7 @@ const SendReceipt = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [recentContacts, setRecentContacts] = useState([]);
+    const [hasSearched, setHasSearched] = useState(false);
 
     useEffect(() => {
       const fetchRecentUsers = async () => {
@@ -42,6 +43,7 @@ const SendReceipt = () => {
         const fetchUsers = async () => {
             if (!isCancelled) {
                 setIsLoading(true); 
+                setHasSearched(true);
             }
     
             if (searchTerm === "") {
@@ -138,14 +140,16 @@ const SendReceipt = () => {
               </View>
 
               {isLoading ? (
-                <ActivityIndicator size="small" /* color="#0000ff" */ style={{marginTop: 24}} />
-              ) : (
-                <SearchResults 
-                    results={searchResults} 
-                    sendFriendRequest={sendFriendRequest} 
-                    style={ContainerStyles.paddingContainer}
-                />
-              )}
+                    <ActivityIndicator size="small" style={{marginTop: 24}} />
+                ) : hasSearched && searchResults.length === 0 && searchTerm.length >= 3 ? ( // Sjekk om brukeren har søkt, ingen resultater er funnet, og søkefrasen har minst 3 tegn
+                    <Text style={{marginTop: 24}}>Ingen treff</Text>
+                ) : (
+                    <SearchResults 
+                        results={searchResults} 
+                        sendFriendRequest={sendFriendRequest} 
+                        style={ContainerStyles.paddingContainer}
+                    />
+                )}
 
             </View>
 
