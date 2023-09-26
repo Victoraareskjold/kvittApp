@@ -225,15 +225,26 @@ export default function AddReceiptModal(props) {
                     >
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <View style={{ width: '100%', height: '100%', backgroundColor: 'black', alignItems: 'center' }}>
+                                    <TouchableOpacity
+                                        onPress={closeCameraModal}
+                                        style={{ backgroundColor: 'white', height: 48, width: 48, borderRadius: 100, marginTop: 48, justifyContent: 'center', alignItems: 'center'}}
+                                    >
+                                        <Text 
+                                            style={{ color: 'red', fontSize: 20 }}
+                                        >X</Text>
+                                    </TouchableOpacity>
                                 <Camera 
-                                    style={{ width: '100%', height: '90%' }} 
+                                    style={{ width: '100%', height: '80%' }} 
                                     ref={(ref) => setCamera(ref)} 
                                     onCameraReady={() => setIsCameraReady(true)}
                                 />
-                                <TouchableOpacity  
-                                    onPress={takePicture} 
-                                    style={{ backgroundColor: 'white', height: 48, width: 48, borderRadius: 100, marginTop: 12}}
-                                />
+                                <View>
+                                    <TouchableOpacity  
+                                        onPress={takePicture} 
+                                        style={{ backgroundColor: 'white', height: 48, width: 48, borderRadius: 100, marginTop: 12}}
+                                    />
+                                    
+                                </View>
                             </View>
                         </View>
                     </Modal>
