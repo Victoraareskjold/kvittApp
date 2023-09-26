@@ -39,9 +39,6 @@
       },
       "package": "com.victoraareskjold.kvittApp"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "extra": {
       "eas": {
         "projectId": "11a65611-e414-4675-a3b4-ea204bc8adf6"
@@ -53,5 +50,7 @@
     "updates": {
       "url": "https://u.expo.dev/11a65611-e414-4675-a3b4-ea204bc8adf6"
     },
+    "platforms": ["ios", "android"],
+    "permissions": ["contacts"],
   }
 }

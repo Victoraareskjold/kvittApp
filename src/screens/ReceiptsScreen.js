@@ -156,14 +156,20 @@ const groupReceiptsByDate = (receipts) => {
     );
   };
 
-  let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt }) => {
+  let addReceipt = async ({ store, selectedCategory, price, dateOfReceipt, imageUrl  }) => {
     try {
+      if (!imageUrl) {
+        console.error("imageUrl er undefined");
+        // Du kan også sette imageUrl til en standardverdi her, eller returnere og vise en feilmelding til brukeren.
+        return;
+      }
         let receiptSave = {
           Store: store,
           Category: selectedCategory,
           Price: price,
           Date: formatDate(dateOfReceipt), // antar at du vil formatere datoen her
           userId: auth.currentUser.uid,
+          Image: imageUrl, 
         };
         
         // Legge til ny kvittering med compat versjon

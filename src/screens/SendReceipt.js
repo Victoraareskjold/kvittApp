@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, Image, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { db } from "../../firebase";
+import { db, auth } from "../../firebase";
 import { collection, query, where, getDocs, addDoc, orderBy } from "@firebase/firestore";
 import ContainerStyles from "../../Styles/ContainerStyles";
 import FontStyles from "../../Styles/FontStyles";
@@ -9,12 +9,65 @@ import SearchResults from "../components/SearchResults";
 
 import ReceiptStyles from "../../Styles/ReceiptStyles";
 
+import * as Permissions from 'expo-permissions';
+import * as Contacts from 'expo-contacts';
+
 const SendReceipt = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [recentContacts, setRecentContacts] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
+
+    /* Ask for persimmision to get conacts */
+    const getContacts = async () => {
+        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
+        if (status === 'granted') {
+          const { data } = await Contacts.getContactsAsync({});
+          if (data.length > 0) {
+            // Her kan du håndtere kontaktene og sammenligne dem med Firebase-databasen
+          }
+        } else {
+          // Brukeren har ikke gitt tillatelse til å få tilgang til kontaktene
+        }
+      };
+
+    
+    const getPhoneNumbersFromContacts = (contacts) => {
+      const phoneNumbers = [];
+    
+      contacts.forEach((contact) => {
+        if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
+          const phoneNumber = contact.phoneNumbers[0].number;
+          // Her kan du utføre formatering eller normalisering av telefonnummeret om nødvendig
+          phoneNumbers.push(phoneNumber);
+        }
+      });
+    
+      return phoneNumbers;
+    };
+      
+    const comparePhoneNumbersWithDatabase = async (phoneNumbers) => {
+        const matchingUsers = [];
+      
+        for (const phoneNumber of phoneNumbers) {
+          const userQuery = query(
+            collection(db, "users"),
+            where("phoneNumber", "==", phoneNumber)
+          );
+      
+          const userSnapshot = await getDocs(userQuery);
+          userSnapshot.forEach((doc) => {
+            const userData = doc.data();
+            // Her kan du legge til brukeren i listen over matchingUsers hvis den ikke allerede er der
+            if (!matchingUsers.some((user) => user.id === doc.id)) {
+              matchingUsers.push({ ...userData, id: doc.id });
+            }
+          });
+        }
+      
+        return matchingUsers;
+      };
 
     const fetchRecentUsers = async () => {
         const recentUsersQuery = query(

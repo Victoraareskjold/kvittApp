@@ -5,8 +5,11 @@ import StoreLogos from './StoreLogos';
 import ReceiptStyles from '../../Styles/ReceiptStyles';
 import ContainerStyles from "../../Styles/ContainerStyles";
 
-import { db } from "../../firebase";
-import { doc, deleteDoc } from "@firebase/firestore";
+import { db, storage } from "../../firebase";
+import { doc, deleteDoc, getDoc } from "@firebase/firestore";
+import { getStorage, ref, deleteObject } from 'firebase/storage';
+import 'firebase/compat/storage';
+
 import ButtonStyles from '../../Styles/ButtonStyles';
 import FontStyles from '../../Styles/FontStyles';
 
@@ -15,16 +18,37 @@ const ReceiptView = ({ navigation, route }) => {
   const { item }= route.params;
   const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
 
+  const storage = getStorage();
+
   // Funksjon for å slette kvittering
   const deleteReceipt = async () => {
     try {
-      const receiptRef = doc(db, "receipts", item.id); // Erstatt "receipts" med din faktiske kolleksjonsnavn
-      await deleteDoc(receiptRef);
-      navigation.goBack(); // Navigerer tilbake til forrige skjerm (antatt kvitteringsliste)
+        const receiptRef = doc(db, "receipts", item.id);
+        const receiptData = (await getDoc(receiptRef)).data();
+        
+        console.log("receiptData:", receiptData);
+        
+        if (receiptData.Image) { 
+            const urlParts = receiptData.Image.split("/");
+            let imagePath = urlParts[urlParts.length - 1].split('?')[0]; 
+            
+            // Decoding %2F to /
+            imagePath = decodeURIComponent(imagePath);
+            
+            console.log("Bildets navn:", imagePath);
+            
+            const imageRef = ref(storage, imagePath);
+            console.log("Sletter bilde fra sti:", imageRef.toString());
+            
+            await deleteObject(imageRef);
+        }
+        
+        await deleteDoc(receiptRef);
+        navigation.goBack();
     } catch (error) {
-      console.error("Feil ved sletting av kvittering:", error);
+        console.error("Feil ved sletting av kvittering:", error);
     }
-  };
+};
 
   // Funksjon for å vise bekreftelsesdialog
   const showDeleteAlert = () => {
@@ -44,6 +68,8 @@ const ReceiptView = ({ navigation, route }) => {
       ]
     );
   };
+  
+  console.log(item.Image);
 
   return (
     <View style={ContainerStyles.backgroundContainer}>
@@ -73,20 +99,23 @@ const ReceiptView = ({ navigation, route }) => {
                     source={require("../../assets/divider.png")}
                     style={{ width: '100%', height: 0, marginBottom: 32 }}
                 />
-
-                {/* Varer */}
-                {/* <View style={styles.alleVarerContainer}>
-                    <View style={styles.varerContainer}>
-                        <Text style={styles.body2}>Vare</Text>
-                        <Text style={styles.body2}>{item.pris}</Text>
-                </View> 
                 
-
                 {/* Barcode */}
-                <Image 
+                {/* <Image 
                     source={require("../../assets/barcode.png")}
                     style={{ width: '100%', height: 62 }}
-                />
+                /> */}
+
+                {/* Receipt image */}
+                {item.Image ? (
+                <View style={{alignItems: 'center', marginVertical: 10}}>
+                    <Image 
+                        source={{uri: item.Image}}
+                        style={{width: 150, height: 150}} 
+                        resizeMode="cover"
+                    />
+                </View>
+            ) : null}
 
             </View>
 
