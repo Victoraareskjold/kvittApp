@@ -17,7 +17,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AddReceiptModal from "./AddReceiptModal";
 import StoreLogos from "../components/StoreLogos";
 
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { collection, 
   query, 
   where, 
@@ -51,22 +51,22 @@ const HomeScreen = () => {
     return parseInt(year + month + day, 10);
   };  
 
-  useEffect(() => {
-    const fetchRecentUsers = async () => {
-        const recentUsersQuery = query(collection(db, "users"));
-        const snapshot = await getDocs(recentUsersQuery);
-        const usersList = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
-        });
-
-        console.log("Recent Contacts:", recentContacts);
-        setRecentContacts(usersList);
-    };
-
-    fetchRecentUsers();
-}, []);
+  const fetchRecentUsers = async () => {
+    const recentUsersQuery = query(
+      collection(db, "users"),
+      where("id", "!=", auth.currentUser.uid) // Ekskluder din egen bruker-ID
+    );
+  
+    const snapshot = await getDocs(recentUsersQuery);
+    const usersList = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
+    });
+  
+    console.log("Recent Contacts:", recentContacts);
+    setRecentContacts(usersList);
+  };  
 
   useFocusEffect(
     React.useCallback(() => {
@@ -79,21 +79,20 @@ const HomeScreen = () => {
   const loadReceiptList = async () => {
     let q;
     if (selectedCategory === "Alle") {
-      /* console.log(db); */
       q = query(
-        collection(db, "receipts"), 
-        /* where("userId", "==", auth.currentUser.uid), */
+        collection(db, "receipts"),
+        where("userId", "==", auth.currentUser.uid), // Legg til betingelsen for å filtrere etter riktig uid
         orderBy("Date", "desc")
       );
     } else {
       q = query(
         collection(db, "receipts"),
-        /* where("userId", "==", auth.currentUser.uid), */
+        where("userId", "==", auth.currentUser.uid), // Legg til betingelsen for å filtrere etter riktig uid
         where("Category", "==", selectedCategory),
         orderBy("Date", "desc")
       );
     }
-
+  
     const querySnapshot = await getDocs(q);
     let fetchedReceipts = [];
     querySnapshot.forEach((doc) => {
@@ -101,26 +100,26 @@ const HomeScreen = () => {
       receipt.id = doc.id;
       fetchedReceipts.push(receipt);
     });
-
+  
     // Sorter kvitteringene etter dato-feltet som strenger
     fetchedReceipts.sort((a, b) => {
       return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
-    });  
-
+    });
+  
     const limitedReceipts = fetchedReceipts.slice(0, 5);
-
+  
     // Sort and group the limited receipts
     limitedReceipts.sort((a, b) => {
-        return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
+      return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
     });
-
+  
     const receiptsGroupedByDate = groupReceiptsByDate(limitedReceipts);
-
+  
     setGroupedReceipts(receiptsGroupedByDate);
     setReceipts(limitedReceipts);
     setIsLoading(false);
     setIsRefreshing(false);
-  };
+  };  
 
   const groupReceiptsByDate = (receipts) => {
     const groupedReceipts = {};

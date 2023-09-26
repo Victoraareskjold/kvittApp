@@ -90,7 +90,7 @@ const UserSettings = () => {
 
   return (
         <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : '100'}
+            behavior={Platform.OS === 'ios' ? 'padding' : '1'}
             style={[ContainerStyles.backgroundContainer, { paddingTop: 32 }]}
         >
 
@@ -106,7 +106,7 @@ const UserSettings = () => {
         <View style={ContainerStyles.paddingContainer}>
 
             {/* Firstname */}
-            <Text style={FontStyles.body2Fat}>Fornavn</Text>
+            <Text style={FontStyles.body2Fat}>Fornavn & mellomnavn</Text>
                 <TextInput 
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                     placeholder='Ola'
@@ -121,7 +121,7 @@ const UserSettings = () => {
             {/* Lastname */}
             <Text style={FontStyles.body2Fat}>Etternavn</Text>
                 <TextInput 
-                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4, marginBottom: 32 }]}
                     placeholder='Nordmann'
 
                     value={user.lastName}
@@ -132,7 +132,7 @@ const UserSettings = () => {
                 ></TextInput>
 
             {/* Phone */}
-            <Text style={FontStyles.body2Fat}>Telefon</Text>
+            {/* <Text style={FontStyles.body2Fat}>Telefon</Text>
                 <TextInput 
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4, marginBottom: 32 }]}
                     placeholder='+47 123 45 678'
@@ -142,11 +142,11 @@ const UserSettings = () => {
                         setUser({ ...user, phoneNumber: text });
                         setHasChanges(true); // Sett hasChanges til true når tekst endres
                       }}
-                ></TextInput>
+                ></TextInput> */}
 
             {/* Update user */}
             <TouchableOpacity 
-                style={[ButtonStyles.primaryBtn, {paddingHorizontal: 12}]}
+                style={[ButtonStyles.primaryBtn, {}]}
                 onPress={updateUser}
             >
 

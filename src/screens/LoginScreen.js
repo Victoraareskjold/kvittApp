@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image, Alert } from "react-native";
-import React from "react";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Colors from "../../Styles/Colors";
@@ -21,6 +20,27 @@ export default function LoginScreen({ navigation }) {
     const [verificationId, setVerificationId] = useState('');
     const recaptchaVerifier = useRef(null);
     const [fullPhoneNumber, setFullPhoneNumber] = useState('');
+
+    const phoneNumberRef = useRef(null);
+    const codeRef = useRef(null);
+
+    /* Focus on load */
+  useEffect(() => {
+    if (phoneNumberRef.current) {
+      phoneNumberRef.current.focus();
+    }
+  }, []); // En tom avhengighetsarray for å kjøre kun ved montering
+
+  /* Focus on isCodeSent */
+  useEffect(() => {
+    if (codeSent) {
+      if (codeRef.current) {
+        codeRef.current.focus(); // Fokuser på 6-sifret kode TextInput når codeSent er true
+      }
+    } else if (phoneNumberRef.current) {
+      phoneNumberRef.current.focus(); // Fokuser på telefonnummer TextInput når komponenten er montert, og codeSent er false
+    }
+  }, [codeSent]); // codeSent som avhengighet, slik at hook kjøres når codeSent endrer seg
 
     useEffect(() => {
         const cleanedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
@@ -89,28 +109,30 @@ export default function LoginScreen({ navigation }) {
               {/* Always render phone number input but make it uneditable when codeSent is true */}
               <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
               <TextInput
-                  style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                  placeholder="123 45 678"
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                  value={phoneNumber}
-                  onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
-                  autoComplete="tel"
-                  editable={!codeSent} // Make uneditable when codeSent is true
+                ref={phoneNumberRef}
+                style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                placeholder="123 45 678"
+                keyboardType="phone-pad"
+                maxLength={10}
+                value={phoneNumber}
+                onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
+                autoComplete="tel"
+                editable={!codeSent} // Make uneditable when codeSent is true
               />
   
               {/* Conditionally render verification code input and buttons based on whether codeSent is true */}
               {codeSent && (
                   <>
-                      <Text style={FontStyles.body2Fat}>Verifiseringskode</Text>
+                      <Text style={FontStyles.body2Fat}>6-sifret kode</Text>
                       <TextInput
-                          placeholder="6 Siffer"
-                          maxLength={6}
-                          keyboardType="number-pad"
-                          textContentType="oneTimeCode"
-                          value={code}
-                          onChangeText={setCode}
-                          style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                        ref={codeRef}
+                        placeholder="Mottat på SMS"
+                        maxLength={6}
+                        keyboardType="number-pad"
+                        textContentType="oneTimeCode"
+                        value={code}
+                        onChangeText={setCode}
+                        style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
                       />
                   </>
               )}

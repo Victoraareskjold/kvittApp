@@ -196,7 +196,7 @@ const groupReceiptsByDate = (receipts) => {
           style={ButtonStyles.addReceiptBtn}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={FontStyles.smallBtn}>+</Text>
+          <Text style={[FontStyles.bodyFat, {color: Colors.white, opacity: 1}]}>Legg til</Text>
         </TouchableOpacity>
       </View>
 

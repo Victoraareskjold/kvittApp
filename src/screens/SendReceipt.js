@@ -16,25 +16,22 @@ const SendReceipt = () => {
     const [recentContacts, setRecentContacts] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
 
-    useEffect(() => {
-      const fetchRecentUsers = async () => {
-          const recentUsersQuery = query(
-              collection(db, "users"),
-          );
-  
-          const snapshot = await getDocs(recentUsersQuery);
-          const usersList = [];
-          snapshot.forEach(doc => {
-              const data = doc.data();
-              usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
-          });
-  
-          console.log("Recent Contacts:", recentContacts);
-          setRecentContacts(usersList);
-      };
-  
-      fetchRecentUsers();
-  }, []);
+    const fetchRecentUsers = async () => {
+        const recentUsersQuery = query(
+          collection(db, "users"),
+          where("id", "!=", auth.currentUser.uid) // Ekskluder din egen bruker-ID
+        );
+      
+        const snapshot = await getDocs(recentUsersQuery);
+        const usersList = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
+        });
+      
+        console.log("Recent Contacts:", recentContacts);
+        setRecentContacts(usersList);
+      };      
 
     /* Søkefunksjon */
     useEffect(() => {
@@ -46,13 +43,13 @@ const SendReceipt = () => {
                 setHasSearched(true);
             }
     
-            if (searchTerm === "") {
+            if (searchTerm === "" || searchTerm.length < 2) {
                 if (!isCancelled) {
-                    setSearchResults([]);
-                    setIsLoading(false);
+                  setSearchResults([]);
+                  setIsLoading(false);
                 }
                 return;
-            }
+              }
 
         // Søk etter navn
         const nameQuery = query(
