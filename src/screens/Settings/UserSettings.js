@@ -66,21 +66,6 @@ const UserSettings = () => {
               text: 'OK',
               onPress: async () => {
                 try {
-                  // Få tak i brukerens token
-                  const userToken = await SecureStore.getItemAsync('userToken');
-      
-                  // Slett tokenet fra SecureStore
-                  await SecureStore.deleteItemAsync('userToken');
-      
-                  // Slett tokenet fra Firebase Database
-                  const db = firebase.firestore();
-                  const tokenRef = db.collection('tokenToUserId');
-                  const snapshot = await tokenRef.where('token', '==', userToken).get();
-      
-                  if (!snapshot.empty) {
-                    const docId = snapshot.docs[0].id;
-                    await tokenRef.doc(docId).delete();
-                  }
       
                   // Slett bruker fra Firestore
                   await db.collection('users').doc(userId).delete();
@@ -102,44 +87,6 @@ const UserSettings = () => {
       };            
 
       const navigation = useNavigation();
-
-      useEffect(() => {
-          // Håndterer maskinvare tilbakeknapp på Android
-          const onBackPress = () => {
-              if (hasChanges) {
-                  goBackWithUnsavedChanges();
-                  return true; // Hindrer navigering
-              }
-              return false; // Tillater navigering
-          };
-  
-          // Legg til en event listener for maskinvare tilbakeknapp
-          const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-  
-          return () => backHandler.remove(); // Fjerner event listener ved unmount
-      }, [hasChanges]);
-  
-      const goBackWithUnsavedChanges = () => {
-          Alert.alert(
-              'Ulagrede Endringer',
-              'Du har ulagrede endringer. Er du sikker på at du vil gå tilbake?',
-              [
-                  {
-                      text: 'Avbryt',
-                      onPress: () => {}, // Brukeren avbryter og forblir på siden
-                      style: 'cancel',
-                  },
-                  {
-                      text: 'OK',
-                      onPress: () => {
-                          setHasChanges(false); // Setter hasChanges til false slik at brukeren kan navigere bort uten flere advarsler
-                          navigation.goBack(); // Navigerer tilbake
-                      },
-                  },
-              ],
-              { cancelable: false },
-          );
-      };
 
   return (
         <KeyboardAvoidingView 

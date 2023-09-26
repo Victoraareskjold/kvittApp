@@ -8,8 +8,6 @@ import { collection, addDoc, updateDoc } from 'firebase/firestore';
 import firebase from "firebase/compat/app";
 import { firebaseConfig } from '../../../firebase';
 
-import * as SecureStore from 'expo-secure-store';
-
 import Colors from "../../../Styles/Colors";
 import FontStyles from "../../../Styles/FontStyles";
 import ButtonStyles from "../../../Styles/ButtonStyles";
@@ -19,51 +17,44 @@ export default function ConfirmCode({ route, navigation }) {
     const [setupCode, setSetupCode] = useState(null);
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
+    const [isCodeVisible, setIsCodeVisible] = useState(false);
 
     useEffect(() => {
-        // Fokus på den første TextInput når komponenten lastes
         refs[0].current.focus();
-    
-        // Hente 4-sifret kode fra navigasjonsparametre
+
         if (route.params && route.params.code) {
-            setSetupCode(route.params.code);  // Endret denne linjen
+            setSetupCode(route.params.code);
         }
-    }, []);    
+    }, []);   
 
-    const handleCodeChange = (text, index) => {
-        const newCode = [...code];
-        newCode[index] = text;
-
-        if (text !== '') {
-            // Fokus på neste TextInput hvis brukeren har skrevet inn et siffer
-            if (index < 3) {
-                refs[index + 1].current.focus();
-            }
-        } else {
-            // Fokus på forrige TextInput hvis brukeren fjerner tekst
-            if (index > 0) {
+    const handleKeyPress = (e, index) => {
+        if (e.nativeEvent.key === 'Backspace') {
+            if (code[index] === '' && index > 0) {
+                const newCode = [...code];
+                newCode[index - 1] = '';
+                setCode(newCode);
                 refs[index - 1].current.focus();
+            } else {
+                const newCode = [...code];
+                newCode[index] = '';
+                setCode(newCode);
             }
         }
-
-        setCode(newCode);
     };
 
-    // Denne funksjonen kaller du etter vellykket autentisering
-    const storeUserToken = async () => {
-        const userToken = "GENERERT_TOKEN"; // Dette er en forenkling. Du kan generere eller hente en mer kompleks token.
-        const userId = firebase.auth().currentUser.uid; // Henter uid fra Firebase Auth
-      
-        // Lagre token i SecureStore
-        await SecureStore.setItemAsync('userToken', userToken);
-      
-        // Lagre mapping av token til userId i Firebase
-        const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
-        await userDocRef.update({ 
-        token: userToken, 
-        userId: firebase.auth().currentUser.uid
-        });
-      };        
+    const handleCodeChange = (text, index) => {
+        if (/[^0-9]/.test(text)) return;
+        
+        const newCode = [...code];
+        newCode[index] = text;
+        setCode(newCode);
+        
+        if (text && index < 3) {
+            setTimeout(() => {
+                refs[index + 1].current.focus();
+            }, 0);
+        }
+    };    
 
     /* oppdaterer database for å legge til kode */
     const storeCodeAndContinue = async () => {
@@ -78,9 +69,6 @@ export default function ConfirmCode({ route, navigation }) {
                 
                 // Oppdater dokumentet med den 4-sifrede koden
                 await userDocRef.update({ code: enteredCode });
-
-                // Lagre token i SecureStore
-                await storeUserToken();
     
                 navigation.navigate("FaceId");
             } catch (error) {
@@ -108,16 +96,17 @@ export default function ConfirmCode({ route, navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Bekreft kode
+                    Bekreft din kode
                 </Text>
 
-                <Text style={[FontStyles.body2, { marginBottom: 32 }]}>
-                    Skriv inn den 4-sifrede koden på nytt
+                <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
+                    Vennligst tast inn den 4-sifret koden du opprettet for å bekrefte den.
                 </Text>
 
                 <View style={styles.codeInputContainer}>
                     {code.map((value, index) => (
-                        <TextInput 
+                        <TextInput
+                            secureTextEntry={!isCodeVisible}
                             key={index}
                             style={styles.codeInput}
                             value={value}
@@ -125,9 +114,20 @@ export default function ConfirmCode({ route, navigation }) {
                             keyboardType="number-pad"
                             maxLength={1}
                             ref={refs[index]}
+                            onKeyPress={(e) => handleKeyPress(e, index)}
+                            editable={index === 0 || code[index - 1] !== ''}
                         />
                     ))}
                 </View>
+
+                <TouchableOpacity 
+                    onPress={() => setIsCodeVisible(!isCodeVisible)}
+                    style={{alignSelf: 'center', marginTop: 8}}
+                >
+                    <Text style={{ color: Colors.default }}> 
+                        {isCodeVisible ? 'Skjul Kode' : 'Vis Kode'} 
+                    </Text>
+                </TouchableOpacity>
 
                 <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
                     <TouchableOpacity 

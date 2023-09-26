@@ -20,6 +20,27 @@ export default function SetupPhone({ navigation, route }) {
   const recaptchaVerifier = useRef(null);
   const [verificationId, setVerificationId] = useState('');
 
+  const phoneNumberRef = useRef(null);
+  const codeRef = useRef(null);
+
+  /* Focus on load */
+  useEffect(() => {
+    if (phoneNumberRef.current) {
+      phoneNumberRef.current.focus();
+    }
+  }, []); // En tom avhengighetsarray for å kjøre kun ved montering
+
+  /* Focus on isCodeSent */
+  useEffect(() => {
+    if (codeSent) {
+      if (codeRef.current) {
+        codeRef.current.focus(); // Fokuser på 6-sifret kode TextInput når codeSent er true
+      }
+    } else if (phoneNumberRef.current) {
+      phoneNumberRef.current.focus(); // Fokuser på telefonnummer TextInput når komponenten er montert, og codeSent er false
+    }
+  }, [codeSent]); // codeSent som avhengighet, slik at hook kjøres når codeSent endrer seg
+
   useEffect(() => {
     const cleanedPhoneNumber = phoneNumber.replace(/[^\d]/g, '');
     if (cleanedPhoneNumber.length === 8) setFullPhoneNumber('+47' + cleanedPhoneNumber);
@@ -81,39 +102,45 @@ export default function SetupPhone({ navigation, route }) {
         <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
         <Ionicons name="chevron-back" size={24} color="black" onPress={() => navigation.goBack()} />
 
-        <Text style={FontStyles.header}>Legg inn Telefonnummer</Text>
-        <Text style={[FontStyles.body2, { marginBottom: 64 }]}>Skriv inn ditt telefonnummer</Text>
-
-        {!codeSent ? (
+        <Text style={FontStyles.header}>Bekreft din identitet! 📱</Text>
+        <Text style={[FontStyles.body2, { marginBottom: 64 }]}>For å sikre din konto og bekrefte din identitet, trenger vi å verifisere ditt telefonnummer. </Text>
+        
+        <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
+        <TextInput
+          ref={phoneNumberRef}
+          style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+          placeholder="123 45 678"
+          keyboardType="phone-pad"
+          maxLength={10}
+          value={phoneNumber}
+          onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
+          autoComplete="tel"
+          editable={!codeSent} // Make uneditable when codeSent is true
+        />
+        
+        {codeSent && (
           <>
+            <Text style={FontStyles.body2Fat}>6-sifret kode</Text>
             <TextInput
-              style={ButtonStyles.defaultPlaceholder}
-              placeholder="123 45 678"
-              keyboardType="phone-pad"
-              onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
-              value={phoneNumber}
-              autoComplete="tel"
-              maxLength={10}
-            />
-            <TouchableOpacity style={ButtonStyles.primaryBtn} onPress={sendVerification}>
-              <Text style={FontStyles.bigBtn}>Send kode</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <TextInput
-              style={ButtonStyles.defaultPlaceholder}
-              placeholder="6 Siffer"
-              keyboardType="number-pad"
-              onChangeText={setCode}
-              value={code}
+              ref={codeRef}
+              placeholder="Mottat på SMS"
               maxLength={6}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              value={code}
+              onChangeText={setCode}
+              style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
             />
-            <TouchableOpacity style={ButtonStyles.primaryBtn} onPress={confirmCode}>
-              <Text style={FontStyles.bigBtn}>Bekreft kode</Text>
-            </TouchableOpacity>
           </>
         )}
+        
+        <TouchableOpacity
+          onPress={codeSent ? confirmCode : sendVerification}
+          style={[ButtonStyles.primaryBtn, { position: 'absolute', bottom: 12}]}
+        >
+          <Text style={FontStyles.bigBtn}>{codeSent ? 'Bekreft kode' : 'Send kode'}</Text>
+        </TouchableOpacity>
+        
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

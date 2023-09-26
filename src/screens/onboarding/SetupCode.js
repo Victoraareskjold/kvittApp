@@ -11,46 +11,55 @@ import ContainerStyles from "../../../Styles/ContainerStyles";
 export default function SetupCode({ route, navigation }) {
     const [code, setCode] = useState(['', '', '', '']);
     const refs = [useRef(), useRef(), useRef(), useRef()];
+    const [isCodeVisible, setIsCodeVisible] = useState(false);
 
     useEffect(() => {
-        // Fokus på den første TextInput når komponenten lastes
-        refs[0].current.focus();
-    }, []); // Tomt avhengighetsarray for å kjøre denne effekten kun ved innlasting
+        const indexToFocus = code.findIndex((c) => c === '');
+        if (indexToFocus !== -1 && refs[indexToFocus].current) {
+            refs[indexToFocus].current.focus();
+        }
+    }, [code]);    
 
-    const handleCodeChange = (text, index) => {
-        const newCode = [...code];
-        newCode[index] = text;
-
-        if (text !== '') {
-            // Fokus på neste TextInput hvis brukeren har skrevet inn et siffer
-            if (index < 3) {
-                refs[index + 1].current.focus();
-            }
-        } else {
-            // Fokus på forrige TextInput hvis brukeren fjerner tekst
-            if (index > 0) {
+    const handleKeyPress = (e, index) => {
+        if (e.nativeEvent.key === 'Backspace') {
+            if (code[index] === '' && index > 0) {
+                const newCode = [...code];
+                newCode[index - 1] = '';
+                setCode(newCode);
                 refs[index - 1].current.focus();
+            } else {
+                const newCode = [...code];
+                newCode[index] = '';
+                setCode(newCode);
             }
         }
-
-        setCode(newCode);
     };
+    
+    const handleCodeChange = (text, index) => {
+        if (/[^0-9]/.test(text)) return;
+        
+        const newCode = [...code];
+        newCode[index] = text;
+        setCode(newCode);
+        
+        if (text && index < 3) {
+            // Setter fokus til neste TextInput kun hvis den aktuelle er fylt ut
+            setTimeout(() => {
+                refs[index + 1].current.focus();
+            }, 0);
+        }
+    };       
 
     const storeCodeAndContinue = () => {
         const enteredCode = code.join('');
 
         if (enteredCode.length !== 4 || !/^\d+$/.test(enteredCode)) {
-            // Validering: Koden må være nøyaktig 4 sifre og kun inneholde sifre (0-9)
             alert('Koden må være 4 sifre og kun inneholde sifre (0-9)');
             return;
         }
 
-        // Data fra SetupPhone-skjermen
         const { firstName, lastName, phoneNumber } = route.params;
 
-        // Her kan du gjøre noe med koden, for eksempel lagre den i en database
-
-        // Naviger til neste skjerm eller gjør hva du vil med koden
         navigation.navigate("ConfirmCode", {
             firstName: firstName,
             lastName: lastName,
@@ -75,16 +84,17 @@ export default function SetupCode({ route, navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Sett opp kode
+                    Opprett din kode
                 </Text>
 
-                <Text style={[FontStyles.body2, { marginBottom: 32 }]}>
-                    Skriv inn en 4-sifret kode
+                <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
+                    Vennligst opprett en 4-sifret kode. Denne koden vil bli brukt for å verifisere din identitet.
                 </Text>
 
                 <View style={styles.codeInputContainer}>
                     {code.map((value, index) => (
-                        <TextInput 
+                        <TextInput
+                            secureTextEntry={!isCodeVisible}
                             key={index}
                             style={styles.codeInput}
                             value={value}
@@ -92,9 +102,21 @@ export default function SetupCode({ route, navigation }) {
                             keyboardType="number-pad"
                             maxLength={1}
                             ref={refs[index]}
+                            onKeyPress={(e) => handleKeyPress(e, index)}
+                            defaultValue=""
+                            editable={index === 0 || code[index - 1] !== ''}
                         />
                     ))}
                 </View>
+
+                <TouchableOpacity 
+                    onPress={() => setIsCodeVisible(!isCodeVisible)}
+                    style={{alignSelf: 'center', marginTop: 8}}
+                >
+                    <Text style={{ color: Colors.default }}> 
+                        {isCodeVisible ? 'Skjul Kode' : 'Vis Kode'} 
+                    </Text>
+                </TouchableOpacity>
 
                 <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
                     <TouchableOpacity 

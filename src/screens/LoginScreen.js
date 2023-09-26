@@ -66,70 +66,62 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
-        <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : '0'} 
-            style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
-        >
-          <SafeAreaView style={{ backgroundColor: Colors.white, flex: 1 }}>
-            <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
-            
-            {/* Header & subheader */}
-            <Ionicons 
-                name="chevron-back" 
-                size={24} 
-                color="black" 
-                style={{marginBottom: 12}}
-                onPress={() => navigation.goBack()}
-            />
-
-                <Text style={FontStyles.header}>
-                    Velkommen tilbake
-                </Text>
-
-                <Text style={[FontStyles.body2, { marginBottom: 48 }]}>
-                    Lorem ipsum dolor sit amet
-                </Text>
-            
-            {!codeSent ? (
-              <>
-                <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
-                <TextInput
-                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                    placeholder="123 45 678"
-                    keyboardType="phone-pad"
-                    maxLength={10}
-                    value={phoneNumber}
-                    onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
-                    autoComplete="tel"
-                />
-                <TouchableOpacity 
-                    onPress={sendVerification}
-                    style={[ButtonStyles.primaryBtn, {marginTop: 24}]}
-                >
-                  <Text style={FontStyles.bigBtn}>Send kode</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <Text style={FontStyles.body2Fat}>Verifiseringskode</Text>
-                <TextInput
-                  placeholder="6 Siffer"
-                  maxLength={6}
-                  keyboardType="number-pad"
-                  textContentType="oneTimeCode"
-                  value={code}
-                  onChangeText={setCode}
+      <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : '0'} 
+          style={[ContainerStyles.backgroundContainer, { paddingHorizontal: 24 }]}
+      >
+          <SafeAreaView style={{ backgroundColor: Colors.white, flex: 1, paddingBottom: 60 }}>
+              <FirebaseRecaptchaVerifierModal ref={recaptchaVerifier} firebaseConfig={firebaseConfig} />
+              
+              {/* Header & subheader */}
+              <Ionicons 
+                  name="chevron-back" 
+                  size={24} 
+                  color="black" 
+                  style={{marginBottom: 12}}
+                  onPress={() => navigation.goBack()}
+              />
+  
+              <Text style={FontStyles.header}>Velkommen tilbake</Text>
+  
+              <Text style={[FontStyles.body2, { marginBottom: 48 }]}>Lorem ipsum dolor sit amet</Text>
+              
+              {/* Always render phone number input but make it uneditable when codeSent is true */}
+              <Text style={FontStyles.body2Fat}>Mobilnummer</Text>
+              <TextInput
                   style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                />
-                <TouchableOpacity 
-                    onPress={confirmCode}
-                    style={[ButtonStyles.primaryBtn, {marginTop: 24}]}
-                >
-                  <Text style={FontStyles.bigBtn}>Bekreft kode</Text>
-                </TouchableOpacity>
-              </>
-            )}
+                  placeholder="123 45 678"
+                  keyboardType="phone-pad"
+                  maxLength={10}
+                  value={phoneNumber}
+                  onChangeText={(text) => setPhoneNumber(formatPhoneNumber(text))}
+                  autoComplete="tel"
+                  editable={!codeSent} // Make uneditable when codeSent is true
+              />
+  
+              {/* Conditionally render verification code input and buttons based on whether codeSent is true */}
+              {codeSent && (
+                  <>
+                      <Text style={FontStyles.body2Fat}>Verifiseringskode</Text>
+                      <TextInput
+                          placeholder="6 Siffer"
+                          maxLength={6}
+                          keyboardType="number-pad"
+                          textContentType="oneTimeCode"
+                          value={code}
+                          onChangeText={setCode}
+                          style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
+                      />
+                  </>
+              )}
+  
+              <TouchableOpacity 
+                  onPress={codeSent ? confirmCode : sendVerification}
+                  style={[ButtonStyles.primaryBtn, { position: 'absolute', bottom: 12}]}
+              >
+                  <Text style={FontStyles.bigBtn}>{codeSent ? 'Bekreft kode' : 'Send kode'}</Text>
+              </TouchableOpacity>
           </SafeAreaView>
-        </KeyboardAvoidingView>
-      );
-    }
+      </KeyboardAvoidingView>
+  );
+}  

@@ -21,19 +21,6 @@ const SettingsScreen = () => {
   /* Logg ut btn */
   const handleSignOut = async () => {
     try {
-      // Få tak i brukerens token
-      const userToken = await SecureStore.getItemAsync('userToken');
-      console.log("UserToken from SecureStore:", userToken);  // Logg dette for debugging
-
-      // Slett tokenet fra Firebase Database
-      const db = firebase.firestore();
-      const userDocRef = db.collection('users').doc(firebase.auth().currentUser.uid);
-      await userDocRef.update({ token: firebase.firestore.FieldValue.delete() });
-
-      if (!snapshot.empty) {
-        const docId = snapshot.docs[0].id;
-        await tokenRef.doc(docId).delete();
-      }
   
       // Logg brukeren ut fra Firebase
       await auth.signOut();

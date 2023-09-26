@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform } from "react-native";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -18,6 +17,14 @@ export default function SetupName({ navigation }) {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const firstNameRef = useRef(null);
+
+    /* Set focus on load */
+    useEffect(() => {
+        if (firstNameRef.current) {
+            firstNameRef.current.focus();
+        }
+    }, []); // Tom avhengighetsarray betyr at effekten kjøres ved montering
 
     let [validationMessage, setValidationMessage] = useState('');
 
@@ -42,6 +49,10 @@ export default function SetupName({ navigation }) {
         });
     };
 
+    /* Capitalize words */
+    const capitalizeWords = (str) => 
+    str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : '0'}
@@ -59,29 +70,30 @@ export default function SetupName({ navigation }) {
                 />
 
                 <Text style={FontStyles.header}>
-                    Hei
+                    Velkommen til Kvitt! 👋
                 </Text>
 
                 <Text style={[FontStyles.body2, { marginBottom: 64 }]}>
-                    Hvem er du?
+                    Fortell oss litt om deg selv.
                 </Text>
 
                 {/* First name */}
                 <Text style={FontStyles.body2Fat}>Fornavn & mellomnavn</Text>
                 <TextInput
+                    ref={firstNameRef}
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                    placeholder="Ola"
+                    placeholder="Ola Nordmann"
                     value={firstName}
-                    onChangeText={(text) => setFirstName(text)}
+                    onChangeText={(text) => setFirstName(capitalizeWords(text))}
                 ></TextInput>
 
                 {/* Last name */}
                 <Text style={FontStyles.body2Fat}>Etternavn</Text>
                 <TextInput 
                     style={[ButtonStyles.defaultPlaceholder, { marginTop: 4 }]}
-                    placeholder='Nordmann'
+                    placeholder='Hansen'
                     value={lastName}
-                    onChangeText={text => setLastName(text)}
+                    onChangeText={text => setLastName(capitalizeWords(text))}
                 ></TextInput>
 
             {/* Validation message */}
@@ -90,15 +102,13 @@ export default function SetupName({ navigation }) {
             </View>
 
             {/* Log inn */}
-            <View style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 12 }}>
                 <TouchableOpacity
                     onPress={storeDataAndContinue}
-                    style={ButtonStyles.primaryBtn}
+                    style={[ButtonStyles.primaryBtn, { position: 'absolute', bottom: 12}]}
                 >
                     <Text style={FontStyles.bigBtn}>Gå videre</Text>
                 </TouchableOpacity>
-            </View>
-
+           
             </SafeAreaView>
         </KeyboardAvoidingView>
     );
