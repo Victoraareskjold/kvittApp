@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, Button, KeyboardAvoidingView, ScrollView, Modal, Touchable } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Pressable, Image, TextInput, Platform, Button, KeyboardAvoidingView, ScrollView, Modal, Touchable, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState, useEffect, useRef } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -32,6 +32,10 @@ export default function AddReceiptModal(props) {
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [isCameraModalVisible, setCameraModalVisible] = useState(false);
+    const [isPictureTaken, setIsPictureTaken] = useState(false);
+    const [isImageModalVisible, setImageModalVisible] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -53,12 +57,13 @@ export default function AddReceiptModal(props) {
             try {
                 const photo = await camera.takePictureAsync();
                 setImageUri(photo.uri);
-                closeCameraModal(); // Lukk kameramodalen etter bilde er tatt
+                setIsPictureTaken(true); // Sett isPictureTaken til true når bildet er tatt.
+                closeCameraModal(); 
             } catch (error) {
                 console.error("Error taking picture", error);
             }
         }
-    };      
+    };     
 
     const uploadImage = async (uri) => {
         try {
@@ -118,6 +123,38 @@ export default function AddReceiptModal(props) {
      
         return `${day}.${month}.${year}`;
      };
+
+     const handleAddReceipt = async () => {
+        if (!store || !selectedCategory || !price || !dateOfReceipt ) {
+            setErrorMessage("Fyll ut alle feltene for å legge til kvittering.");
+        } else {
+            try {
+                setIsLoading(true);
+                const imageUrl = await uploadImage(imageUri); 
+                props.addReceipt({ store, selectedCategory, price, dateOfReceipt, imageUrl });
+                setStore('');
+                setPrice('');
+                setDateOfReceipt('');
+                setSelectedCategory('');
+                setImageUri('');
+                setIsPictureTaken(false); // Sett isPictureTaken til false når kvittering er lagt til.
+                setErrorMessage("");
+                props.onClose();
+            } catch (error) {
+                console.error('Error uploading image and adding receipt: ', error);
+            } finally {
+                setIsLoading(false); // End loading
+            }
+        }
+    };
+
+    const openImageModal = () => {
+        setImageModalVisible(true);
+    };
+    
+    const closeImageModal = () => {
+        setImageModalVisible(false);
+    };    
      
     return (
         <KeyboardAvoidingView 
@@ -210,12 +247,37 @@ export default function AddReceiptModal(props) {
                         excludeAll={true} // Ekskluder "Alle" kategorien
                     />
 
-                    <Button title="Åpne Kamera" onPress={openCameraModal} />
-
                     {/* Vis bilde tatt med kamera hvis det finnes */}
                     {imageUri && (
-                        <Image source={{ uri: imageUri }} style={{ width: 32, height: 32, marginTop: 10 }} />
+                    <TouchableOpacity 
+                        style={{marginBottom: 24, alignSelf: 'center', borderBottomWidth: 1, borderColor: Colors.primary}}
+                        onPress={openImageModal}
+                    >
+                        <Text style={{ color: Colors.primary }}>Se bildet</Text>
+                    </TouchableOpacity>
                     )}
+
+                    <Modal
+                        animationType="slide"
+                        transparent={false} // Sett til false for å vise modalen i fullskjerm
+                        visible={isImageModalVisible}
+                        onRequestClose={closeImageModal}
+                    >
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
+                            <Image source={{ uri: imageUri }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
+                            <TouchableOpacity 
+                                onPress={() => { 
+                                    closeImageModal(); // Lukk bilde modalen
+                                    openCameraModal(); // Åpne kamera modalen
+                                }} 
+                                style={{ position: 'absolute', top: 48, left: 20 }}>
+                                <Text style={{ color: 'white', fontSize: 20 }}>Ta nytt bilde</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={closeImageModal} style={{ position: 'absolute', top: 48, right: 20 }}>
+                                <Text style={{ color: 'white', fontSize: 20 }}>Lukk</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </Modal>
                                     
                     <Modal
                         animationType="slide"
@@ -227,11 +289,9 @@ export default function AddReceiptModal(props) {
                             <View style={{ width: '100%', height: '100%', backgroundColor: 'black', alignItems: 'center' }}>
                                     <TouchableOpacity
                                         onPress={closeCameraModal}
-                                        style={{ backgroundColor: 'white', height: 48, width: 48, borderRadius: 100, marginTop: 48, justifyContent: 'center', alignItems: 'center'}}
+                                        style={{ marginTop: 48, marginBottom: 8, justifyContent: 'center', alignItems: 'flex-end', width: '90%'}}
                                     >
-                                        <Text 
-                                            style={{ color: 'red', fontSize: 20 }}
-                                        >X</Text>
+                                        <Text style={{ color: 'white', fontSize: 20 }}>Lukk</Text>
                                     </TouchableOpacity>
                                 <Camera 
                                     style={{ width: '100%', height: '80%' }} 
@@ -249,32 +309,19 @@ export default function AddReceiptModal(props) {
                         </View>
                     </Modal>
 
-                    <TouchableOpacity
+                    <TouchableOpacity 
                         style={ButtonStyles.primaryBtn}
-                        title='Legg til'
-                        onPress={async () => {
-                            if (!store || !selectedCategory || !price || !dateOfReceipt || !imageUri) {
-                              setErrorMessage("Fyll ut alle feltene for å legge til kvittering.");
-                            } else {
-                              try {
-                                const imageUrl = await uploadImage(imageUri); // Får URL fra Firebase Storage.
-                                props.addReceipt({ store, selectedCategory, price, dateOfReceipt, imageUrl });
-                                console.log('Sending imageUrl:', imageUrl);
-                                setStore('');
-                                setPrice('');
-                                setDateOfReceipt('');
-                                setSelectedCategory('');
-                                setImageUri('');
-                                setErrorMessage("");
-                                props.onClose();
-                              } catch (error) {
-                                console.error('Error uploading image and adding receipt: ', error);
-                              }
-                            }
-                          }}                          
+                        onPress={isPictureTaken ? handleAddReceipt : openCameraModal}
+                        disabled={isLoading}
                     >
-                        <Text style={FontStyles.bigBtn}>Legg til kvittering</Text>
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="#FFFFFF" />
+                        ) : (
+                            <Text style={FontStyles.bigBtn}>{isPictureTaken ? 'Legg til kvittering' : 'Åpne Kamera'}</Text>
+                        )}
                     </TouchableOpacity>
+
+
 
                     {/* Vis feilmelding hvis et felt mangler */}
                     <View style={{ width: '100%', alignItems: 'center', marginTop: 8}}>

@@ -19,72 +19,25 @@ const SendReceipt = () => {
     const [recentContacts, setRecentContacts] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
 
-    /* Ask for persimmision to get conacts */
-    const getContacts = async () => {
-        const { status } = await Permissions.askAsync(Permissions.CONTACTS);
-        if (status === 'granted') {
-          const { data } = await Contacts.getContactsAsync({});
-          if (data.length > 0) {
-            // Her kan du håndtere kontaktene og sammenligne dem med Firebase-databasen
-          }
-        } else {
-          // Brukeren har ikke gitt tillatelse til å få tilgang til kontaktene
-        }
-      };
-
-    
-    const getPhoneNumbersFromContacts = (contacts) => {
-      const phoneNumbers = [];
-    
-      contacts.forEach((contact) => {
-        if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-          const phoneNumber = contact.phoneNumbers[0].number;
-          // Her kan du utføre formatering eller normalisering av telefonnummeret om nødvendig
-          phoneNumbers.push(phoneNumber);
-        }
-      });
-    
-      return phoneNumbers;
-    };
-      
-    const comparePhoneNumbersWithDatabase = async (phoneNumbers) => {
-        const matchingUsers = [];
-      
-        for (const phoneNumber of phoneNumbers) {
-          const userQuery = query(
-            collection(db, "users"),
-            where("phoneNumber", "==", phoneNumber)
-          );
-      
-          const userSnapshot = await getDocs(userQuery);
-          userSnapshot.forEach((doc) => {
-            const userData = doc.data();
-            // Her kan du legge til brukeren i listen over matchingUsers hvis den ikke allerede er der
-            if (!matchingUsers.some((user) => user.id === doc.id)) {
-              matchingUsers.push({ ...userData, id: doc.id });
-            }
-          });
-        }
-      
-        return matchingUsers;
-      };
-
-    const fetchRecentUsers = async () => {
-        const recentUsersQuery = query(
+      const fetchUsers = async () => {
+        const usersQuery = query(
           collection(db, "users"),
-          where("id", "!=", auth.currentUser.uid) // Ekskluder din egen bruker-ID
+          where("uid", "!=", auth.currentUser.uid)
         );
-      
-        const snapshot = await getDocs(recentUsersQuery);
+    
+        const snapshot = await getDocs(usersQuery);
         const usersList = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
           usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
         });
-      
-        console.log("Recent Contacts:", recentContacts);
+        
         setRecentContacts(usersList);
-      };      
+    };
+    
+    useEffect(() => {
+      fetchUsers();
+  }, []);  
 
     /* Søkefunksjon */
     useEffect(() => {
@@ -152,7 +105,7 @@ const SendReceipt = () => {
     };
 }, [searchTerm]);
 
-    const sendFriendRequest = async (userId) => {
+    /* const sendFriendRequest = async (userId) => {
         try {
             await addDoc(collection(db, "friendRequests"), {
                 senderId: auth.currentUser.uid, // ID of the sender
@@ -162,7 +115,7 @@ const SendReceipt = () => {
         } catch (error) {
             alert("Det oppsto en feil ved sending av venneforespørsel.");
         }
-    };
+    }; */
 
     return (
         <View style={ContainerStyles.backgroundContainer}>
@@ -196,7 +149,7 @@ const SendReceipt = () => {
                 ) : (
                     <SearchResults 
                         results={searchResults} 
-                        sendFriendRequest={sendFriendRequest} 
+                        /* sendFriendRequest={sendFriendRequest} */ 
                         style={ContainerStyles.paddingContainer}
                     />
                 )}

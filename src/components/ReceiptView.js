@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Pressable, Image, ScrollView, Alert } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, ScrollView, Alert, Modal } from 'react-native'
 import { SafeAreaView } from "react-native-safe-area-context";
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import StoreLogos from './StoreLogos';
 import ReceiptStyles from '../../Styles/ReceiptStyles';
 import ContainerStyles from "../../Styles/ContainerStyles";
@@ -12,8 +12,11 @@ import 'firebase/compat/storage';
 
 import ButtonStyles from '../../Styles/ButtonStyles';
 import FontStyles from '../../Styles/FontStyles';
+import Colors from '../../Styles/Colors';
 
 const ReceiptView = ({ navigation, route }) => {
+
+    const [isModalVisible, setModalVisible] = React.useState(false);
 
   const { item }= route.params;
   const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
@@ -108,14 +111,33 @@ const ReceiptView = ({ navigation, route }) => {
 
                 {/* Receipt image */}
                 {item.Image ? (
-                <View style={{alignItems: 'center', marginVertical: 10}}>
-                    <Image 
-                        source={{uri: item.Image}}
-                        style={{width: 150, height: 150}} 
-                        resizeMode="cover"
-                    />
-                </View>
-            ) : null}
+                    <View style={{alignItems: 'center', marginVertical: 10}}>
+                        <Pressable onPress={() => setModalVisible(true)}>
+                        <Text style={styles.showImageButton}>Vis Bilde</Text>
+                        </Pressable>
+                    </View>
+                    ) : null}
+
+                    <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!isModalVisible);
+                    }}
+                    >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                        <Image source={{ uri: item.Image }} style={styles.modalImage} />
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setModalVisible(!isModalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Lukk</Text>
+                        </Pressable>
+                        </View>
+                    </View>
+                    </Modal>
 
             </View>
 
@@ -129,7 +151,6 @@ const ReceiptView = ({ navigation, route }) => {
             </Pressable>
 
         </View>
-
     </View>
   )
 }
@@ -191,4 +212,52 @@ const styles = StyleSheet.create({
     body2: {
         fontSize: 14,
     },
+    showImageButton: {
+        color: '#0000ff',
+        textDecorationLine: 'underline',
+        textAlign: 'center',
+      },
+      centeredView: {
+        flex: 1,
+        /* justifyContent: 'center',
+        alignItems: 'center', */
+        marginTop: 0,
+      },
+      modalView: {
+        /* margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5, */
+      },
+      modalImage: {
+        width: '100%',
+        height: '100%',
+      },
+      button: {
+        borderRadius: 50,
+        padding: 10,
+        elevation: 2,
+        backgroundColor: Colors.default,
+      },
+      buttonClose: {
+        position: 'absolute',
+        marginTop: 48, 
+        marginBottom: 8,
+        right: 24,
+        backgroundColor: Colors.default,
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
 });

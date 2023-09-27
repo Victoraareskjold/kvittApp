@@ -84,6 +84,7 @@ export default function SetupPhone({ navigation, route }) {
       const { firstName, lastName } = route.params;
 
       await firebase.firestore().collection('users').doc(user.uid).set({
+        uid: user.uid,
         firstName,
         lastName,
         phoneNumber: fullPhoneNumber

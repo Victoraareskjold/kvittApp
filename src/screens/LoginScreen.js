@@ -102,9 +102,9 @@ export default function LoginScreen({ navigation }) {
                   onPress={() => navigation.goBack()}
               />
   
-              <Text style={FontStyles.header}>Velkommen tilbake</Text>
+              <Text style={FontStyles.header}>Velkommen tilbake! 👋</Text>
   
-              <Text style={[FontStyles.body2, { marginBottom: 48 }]}>Lorem ipsum dolor sit amet</Text>
+              <Text style={[FontStyles.body2, { marginBottom: 48 }]}>Verifiser ditt mobilnummer for å logge inn.</Text>
               
               {/* Always render phone number input but make it uneditable when codeSent is true */}
               <Text style={FontStyles.body2Fat}>Mobilnummer</Text>

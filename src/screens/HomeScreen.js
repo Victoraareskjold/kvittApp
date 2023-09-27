@@ -51,22 +51,25 @@ const HomeScreen = () => {
     return parseInt(year + month + day, 10);
   };  
 
-  const fetchRecentUsers = async () => {
-    const recentUsersQuery = query(
+  const fetchUsers = async () => {
+    const usersQuery = query(
       collection(db, "users"),
-      where("id", "!=", auth.currentUser.uid) // Ekskluder din egen bruker-ID
+      where("uid", "!=", auth.currentUser.uid)
     );
-  
-    const snapshot = await getDocs(recentUsersQuery);
+
+    const snapshot = await getDocs(usersQuery);
     const usersList = [];
     snapshot.forEach((doc) => {
       const data = doc.data();
       usersList.push({ ...data, id: doc.id, name: `${data.firstName} ${data.lastName}` });
     });
-  
-    console.log("Recent Contacts:", recentContacts);
+    
     setRecentContacts(usersList);
-  };  
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []); 
 
   useFocusEffect(
     React.useCallback(() => {
