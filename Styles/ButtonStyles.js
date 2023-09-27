@@ -66,6 +66,17 @@ const ButtonStyles = StyleSheet.create({
         resizeMode: 'contain', 
         marginRight: 12,
       },
+
+      /* Shared indicator */
+      sharedIndicator: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginLeft: 8,
+        backgroundColor: 'rgba(36, 255, 0, .2)',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 3,
+      },
 });
 
 export default ButtonStyles;

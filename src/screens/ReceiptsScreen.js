@@ -11,7 +11,8 @@ import {
   Pressable,
   Image,
   KeyboardAvoidingView,
-  SectionList
+  SectionList,
+  Button
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBox from "../components/SearchBox";
@@ -134,13 +135,21 @@ const ReceiptsScreen = () => {
             if (!receiptDocRef.exists) return;
                       
             const receiptData = receiptDocRef.data(); 
-            const combinedData = { ...sharedReceiptData, ...receiptData, id: sharedReceiptData.receiptId };
+
+            // Når du legger til combinedData til receipts array
+            const combinedData = {
+              ...sharedReceiptData,
+              ...receiptData,
+              id: sharedReceiptData.receiptId,
+              isShared: true // eller bruk isShared fra receiptData hvis det er tilgjengelig
+            };            
+
             receipts.push(combinedData);  // Legger til combinedData til receipts array
           } catch (error) {
             console.error('Error fetching receipt:', error);
           }
         }));
-        
+
         // Sort and group the combined list of receipts
         receipts.sort((a, b) => dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date));
         const receiptsGroupedByDate = groupReceiptsByDate(receipts);
@@ -188,14 +197,41 @@ const groupReceiptsByDate = (receipts) => {
           <View style={ReceiptStyles.receiptAlignment}>
 
             <View style={ReceiptStyles.cardAlignment}>
+
               <Image 
                 source={StoreLogo}
                 style={ReceiptStyles.iconStyle}
               />
-              <View>
-                <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+
+              <View style={{flexDirection: 'column'}}>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+                  {/* {item.isShared && (
+                    <View style={ButtonStyles.sharedIndicator}>
+                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}>Delt </Text>
+                      <Image 
+                        source={require('../../assets/sharedArrow.png')}
+                        style={{ height: 8, width: 8, resizeMode: 'contain'}}
+                      />
+                    </View>
+                  )} */}
+                  {item.isSharedByUser && (
+                    <View style={ButtonStyles.sharedIndicator}>
+                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}>Delt </Text>
+                      <Image 
+                        source={require('../../assets/sharedArrow.png')}
+                        style={{ height: 8, width: 8, resizeMode: 'contain'}}
+                      />
+                    </View>
+                  )}
+                  
+                </View>
+
                 <Text style={ReceiptStyles.categoryText}>{item.Category}</Text>
+                
               </View>
+
             </View>
 
             <View style={ReceiptStyles.priceContainer}>

@@ -10,7 +10,7 @@ import ReceiptStyles from '../../Styles/ReceiptStyles';
 import StoreLogos from '../components/StoreLogos';
 
 import firebase from 'firebase/compat';
-import { auth, db } from "../../firebase";
+import { auth, db, storage } from "../../firebase";
 import {
   collection,
   addDoc,
@@ -18,7 +18,7 @@ import {
   where,
   getDocs,
   orderBy
-} from "@firebase/firestore";
+} from "firebase/firestore";
 
 const UserChat = ({ route }) => {
 
@@ -29,19 +29,53 @@ const UserChat = ({ route }) => {
     
     const [userReceipts, setUserReceipts] = useState([]);
 
+    const [isSharing, setIsSharing] = useState(false);
+
     const shareReceipt = async (receiverId, receiptId) => {
         try {
-            const sharedReceiptsCollection = db.collection('sharedReceipts');
+            setIsSharing(true); // Set isSharing to true when user taps the button
+           
+            const sharedReceiptsCollection = collection(db, 'sharedReceipts');
+
+            const alreadySharedQuery = query(
+                sharedReceiptsCollection,
+                where('receiverId', '==', receiverId)
+            );
+            
+            const alreadySharedSnapshot = await getDocs(alreadySharedQuery);
+            
+            let isAlreadyShared = false;
+            
+            alreadySharedSnapshot.forEach(doc => {
+                if (doc.data().receiptId === receiptId) {
+                    isAlreadyShared = true;
+                }
+            });
+            
+            if (isAlreadyShared) {
+                alert('Kvitteringen er allerede delt med denne brukeren!');
+                return;
+            }            
+            
+            // Fortsett å dele kvittering hvis den ikke allerede er delt
+            const receiptRef = db.collection('receipts').doc(receiptId);
+            await receiptRef.update({
+                isSharedByUser: true,
+            });
+    
             await sharedReceiptsCollection.add({
                 senderId: auth.currentUser.uid,
                 receiverId: receiverId,
                 receiptId: receiptId,
             });
+            
             alert('Kvittering delt!');
         } catch (error) {
             console.error('Feil ved deling av kvittering:', error);
+        } finally {
+            setIsSharing(false);
         }
-    };    
+    };
       
       useEffect(() => {
         const fetchSharedReceipts = async () => {
@@ -67,7 +101,7 @@ const UserChat = ({ route }) => {
             
             const receipts = await Promise.all(receiptPromises);
             
-            setSharedReceipts(receipts); // Correctly set sharedReceipts
+            setSharedReceipts(receipts);
           } catch (error) {
             console.error('Feil ved henting av delte kvitteringer:', error);
           }
@@ -113,8 +147,11 @@ const UserChat = ({ route }) => {
           <View>
 
             <Pressable
-                    onPress={() => shareReceipt(user.id, item.id)}
+                    onPress={() => {
+                        if (!isSharing) shareReceipt(user.id, item.id); // Check if isSharing is false before calling shareReceipt
+                    }}
                     style={ReceiptStyles.receiptCard}
+                    disabled={isSharing} // Disable the button when isSharing is true
                     >
 
             <View style={ReceiptStyles.receiptAlignment}>
