@@ -97,6 +97,7 @@ const UserSettings = () => {
         {/* Header container */}
         <View style={[ContainerStyles.centerContainer, { marginBottom: 32 }]}>
             <Image 
+                value={user.profileImage}
                 source={require('../../../assets/user.png')}
                 style={ContainerStyles.userPhoto}
             />
@@ -130,19 +131,6 @@ const UserSettings = () => {
                         setHasChanges(true); // Sett hasChanges til true når tekst endres
                       }}
                 ></TextInput>
-
-            {/* Phone */}
-            {/* <Text style={FontStyles.body2Fat}>Telefon</Text>
-                <TextInput 
-                    style={[ButtonStyles.defaultPlaceholder, { marginTop: 4, marginBottom: 32 }]}
-                    placeholder='+47 123 45 678'
-
-                    value={user.phoneNumber}
-                    onChangeText={(text) => {
-                        setUser({ ...user, phoneNumber: text });
-                        setHasChanges(true); // Sett hasChanges til true når tekst endres
-                      }}
-                ></TextInput> */}
 
             {/* Update user */}
             <TouchableOpacity 

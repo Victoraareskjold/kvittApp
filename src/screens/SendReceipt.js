@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, Image, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, FlatList, Image, ActivityIndicator, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { db, auth } from "../../firebase";
 import { collection, query, where, getDocs, addDoc, orderBy } from "@firebase/firestore";
+import SearchResults from "../components/SearchResults";
+import { useNavigation } from '@react-navigation/native';
+
 import ContainerStyles from "../../Styles/ContainerStyles";
 import FontStyles from "../../Styles/FontStyles";
-import SearchResults from "../components/SearchResults";
-
 import ReceiptStyles from "../../Styles/ReceiptStyles";
 
 import * as Permissions from 'expo-permissions';
 import * as Contacts from 'expo-contacts';
 
 const SendReceipt = () => {
+    
+    const navigation = useNavigation();
+
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -117,6 +121,10 @@ const SendReceipt = () => {
         }
     }; */
 
+    const navigateToChat = (user) => {
+        navigation.navigate('UserChat', { user });
+    };
+
     return (
         <View style={ContainerStyles.backgroundContainer}>
             <SafeAreaView />
@@ -160,24 +168,19 @@ const SendReceipt = () => {
             <View style={[ContainerStyles.contactsContainer, {marginTop: 20, flex: 1}]}>
               {/* <Text style={[FontStyles.subHeader, {marginBottom: 12}]}>Alle kontakter</Text> */}
               <FlatList
-                  data={recentContacts}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-
-                      <View style={{ paddingVertical: 12 }}>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <Image 
-                              source={require('../../assets/user.png')}
-                              style={ContainerStyles.smallerUserPhoto}
-                          />
-                          <Text style={ReceiptStyles.storeText}>{item.name}</Text>
-                        </View>
-
-                      </View>
-
-                  )}
-              />
+                    data={recentContacts}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <Pressable onPress={() => navigateToChat(item)}>
+                            <View style={{ paddingVertical: 12 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Image source={require('../../assets/user.png')} style={ContainerStyles.smallerUserPhoto} />
+                                    <Text style={ReceiptStyles.storeText}>{item.name}</Text>
+                                </View>
+                            </View>
+                        </Pressable>
+                    )}
+                />
             </View>
 
         </View>

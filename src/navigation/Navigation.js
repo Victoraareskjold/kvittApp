@@ -3,6 +3,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
+import { Image, Text, StyleSheet } from "react-native";
+
+/* Styles */
+import FontStyles from "../../Styles/FontStyles";
 
 // Importer Firebase
 import firebase from 'firebase/compat/app';
@@ -25,6 +29,7 @@ import FaceId from "../screens/onboarding/FaceId";
 import UserSettings from "../screens/Settings/UserSettings";
 import CardsSettings from "../screens/Settings/CardsSettings";
 import QuickLogin from "../screens/QuickLogin";
+import UserChat from "../screens/UserChat";
 
 /* HomeScreen view receipt */
 const HomeStack = createNativeStackNavigator();
@@ -82,6 +87,31 @@ function KvitteringStackGroup() {
   );
 }
 
+/* Share receipts */
+const ShareStack = createNativeStackNavigator();
+
+function ShareStackGroup() {
+  return (
+    <ShareStack.Navigator>
+
+      <ShareStack.Screen 
+        options={{ headerShown: false }} 
+        name="SendReceipt" 
+        component={SendReceipt} 
+      />
+
+    <ShareStack.Screen 
+      name="UserChat" 
+      component={UserChat} 
+      options={({ route }) => ({
+        headerTitle: () => <Text style={FontStyles.subHeader}>{route.params.user.name}</Text>, // Viser brukerens navn som tittelen
+      })}
+    />
+
+    </ShareStack.Navigator>
+  );
+}
+
 /* Settings stack */
 const SettingsStack = createNativeStackNavigator();
 
@@ -126,7 +156,7 @@ function TabGroup() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "KvitteringStackGroup") {
             iconName = focused ? "receipt" : "receipt-outline";
-          } else if (route.name === "SendReceipt") {
+          } else if (route.name === "ShareStackGroup") {
             iconName = focused ? "person-add" : "person-add-outline";
           } else if (route.name === "Innstillinger") {
             iconName = focused ? "settings-sharp" : "settings-outline";
@@ -139,7 +169,7 @@ function TabGroup() {
     >
       <Tab.Screen name="HomeStackGroup" component={HomeStackGroup} options={{ tabBarLabel: "Hjem" }} />
       <Tab.Screen name="KvitteringStackGroup" component={KvitteringStackGroup} options={{ tabBarLabel: "Kvitteringer" }} />
-      <Tab.Screen name="SendReceipt" component={SendReceipt} options={{ tabBarLabel: "Del kvittering" }} />
+      <Tab.Screen name="ShareStackGroup" component={ShareStackGroup} options={{ tabBarLabel: "Del kvittering" }} />
       <Tab.Screen name="Innstillinger" component={SettingsStackGroup} />
     </Tab.Navigator>
   );

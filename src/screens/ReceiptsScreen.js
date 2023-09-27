@@ -27,7 +27,8 @@ import {
   query,
   where,
   getDocs,
-  orderBy
+  orderBy,
+  getDoc
 } from "@firebase/firestore";
 
 import Colors from "../../Styles/Colors";
@@ -65,6 +66,9 @@ const ReceiptsScreen = () => {
 
   let loadReceiptList = async () => {
     try {
+        let receipts = [];
+  
+        // Load user's own receipts
         let q;
         if (selectedCategory === "Alle") {
           q = query(
@@ -79,30 +83,77 @@ const ReceiptsScreen = () => {
             where("Category", "==", selectedCategory),
             orderBy("Date", "desc")
           );
-        }    
-
-        const querySnapshot = await getDocs(q);
-        let receipts = [];
+        }
+  
+        let querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
           let receipt = doc.data();
           receipt.id = doc.id;
           receipts.push(receipt);
         });
+  
+        // Load shared receipts
+        let sharedReceiptsQuery = query(
+          collection(db, "sharedReceipts"), 
+          where("receiverId", "==", auth.currentUser.uid)
+        );
+  
+        querySnapshot = await getDocs(sharedReceiptsQuery);
 
-        receipts.sort((a, b) => {
-            return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
+        // Anta at querySnapshot er resultatet av den delte kvitteringsspørringen
+        querySnapshot.docs.forEach(async (doc) => {
+          const sharedReceiptData = doc.data(); // Dette vil gi deg dataene for det delte kvitteringsdokumentet
+          
+          try {
+              // Bruke receiptId for å hente det faktiske kvitteringsdokumentet
+              const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
+              
+              if (!receiptDocRef.exists) {
+                  console.log(`No receipt found for id ${sharedReceiptData.receiptId}`);
+                  return;
+              }
+              
+              const receiptData = receiptDocRef.data(); // Dette vil gi deg dataene for kvitteringsdokumentet
+              
+              // Nå kan du kombinere sharedReceiptData og receiptData som du vil
+              const combinedData = { ...sharedReceiptData, ...receiptData, id: sharedReceiptData.receiptId };
+              
+              console.log('Combined Receipt Data:', combinedData);
+          } catch (error) {
+              console.error('Error fetching receipt:', error);
+          }
         });
 
+        console.log('Shared Receipts Query Snapshot:', querySnapshot);
+
+        await Promise.all(querySnapshot.docs.map(async (doc) => {
+          try {
+            const sharedReceiptData = doc.data(); 
+            const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
+                      
+            if (!receiptDocRef.exists) return;
+                      
+            const receiptData = receiptDocRef.data(); 
+            const combinedData = { ...sharedReceiptData, ...receiptData, id: sharedReceiptData.receiptId };
+            receipts.push(combinedData);  // Legger til combinedData til receipts array
+          } catch (error) {
+            console.error('Error fetching receipt:', error);
+          }
+        }));
+        
+        // Sort and group the combined list of receipts
+        receipts.sort((a, b) => dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date));
         const receiptsGroupedByDate = groupReceiptsByDate(receipts);
         
         setGroupedReceipts(receiptsGroupedByDate);
         setIsLoading(false);
         setIsRefreshing(false);
-
+  
     } catch (error) {
         console.error("Feil ved henting av kvitteringer:", error);
     }
-};
+    console.log('Final Receipts List:', receipts);
+  };  
 
 const dateStringToSortableNumber = (dateString) => {
   const [day, month, year] = dateString.split('.');
@@ -124,6 +175,8 @@ const groupReceiptsByDate = (receipts) => {
 
   let renderReceiptItem = ({ item }) => {
     const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
+
+    console.log('Rendering Item:', item)
 
     return (
       <View>
