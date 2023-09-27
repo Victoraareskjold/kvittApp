@@ -1,6 +1,7 @@
 import { StyleSheet, View, Image, TextInput } from "react-native";
 import { useState } from "react";
 import React from "react";
+import Colors from "../../Styles/Colors";
 
 const SearchBox = ({  placeholder }) => {
     const [ input, setInput ] = useState("");
@@ -12,6 +13,7 @@ const SearchBox = ({  placeholder }) => {
                 style={{ width: 18, height: 18, marginRight: 4 }}
             />
             <TextInput 
+                placeholderTextColor={Colors.defaultLight}
                 value={input} onChangeText={(text) => setInput(text)} 
                 placeholder={placeholder}
                 style={{width: '100%'}}

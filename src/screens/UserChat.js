@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Modal, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, SectionList, KeyboardAvoidingView, Alert, Modal, FlatList, Pressable, Button } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -8,6 +8,9 @@ import ContainerStyles from '../../Styles/ContainerStyles';
 import ButtonStyles from '../../Styles/ButtonStyles';
 import ReceiptStyles from '../../Styles/ReceiptStyles';
 import StoreLogos from '../components/StoreLogos';
+
+import SearchBox from '../components/SearchBox';
+import CategoriesFilter from '../components/CategoriesFilter';
 
 import firebase from 'firebase/compat';
 import { auth, db, storage } from "../../firebase";
@@ -30,6 +33,8 @@ const UserChat = ({ route }) => {
     const [userReceipts, setUserReceipts] = useState([]);
 
     const [isSharing, setIsSharing] = useState(false);
+
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     const shareReceipt = async (receiverId, receiptId) => {
         try {
@@ -181,25 +186,54 @@ const UserChat = ({ route }) => {
     <View style={ContainerStyles.backgroundContainer}>
       <SafeAreaView />
 
-      <Text>{user.name}</Text>
-
-      <TouchableOpacity onPress={openReceiptsModal}>
-        <Text>Del kvitteringer</Text>
-      </TouchableOpacity>
+      {/* Bottombar */}
+      <View style={{position: 'absolute', bottom: 0, paddingHorizontal: 12, width: '100%' }}>
+        <TouchableOpacity 
+          onPress={openReceiptsModal}
+          style={ButtonStyles.primaryBtn}
+        >
+          <Text style={FontStyles.smallBtn}>Del kvitteringer</Text>
+        </TouchableOpacity>
+      </View>
 
       <Modal
+        presentationStyle='formSheet'
         animationType="slide"
         visible={receiptsModalVisible}
         onRequestClose={() => setReceiptsModalVisible(false)}>
-        <View style={{ flex: 1, padding: 20 }}>
+        <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ marginTop: 32 }}/>
+
+          {/* Top bar */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 24, alignItems: 'center', marginBottom: 24}}>
+            <Text style={FontStyles.header}>Del kvittering</Text>
+            <Pressable 
+                onPress={() => setReceiptsModalVisible(false)}>
+                  <Text style={FontStyles.linkBtn}>Avbryt</Text>
+            </Pressable>
+          </View>
+
+          {/* Searchbar */}
+          <View style={{ paddingHorizontal: 24 }}>
+            <SearchBox 
+              placeholder={'Søk etter butikk eller produkt'}
+            />
+          </View>
+
+          {/* Categories filter */}
+          <View style={ContainerStyles.filterContainer}>
+            <CategoriesFilter 
+              onSelectCategory={setSelectedCategory}  
+              excludeAll={false}/>{""}
+          </View>
+
+          {/* List of receipts */}
           <FlatList
             data={userReceipts}
             keyExtractor={(item) => item.id}
             renderItem={renderReceiptItem} // Here you should call renderReceiptItem function
           />
-          <TouchableOpacity onPress={() => setReceiptsModalVisible(false)}>
-            <Text>Lukk</Text>
-          </TouchableOpacity>
+
         </View>
       </Modal>
 
