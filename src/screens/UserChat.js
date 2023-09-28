@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, FlatList, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRoute } from '@react-navigation/native';
 
 import FontStyles from '../../Styles/FontStyles';
 import ContainerStyles from '../../Styles/ContainerStyles';
@@ -12,7 +13,9 @@ import SearchBox from '../components/SearchBox';
 import CategoriesFilter from '../components/CategoriesFilter';
 
 import { auth, db } from "../../firebase";
+
 import {
+  doc,
   collection,
   addDoc,
   query,
@@ -86,67 +89,64 @@ const UserChat = ({ route }) => {
     };
   
     useEffect(() => {
-      const loadSharedReceipts = async () => {
+    const loadSharedReceipts = async () => {
         try {
+            const { uid } = auth.currentUser;
+            const { uid: otherUserId } = route.params.user; // Henter uid av den andre brukeren fra navigasjonsparametre.
+
             let receipts = [];
             
-            // Henter kvitteringer som brukeren har mottatt.
-            const receivedReceiptsQuery = query(
+            // Henter kvitteringer hvor enten sender eller mottaker er den påloggede brukeren, og den andre parten er den valgte brukeren.
+            const sharedReceiptsQuery = query(
               collection(db, "sharedReceipts"), 
-              where("receiverId", "==", auth.currentUser.uid)
+              where("receiverId", "in", [uid, otherUserId]), 
+              where("senderId", "in", [uid, otherUserId])
             );
+
+            const sharedReceiptsSnapshot = await getDocs(sharedReceiptsQuery);
             
-            // Henter kvitteringer som brukeren har sendt.
-            const sentReceiptsQuery = query(
-              collection(db, "sharedReceipts"), 
-              where("senderId", "==", auth.currentUser.uid)
-            );
-    
-            // Henter dokumenter basert på de ovennevnte spørringene.
-            const receivedReceiptsSnapshot = await getDocs(receivedReceiptsQuery);
-            const sentReceiptsSnapshot = await getDocs(sentReceiptsQuery);
-            
-            // Slår sammen resultatene.
-            const allSharedReceipts = [...receivedReceiptsSnapshot.docs, ...sentReceiptsSnapshot.docs];
-            
-            if(allSharedReceipts.length === 0) {
-              console.log('No shared receipts found for user:', auth.currentUser.uid);
+            if(sharedReceiptsSnapshot.empty) {
+              console.log(`No shared receipts found between users: ${uid} and ${otherUserId}`);
+              return;
             }
             
-            await Promise.all(allSharedReceipts.map(async (doc) => {
-                try {
-                    const sharedReceiptData = doc.data(); 
-                    
-                    const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
-                    
-                    if (!receiptDocRef.exists) {
-                        console.error('No receipt found with ID:', sharedReceiptData.receiptId);
-                        return;
-                    }
-                    
-                    const receiptData = receiptDocRef.data(); 
-                    const combinedData = {
-                        ...sharedReceiptData,
-                        ...receiptData,
-                        id: sharedReceiptData.receiptId,
-                        isShared: true 
-                    };
-                    receipts.push(combinedData);  
-                } catch (error) {
-                    console.error('Error fetching receipt:', error);
+            await Promise.all(sharedReceiptsSnapshot.docs.map(async (doc) => {
+              try {
+                const sharedReceiptData = doc.data();
+
+                const receiptRef = db.collection('receipts').doc(sharedReceiptData.receiptId);
+                const receiptDocRef = await receiptRef.get();
+                
+                if (!receiptDocRef.exists) {
+                    console.error('No receipt found with ID:', sharedReceiptData.receiptId);
+                    return;
                 }
+                
+                const receiptData = receiptDocRef.data();
+                const combinedData = {
+                    ...sharedReceiptData,
+                    ...receiptData,
+                    id: sharedReceiptData.receiptId,
+                    isShared: true
+                };
+                receipts.push(combinedData);
+            
+            } catch (error) {
+                console.error('Error fetching receipt:', error);
+            }
+            
             }));
             
-            console.log('Loaded Receipts: ', receipts); // Debug the final receipts array.
             setSharedReceipts(receipts);
             setIsLoading(false);
         } catch (error) {
             console.error("Error loading shared receipts:", error);
         }
     };
-    
+
     loadSharedReceipts();
-    }, []);    
+}, [route.params.user]);
+
 
     const loadReceiptList = async () => {
         try {
@@ -218,7 +218,6 @@ const UserChat = ({ route }) => {
       const renderSharedReceiptItem = ({ item }) => {
 
         const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
-        console.log('Rendering Shared Receipt Item: ', item);
 
         return (
           <View style={{ paddingVertical: 12, paddingHorizontal: 24}}>

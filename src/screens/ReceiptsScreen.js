@@ -119,13 +119,10 @@ const ReceiptsScreen = () => {
               // Nå kan du kombinere sharedReceiptData og receiptData som du vil
               const combinedData = { ...sharedReceiptData, ...receiptData, id: sharedReceiptData.receiptId };
               
-              console.log('Combined Receipt Data:', combinedData);
           } catch (error) {
               console.error('Error fetching receipt:', error);
           }
         });
-
-        console.log('Shared Receipts Query Snapshot:', querySnapshot);
 
         await Promise.all(querySnapshot.docs.map(async (doc) => {
           try {
@@ -161,7 +158,6 @@ const ReceiptsScreen = () => {
     } catch (error) {
         console.error("Feil ved henting av kvitteringer:", error);
     }
-    console.log('Final Receipts List:', receipts);
   };  
 
 const dateStringToSortableNumber = (dateString) => {
@@ -184,8 +180,6 @@ const groupReceiptsByDate = (receipts) => {
 
   let renderReceiptItem = ({ item }) => {
     const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
-
-    console.log('Rendering Item:', item)
 
     return (
       <View>
