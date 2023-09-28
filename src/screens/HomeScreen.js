@@ -36,6 +36,8 @@ const HomeScreen = () => {
 
   const navigation = useNavigation();
 
+  const { navigate } = useNavigation();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -79,49 +81,99 @@ useEffect(() => {
     }, [selectedCategory])
   );  
 
-  const loadReceiptList = async () => {
-    let q;
-    if (selectedCategory === "Alle") {
-      q = query(
-        collection(db, "receipts"),
-        where("userId", "==", auth.currentUser.uid), // Legg til betingelsen for å filtrere etter riktig uid
-        orderBy("Date", "desc")
-      );
-    } else {
-      q = query(
-        collection(db, "receipts"),
-        where("userId", "==", auth.currentUser.uid), // Legg til betingelsen for å filtrere etter riktig uid
-        where("Category", "==", selectedCategory),
-        orderBy("Date", "desc")
-      );
+  let loadReceiptList = async () => {
+    try {
+        let receipts = [];
+  
+        // Load user's own receipts
+        let q;
+        if (selectedCategory === "Alle") {
+          q = query(
+            collection(db, "receipts"), 
+            where("userId", "==", auth.currentUser.uid),
+            orderBy("Date", "desc")
+          );
+        } else {
+          q = query(
+            collection(db, "receipts"),
+            where("userId", "==", auth.currentUser.uid),
+            where("Category", "==", selectedCategory),
+            orderBy("Date", "desc")
+          );
+        }
+  
+        let querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          let receipt = doc.data();
+          receipt.id = doc.id;
+          receipts.push(receipt);
+        });
+  
+        // Load shared receipts
+        let sharedReceiptsQuery = query(
+          collection(db, "sharedReceipts"), 
+          where("receiverId", "==", auth.currentUser.uid)
+        );
+  
+        querySnapshot = await getDocs(sharedReceiptsQuery);
+
+        // Anta at querySnapshot er resultatet av den delte kvitteringsspørringen
+        querySnapshot.docs.forEach(async (doc) => {
+          const sharedReceiptData = doc.data(); // Dette vil gi deg dataene for det delte kvitteringsdokumentet
+          
+          try {
+              // Bruke receiptId for å hente det faktiske kvitteringsdokumentet
+              const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
+              
+              if (!receiptDocRef.exists) {
+                  console.log(`No receipt found for id ${sharedReceiptData.receiptId}`);
+                  return;
+              }
+              
+              const receiptData = receiptDocRef.data(); // Dette vil gi deg dataene for kvitteringsdokumentet
+              
+              // Nå kan du kombinere sharedReceiptData og receiptData som du vil
+              const combinedData = { ...sharedReceiptData, ...receiptData, id: sharedReceiptData.receiptId };
+              
+          } catch (error) {
+              console.error('Error fetching receipt:', error);
+          }
+        });
+
+        await Promise.all(querySnapshot.docs.map(async (doc) => {
+          try {
+            const sharedReceiptData = doc.data(); 
+            const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
+                      
+            if (!receiptDocRef.exists) return;
+                      
+            const receiptData = receiptDocRef.data(); 
+
+            // Når du legger til combinedData til receipts array
+            const combinedData = {
+              ...sharedReceiptData,
+              ...receiptData,
+              id: sharedReceiptData.receiptId,
+              isShared: true // eller bruk isShared fra receiptData hvis det er tilgjengelig
+            };            
+
+            receipts.push(combinedData);  // Legger til combinedData til receipts array
+          } catch (error) {
+            console.error('Error fetching receipt:', error);
+          }
+        }));
+
+        // Sort and group the combined list of receipts
+        receipts.sort((a, b) => dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date));
+        const receiptsGroupedByDate = groupReceiptsByDate(receipts);
+        
+        setGroupedReceipts(receiptsGroupedByDate);
+        setIsLoading(false);
+        setIsRefreshing(false);
+  
+    } catch (error) {
+        console.error("Feil ved henting av kvitteringer:", error);
     }
-  
-    const querySnapshot = await getDocs(q);
-    let fetchedReceipts = [];
-    querySnapshot.forEach((doc) => {
-      let receipt = doc.data();
-      receipt.id = doc.id;
-      fetchedReceipts.push(receipt);
-    });
-  
-    // Sorter kvitteringene etter dato-feltet som strenger
-    fetchedReceipts.sort((a, b) => {
-      return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
-    });
-  
-    const limitedReceipts = fetchedReceipts.slice(0, 5);
-  
-    // Sort and group the limited receipts
-    limitedReceipts.sort((a, b) => {
-      return dateStringToSortableNumber(b.Date) - dateStringToSortableNumber(a.Date);
-    });
-  
-    const receiptsGroupedByDate = groupReceiptsByDate(limitedReceipts);
-  
-    setGroupedReceipts(receiptsGroupedByDate);
-    setReceipts(limitedReceipts);
-    setIsLoading(false);
-    setIsRefreshing(false);
   };  
 
   const groupReceiptsByDate = (receipts) => {
@@ -140,23 +192,50 @@ useEffect(() => {
     const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
 
     return (
-      <View style={{flex: 1}}>
+      <View>
         <Pressable
-          onPress={() => navigation.navigate("ReceiptView", { item: item })}
+          onPress={() => navigate("ReceiptView", { item: item })}
           style={ReceiptStyles.receiptCard}
         >
 
           <View style={ReceiptStyles.receiptAlignment}>
 
             <View style={ReceiptStyles.cardAlignment}>
+
               <Image 
-                source={StoreLogo} 
-                style={ReceiptStyles.iconStyle} 
+                source={StoreLogo}
+                style={ReceiptStyles.iconStyle}
               />
-              <View>
-                <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
-                <Text style={ReceiptStyles.dateText}>{item.Date}</Text>
+
+              <View style={{flexDirection: 'column'}}>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+                  {/* {item.isShared && (
+                    <View style={ButtonStyles.sharedIndicator}>
+                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}>Delt </Text>
+                      <Image 
+                        source={require('../../assets/sharedArrow.png')}
+                        style={{ height: 8, width: 8, resizeMode: 'contain'}}
+                      />
+                    </View>
+                  )} */}
+                  {item.isSharedByUser && (
+                    <View style={ButtonStyles.sharedIndicator}>
+                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}></Text>
+                      <Image 
+                        source={require('../../assets/sharedArrow.png')}
+                        style={{ height: 8, width: 8, resizeMode: 'contain'}}
+                      />
+                    </View>
+                  )}
+                  
+                </View>
+
+                <Text style={ReceiptStyles.categoryText}>{item.Date}</Text>
+                
               </View>
+
             </View>
 
             <View style={ReceiptStyles.priceContainer}>

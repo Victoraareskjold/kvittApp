@@ -212,7 +212,7 @@ const groupReceiptsByDate = (receipts) => {
                   )} */}
                   {item.isSharedByUser && (
                     <View style={ButtonStyles.sharedIndicator}>
-                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}>Delt </Text>
+                      <Text style={[FontStyles.linkBtn, {fontSize: 12, color: '#1CC800', fontWeight: '600'}]}></Text>
                       <Image 
                         source={require('../../assets/sharedArrow.png')}
                         style={{ height: 8, width: 8, resizeMode: 'contain'}}

@@ -8,8 +8,8 @@ import Colors from '../../Styles/Colors';
 
 const RecentContacts = ({ recentContacts }) => {
   return (
-    <View style={[ContainerStyles.contactsContainer, {marginTop: 0, marginBottom: 32}]}>
-      <Text style={[FontStyles.subHeader, { marginBottom: 12 }]}>Nylige personer</Text>
+    <View style={[ContainerStyles.contactsContainer, {marginTop: 0, marginBottom: 24}]}>
+      <Text style={[FontStyles.subHeader, { marginBottom: 24 }]}>Nylige personer</Text>
       <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal

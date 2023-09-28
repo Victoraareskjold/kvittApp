@@ -71,10 +71,10 @@ const ButtonStyles = StyleSheet.create({
       sharedIndicator: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 8,
+        marginLeft: 12,
         backgroundColor: 'rgba(36, 255, 0, .2)',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        paddingHorizontal: 4,
+        paddingVertical: 0,
         borderRadius: 3,
       },
 });
