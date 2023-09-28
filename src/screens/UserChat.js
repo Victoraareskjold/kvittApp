@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, SectionList, KeyboardAvoidingView, Alert, Modal, FlatList, Pressable, Button } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, FlatList, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import Colors from '../../Styles/Colors';
 import FontStyles from '../../Styles/FontStyles';
 import ContainerStyles from '../../Styles/ContainerStyles';
 import ButtonStyles from '../../Styles/ButtonStyles';
@@ -12,16 +11,16 @@ import StoreLogos from '../components/StoreLogos';
 import SearchBox from '../components/SearchBox';
 import CategoriesFilter from '../components/CategoriesFilter';
 
-import firebase from 'firebase/compat';
-import { auth, db, storage } from "../../firebase";
+import { auth, db } from "../../firebase";
 import {
   collection,
   addDoc,
   query,
   where,
   getDocs,
-  orderBy
-} from "firebase/firestore";
+  orderBy,
+  getDoc
+} from "@firebase/firestore";
 
 const UserChat = ({ route }) => {
 
@@ -35,6 +34,9 @@ const UserChat = ({ route }) => {
     const [isSharing, setIsSharing] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState('');
+
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const shareReceipt = async (receiverId, receiptId) => {
         try {
@@ -68,11 +70,12 @@ const UserChat = ({ route }) => {
                 isSharedByUser: true,
             });
     
-            await sharedReceiptsCollection.add({
-                senderId: auth.currentUser.uid,
-                receiverId: receiverId,
-                receiptId: receiptId,
-            });
+            await addDoc(sharedReceiptsCollection, {
+              senderId: auth.currentUser.uid,
+              receiverId: receiverId,
+              receiptId: receiptId,
+          });
+          
             
             alert('Kvittering delt!');
         } catch (error) {
@@ -81,38 +84,68 @@ const UserChat = ({ route }) => {
             setIsSharing(false);
         }
     };
-      
-      useEffect(() => {
-        const fetchSharedReceipts = async () => {
-          try {
-            const sharedReceiptsQuery = query(
-              collection(db, 'sharedReceipts'),
-              where('receiverId', '==', auth.currentUser.uid)
+  
+    useEffect(() => {
+      const loadSharedReceipts = async () => {
+        try {
+            let receipts = [];
+            
+            // Henter kvitteringer som brukeren har mottatt.
+            const receivedReceiptsQuery = query(
+              collection(db, "sharedReceipts"), 
+              where("receiverId", "==", auth.currentUser.uid)
             );
-            const sharedReceiptsSnapshot = await getDocs(sharedReceiptsQuery);
             
-            const receiptPromises = sharedReceiptsSnapshot.docs.map(async doc => {
-              const sharedReceiptData = doc.data();
-              
-              // Correct the way to get a document reference
-              const receiptRef = db.collection('receipts').doc(sharedReceiptData.receiptId);
-              const receiptSnapshot = await receiptRef.get();
-              
-              if(receiptSnapshot.exists) 
-                return { ...receiptSnapshot.data(), id: receiptSnapshot.id };
-              
-              throw new Error('Receipt does not exist');
-            });
+            // Henter kvitteringer som brukeren har sendt.
+            const sentReceiptsQuery = query(
+              collection(db, "sharedReceipts"), 
+              where("senderId", "==", auth.currentUser.uid)
+            );
+    
+            // Henter dokumenter basert på de ovennevnte spørringene.
+            const receivedReceiptsSnapshot = await getDocs(receivedReceiptsQuery);
+            const sentReceiptsSnapshot = await getDocs(sentReceiptsQuery);
             
-            const receipts = await Promise.all(receiptPromises);
+            // Slår sammen resultatene.
+            const allSharedReceipts = [...receivedReceiptsSnapshot.docs, ...sentReceiptsSnapshot.docs];
             
+            if(allSharedReceipts.length === 0) {
+              console.log('No shared receipts found for user:', auth.currentUser.uid);
+            }
+            
+            await Promise.all(allSharedReceipts.map(async (doc) => {
+                try {
+                    const sharedReceiptData = doc.data(); 
+                    
+                    const receiptDocRef = await db.collection('receipts').doc(sharedReceiptData.receiptId).get();
+                    
+                    if (!receiptDocRef.exists) {
+                        console.error('No receipt found with ID:', sharedReceiptData.receiptId);
+                        return;
+                    }
+                    
+                    const receiptData = receiptDocRef.data(); 
+                    const combinedData = {
+                        ...sharedReceiptData,
+                        ...receiptData,
+                        id: sharedReceiptData.receiptId,
+                        isShared: true 
+                    };
+                    receipts.push(combinedData);  
+                } catch (error) {
+                    console.error('Error fetching receipt:', error);
+                }
+            }));
+            
+            console.log('Loaded Receipts: ', receipts); // Debug the final receipts array.
             setSharedReceipts(receipts);
-          } catch (error) {
-            console.error('Feil ved henting av delte kvitteringer:', error);
-          }
-        };
-        
-        fetchSharedReceipts();
+            setIsLoading(false);
+        } catch (error) {
+            console.error("Error loading shared receipts:", error);
+        }
+    };
+    
+    loadSharedReceipts();
     }, []);    
 
     const loadReceiptList = async () => {
@@ -181,10 +214,46 @@ const UserChat = ({ route }) => {
           </View>
         );
       };
+
+      const renderSharedReceiptItem = ({ item }) => {
+
+        const StoreLogo = StoreLogos[item.Store.toLowerCase()] || StoreLogos["default"];
+        console.log('Rendering Shared Receipt Item: ', item);
+
+        return (
+          <View style={{ paddingVertical: 12, paddingHorizontal: 24}}>
+
+            <View style={ReceiptStyles.receiptAlignment}>
+              <View style={ReceiptStyles.cardAlignment}>
+
+                <Image source={StoreLogo} style={ReceiptStyles.iconStyle} />
+
+                <View>
+                  <Text style={ReceiptStyles.storeText}>{item.Store}</Text>
+                  <Text style={ReceiptStyles.categoryText}>{item.Category}</Text>
+                </View>
+
+              </View>
+              <View style={ReceiptStyles.priceContainer}>
+                <Text style={ReceiptStyles.priceText}>{item.Price}</Text>
+                <Text style={ReceiptStyles.priceText}>,-</Text>
+              </View>
+            </View>
+
+          </View>
+        );
+      };      
       
   return (
     <View style={ContainerStyles.backgroundContainer}>
-      <SafeAreaView />
+
+      <FlatList
+        style={{marginTop: 32}}
+        data={sharedReceipts} // Bruker sharedReceipts som datakilde
+        keyExtractor={(item) => item.id}
+        renderItem={renderSharedReceiptItem} // Du må lage en ny render-funksjon for delte kvitteringer
+        ListEmptyComponent={<Text style={{ alignSelf: 'center' }}>Ingen delte kvitteringer</Text>}
+      />
 
       {/* Bottombar */}
       <View style={{position: 'absolute', bottom: 0, paddingHorizontal: 12, width: '100%' }}>

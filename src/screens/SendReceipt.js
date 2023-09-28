@@ -152,7 +152,7 @@ const SendReceipt = () => {
 
               {isLoading ? (
                     <ActivityIndicator size="small" style={{marginTop: 24}} />
-                ) : hasSearched && searchResults.length === 0 && searchTerm.length >= 3 ? ( // Sjekk om brukeren har søkt, ingen resultater er funnet, og søkefrasen har minst 3 tegn
+                ) : hasSearched && searchResults.length === 0 && searchTerm.length >= 2 ? ( // Sjekk om brukeren har søkt, ingen resultater er funnet, og søkefrasen har minst 3 tegn
                     <Text style={[FontStyles.body2, {marginTop: 24, textAlign: 'center'}]}>Ingen treff</Text>
                 ) : (
                     <SearchResults 
